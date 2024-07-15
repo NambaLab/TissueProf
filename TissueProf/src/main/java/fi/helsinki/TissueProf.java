@@ -842,14 +842,14 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        //IJ.selectWindow(imageName + "_" + "EnhancedContrast_CDUPLICATE_C" + "2" + ".tif");
 		        
-		        Window imwin = IJ.getImage().getWindow();
+		        //Window imwin = IJ.getImage().getWindow();
 		        
 		        
 		        IJ.getImage().flush();
 		        IJ.getImage().close();
 		        
-		        imwin.dispose();	
-		        imwin = null;
+		        //imwin.dispose();	
+		        //imwin = null;
 		        
 		        WindowManager.closeAllWindows();
 		        
@@ -1241,7 +1241,7 @@ public class TissueProf implements PlugIn, Command {
 	public static void getThreadtoStop() {
 		
 		stopthisPlugin();
-	
+		
 	}
 	
 	private static void stopthisPlugin() {
