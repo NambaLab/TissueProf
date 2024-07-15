@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>31.1.0</version>
+		<relativePath />
+	</parent>
+
+	<groupId>fi.helsinki</groupId>        <!-- FIXME: Your organization groupId here -->
+	<artifactId>TissueProf</artifactId> <!-- FIXME: Your project artifactId here   -->
+	<version>0.1.0-SNAPSHOT</version>
+
+	<name>TissueProf</name>                                               <!-- FIXME: Your project name here          -->
+	<description>
+		This plugin is used to analyze the co-expression of multiple genes/proteins/molecules of interest in 
+		cells that are found in one or more zones of the target tissue. It takes as input a multi-channel
+		confocal image and outputs a Results file in excel format as well as various ROI sets 
+		and images that are saved during analysis for tracing the data and later review. 
+</description> <!-- FIXME: Your project description here   -->
+	<url>helsinki.fi</url>                   <!-- FIXME: Your project website here       -->
+	<inceptionYear>2023</inceptionYear>                                        <!-- FIXME: Your project starting year here -->
+	<organization>
+		<name>University of Helsinki</name>           <!-- FIXME: Your organization name here    -->
+		<url>helsinki.fi</url> <!-- FIXME: Your organization website here -->
+	</organization>
+	<licenses>
+		<license>                         <!-- FIXME: Your license here -->
+			<name>CC0</name>
+			<url>https://creativecommons.org/publicdomain/zero/1.0/</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<!-- See https://imagej.net/Team -->
+		<developer>
+			<id>Emredusu</id>                                          <!-- FIXME: Your GitHub handle here -->
+			<name>Emre Dusunceli</name>                            <!-- FIXME: Your name here          -->
+			<url>helsinki.fi</url> <!-- FIXME: Your website here       -->
+			<roles>
+				<role>founder</role>
+				<role>lead</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>None</name>
+		</contributor>
+	</contributors>
+
+	<mailingLists>
+		<mailingList>
+			<name>Image.sc Forum</name>
+			<archive>https://forum.image.sc/tag/imagej</archive>
+		</mailingList>
+	</mailingLists>
+	
+	
+	<scm>
+		<connection></connection>
+		<developerConnection>scm:git:git@github.com:Emredusu/TissueProf</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/Emredusu/TissueProf</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/imagej/Emredusu/TissueProf</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>None</system>
+	</ciManagement>
+
+	<properties>
+		<package-name>fi.helsinki</package-name>                   <!-- FIXME: Your project package prefix here -->
+		<main-class>fi.helsinki.TissueProf</main-class>        <!-- FIXME: Your project main class here, or delete for none -->
+		<license.licenseName>cc0</license.licenseName>                      <!-- FIXME: Your license-maven-plugin license code here -->
+		<license.copyrightOwners>University of Helsinki</license.copyrightOwners> <!-- FIXME: Your organization legal entity name here -->
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>scijava.public</id>
+			<url>https://maven.scijava.org/content/groups/public</url>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<dependency>
+		    <groupId>de.csbdresden</groupId>
+		    <artifactId>StarDist_</artifactId>
+		    <version>0.3.0-scijava</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>sc.fiji</groupId>
+    		<artifactId>fiji-lib</artifactId>
+		</dependency>
+		
+		<dependency> 
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi</artifactId> 
+		    <version>5.2.0</version> 
+		</dependency> 
+		<dependency> 
+  			<groupId>org.apache.poi</groupId> 
+  			<artifactId>poi-ooxml</artifactId> 
+  			<version>5.2.0</version> 
+		</dependency>
+		
+		<dependency>
+    		<groupId>ome</groupId>
+    		<artifactId>bioformats_package</artifactId>
+    		<version>7.0.1</version>
+            <type>pom</type>
+            <exclusions>
+                <exclusion>
+                        <groupId>xpp3</groupId>
+                        <artifactId>xpp3</artifactId>
+                </exclusion>
+                <exclusion>
+	                    <groupId>xalan</groupId>
+    	                <artifactId>xalan</artifactId>
+	    	    </exclusion>
+                <exclusion>
+                        <groupId>mchange</groupId>
+                        <artifactId>mchange</artifactId>
+                </exclusion>
+                <exclusion>
+                        <groupId>regexp</groupId>
+                        <artifactId>regexp</artifactId>
+                </exclusion>
+                <exclusion>
+                        <groupId>ome</groupId>
+                        <artifactId>ome</artifactId>
+                </exclusion>
+        	</exclusions> 
+    	</dependency>
+	
+		<dependency>
+  			<groupId>io.scif</groupId>
+  			<artifactId>scifio</artifactId>
+		</dependency>
+	
+		<dependency>
+  			<groupId>ome</groupId>
+  			<artifactId>formats-bsd</artifactId>
+  			<exclusions>
+  				<exclusion>
+  					<groupId>xpp3</groupId>
+  					<artifactId>xpp3</artifactId>
+  				</exclusion>
+  			</exclusions>
+		</dependency>
+	
+		<dependency>
+  			<groupId>ome</groupId>
+  			<artifactId>formats-gpl</artifactId>
+  		</dependency>
+	
+		<dependency>
+  			<groupId>io.scif</groupId>
+  			<artifactId>scifio-bf-compat</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>imagej</artifactId>
+		</dependency>
+		
+		<dependency>
+        	<groupId>xml-apis</groupId>
+        	<artifactId>xml-apis</artifactId>
+        	<version>1.3.04</version>
+        	<scope>runtime</scope>
+        	<exclusions>
+	            <exclusion>
+	                <groupId>javax.xml</groupId>
+        			<artifactId>namespace</artifactId>
+	            </exclusion>
+	            <exclusion>
+					<groupId>xpp3</groupId>
+        			<artifactId>xpp3</artifactId>
+				</exclusion>
+        	</exclusions>
+    	</dependency>		
+    	
+		<!-- https://mvnrepository.com/artifact/org.tensorflow/tensorflow -->
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>2.17.1</version>
+		</dependency>
+	
+	</dependencies>
+	
+	    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>fi.helsinki.TissueProf</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions> 
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+	
+	
+	
+</project>
