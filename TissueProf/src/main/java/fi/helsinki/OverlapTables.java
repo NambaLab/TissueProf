@@ -230,6 +230,22 @@ public class OverlapTables {
 						c++;
 						}
 					}
+				} 
+				else if (channelSize==2) {
+					for (ArrayList<ArrayList<Rox>> thisCombChannel : OverlapRoxx.DoubleOverlapRoxx) {
+						//assert thisCombChan	nel.get(0).size()==thisCombChannel.get(1).size();
+						if (thisCombChannel.size()>0 && (thisCombChannel.get(0).size()>0 || thisCombChannel.get(1).size()>0)) {
+							int thisq = 0;
+							for (int q = 0 ; q < thisCombChannel.size() ; q++) {
+								if (thisCombChannel.get(q).size()>0) {
+									thisq=q;
+									cell = row2.createCell(0);
+									cell.setCellValue(thisCombChannel.get(thisq).size());
+								}
+							}
+							//c++;
+						}
+					}	
 				}
 			}	
 			
@@ -317,7 +333,7 @@ public class OverlapTables {
 						dtype = 5;
 					}
 					
-					row1.createCell(c).setCellValue(DoubleCombColsName.get(dtype));
+					row1.createCell(0).setCellValue(DoubleCombColsName.get(dtype));
 					
 				}
 			}
