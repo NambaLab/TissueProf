@@ -272,7 +272,10 @@ public class ModifyRois implements Command {
 				
 				
 				for (int i = 0 ; i < 4 ; i++) {
-					if (ChannelSelect[i]==false) {continue;}
+					if (ChannelSelect[i]==false) {
+						ChRois.add(i, new ArrayList<Roi>());
+						continue;
+					}
 					
 					RoiManager.getInstance().reset();
 			
@@ -327,23 +330,24 @@ public class ModifyRois implements Command {
 				try {
 					for (Roi roi : AllRois) {
 						
-						if (roi.getName().startsWith("1")) {
+						if (roi.getName().startsWith("1-")) {
 							roi.setGroup(Groups[0]);
 							//System.out.println(roi.getStrokeColor());
 							//roi.setStrokeColor();
 						}
-						else if (roi.getName().startsWith("2")) {
+						else if (roi.getName().startsWith("2-")) {
 							roi.setGroup(Groups[1]);
 							//System.out.println(roi.getStrokeColor());
 						}
-						else if (roi.getName().startsWith("3")) {
+						else if (roi.getName().startsWith("3-")) {
 							roi.setGroup(Groups[2]);
 							//System.out.println(roi.getStrokeColor());
 						}
-						else if (roi.getName().startsWith("4")) {
+						else if (roi.getName().startsWith("4-")) {
 							roi.setGroup(Groups[3]);
 							//System.out.println(roi.getStrokeColor());
 						}
+						else {roi.setGroup(0);}
 						
 						//System.out.println("Roi in AllRois" + cl + " Color " + roi.getStrokeColor());
 						
