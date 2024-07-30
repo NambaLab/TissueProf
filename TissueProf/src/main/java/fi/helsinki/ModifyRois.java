@@ -653,49 +653,51 @@ public class ModifyRois implements Command {
 				int p = 0 ;
 				
 				synchronized(ChRois){
-					
 					for (ArrayList<Roi> ChList : ChRois) {
-						System.out.println("ChRois " + p + " size " + ChList.size());
-						RoiManager.getInstance().reset();
-						synchronized(ChList){
+						if (ChannelSelect[p]==true) {
 							System.out.println("ChRois " + p + " size " + ChList.size());
-								
-							Iterator<Roi> RoiIterator = ChList.iterator();
-							int count = 0 ;
-							
-							while (RoiIterator.hasNext()) {
-
-								Roi roi = (Roi) RoiIterator.next();	 
-								if (roi.getGroup()!=0) {
+							RoiManager.getInstance().reset();
+							synchronized(ChList){
+								System.out.println("ChRois " + p + " size " + ChList.size());
 									
-									RoiManager.getInstance().addRoi(roi);
+								Iterator<Roi> RoiIterator = ChList.iterator();
+								int count = 0 ;
 								
+								while (RoiIterator.hasNext()) {
+	
+									Roi roi = (Roi) RoiIterator.next();	 
+									if (roi.getGroup()!=0) {
+										
+										RoiManager.getInstance().addRoi(roi);
+									
+									}
+									else if(roi.getGroup()==0) {
+										RoiManager.getInstance().addRoi(roi);
+									}
 								}
-								else if(roi.getGroup()==0) {
-									RoiManager.getInstance().addRoi(roi);
-								}
+								//System.out.println("Count at the end of " + i + " " + count);
 							}
-							//System.out.println("Count at the end of " + i + " " + count);
+						
+						
+							Path filePath = Paths.get(roiChannelPaths[p]);
+							String originalname = filePath.getFileName().toString(); 
+							String inputDir = filePath.getParent().toString();
+							
+							
+							runStardist.saveRois(inputDir, originalname + "_Modified");
+							System.out.println("saved : " + saved); 
+							
+							//Delete intermediate file
+	
+							File deleteTemporary = new File(inputDirr + "/" +Ooriginalname + "intermediate.zip");
+				        	deleteTemporary.delete();
+	
+							
 						}
-					
-					
-						Path filePath = Paths.get(roiChannelPaths[p]);
-						String originalname = filePath.getFileName().toString(); 
-						String inputDir = filePath.getParent().toString();
-						
-						
-						runStardist.saveRois(inputDir, originalname + "_Modified");
-						System.out.println("saved : " + saved); 
-						
-						//Delete intermediate file
-
-						File deleteTemporary = new File(inputDirr + "/" +Ooriginalname + "intermediate.zip");
-			        	deleteTemporary.delete();
-
-						
-					p++;
+						p++;
 					}
 				}			
+				
 				System.out.println("window closed");
 				this.dispose();
 				saved = false;
