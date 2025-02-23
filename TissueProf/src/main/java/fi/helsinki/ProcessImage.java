@@ -47,6 +47,7 @@ public class ProcessImage {
 	Roi[] backgroundRois;
 	Roi[] zoneRois;
 	Roi zoneXorr;
+	int ImageChannelNo;
 	
 	public void processImage(String inputDir2, String OutputDir, String imageName, String suffix, boolean doOverlapAnalysis, 
 			boolean doReanalysis, int zoneNo, double enhc) throws FormatException, IOException {
@@ -85,7 +86,7 @@ public class ProcessImage {
 		images[0].show();
 		imp2 = IJ.getImage();
 		
-		int ImageChannelNo = imp2.getNChannels();
+		ImageChannelNo = imp2.getNChannels();
 		
 		System.out.println("image channels " + ImageChannelNo);
 		
@@ -134,7 +135,7 @@ public class ProcessImage {
 		//IJ.run("Duplicate...", "duplicate channels=1-4" "slices="+slice+"");	
 		System.out.println("slice no: " + slice);
 		
-		imp2 = new Duplicator().run(images[0], 1, 4, slice, slice, 1, 1);
+		imp2 = new Duplicator().run(images[0], 1, ImageChannelNo, slice, slice, 1, 1);
 
 	} else if (doReanalysis == true) {
 	
