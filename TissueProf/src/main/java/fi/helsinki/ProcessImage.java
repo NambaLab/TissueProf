@@ -65,17 +65,17 @@ public class ProcessImage {
 	Dataset dataset = null;  
 	
 	if (doOverlapAnalysis==true) {
+			
+		//Open the image file using Bio-Formats
+			
+		images = BF.openImagePlus(inputDir3 + "/" + imageName);
+			
+		IJ.log("Processing image... " + inputDir3 + "/" + imageName);	
 		
-	//Open the image file using Bio-Formats
+		System.out.println(images.length);
 		
-	images = BF.openImagePlus(inputDir3 + "/" + imageName);
+		images[0].show();
 		
-	IJ.log("Processing image... " + inputDir3 + "/" + imageName);	
-	
-	System.out.println(images.length);
-	
-	images[0].show();
-	
 		Window[] allWindows = Window.getWindows();
 		
 		DispName = IJ.getImage().getTitle();
@@ -84,7 +84,12 @@ public class ProcessImage {
 	
 		images[0].show();
 		imp2 = IJ.getImage();
-	
+		
+		int ImageChannelNo = imp2.getNChannels();
+		
+		System.out.println("image channels " + ImageChannelNo);
+		
+		
 	} else if (doReanalysis==true) {
 		//Verify that the input image was a 4-channel single slice .tif file
 		if(!suffix.matches(".tif")) {

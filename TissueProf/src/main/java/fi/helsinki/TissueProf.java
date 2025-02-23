@@ -1063,7 +1063,7 @@ public class TissueProf implements PlugIn, Command {
 				System.out.println("an unknown exception was thrown...");
 			}
 			
-		System.out.println("finshed ? " + finished);	
+		System.out.println("finished ? " + finished);	
 		}	
 		System.out.println("outside while");
 		
