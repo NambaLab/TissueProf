@@ -41,13 +41,13 @@ import io.scif.ome.OMEMetadata;
 public class ProcessImage {
 	
 	static Window[] winds;
-	static Window[] imageWinds = new Window[4];
+	//static Window[] imageWinds = new Window[4];
 	static RoiManager newManager;
 	static ShapeRoi zoneXor;
 	Roi[] backgroundRois;
 	Roi[] zoneRois;
 	Roi zoneXorr;
-	int ImageChannelNo;
+	static int ImageChannelNo;
 	
 	public void processImage(String inputDir2, String OutputDir, String imageName, String suffix, boolean doOverlapAnalysis, 
 			boolean doReanalysis, int zoneNo, double enhc) throws FormatException, IOException {
@@ -117,6 +117,10 @@ public class ProcessImage {
 		
 		//Second reference for image
 		imp2 = IJ.getImage();
+		
+		ImageChannelNo = imp2.getNChannels();
+		
+		System.out.println("image channels " + ImageChannelNo);
 		
 	}
 	
@@ -215,6 +219,8 @@ public class ProcessImage {
         
         winds = Window.getWindows();
         
+        Window[] imageWinds = new Window[ImageChannelNo];
+        
         //detect image windows and save into array
         c = 0;
         for (Window wink: winds) {
@@ -234,6 +240,7 @@ public class ProcessImage {
         //save original duplicate images 
         c=0;
         for (Window imageWink: imageWinds) {
+        	System.out.println("C in imagewind duplicate : " + c);
         	System.out.println(imageWink.getName());
         	if (imageWink.toString().matches("C\\d+-.*")) {
         		String[] stirs = imageWink.toString().split("-");
@@ -283,7 +290,7 @@ public class ProcessImage {
 	    //Split channels
 	    ImagePlus[] channels = ChannelSplitter.split(enhanced);
 	    //Save individual channels for segmentation purposes
-	    for (int i = 0 ; i < 4 ; i++) {
+	    for (int i = 0 ; i < ProcessImage.ImageChannelNo ; i++) {
 	    	channels[i].show();
 	    	int a = i + 1;
 	    	IJ.saveAs(channels[i], "tiff", OutputDir + "/" + imageName + "_" + "EnhancedContrast" + "_" + "C" + a);

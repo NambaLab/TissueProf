@@ -39,15 +39,21 @@ public class EnhanceContrastChannels {
 		} catch (Exception e ) {
 			e.printStackTrace();
 		}
-
+		
+		//Set LUTs according to channel number in the original image
+		
         thisComp.setChannelLut(redLUT, 1);
         thisComp.setChannelLut(greenLUT, 2);
-        thisComp.setChannelLut(blueLUT, 3);
-        thisComp.setChannelLut(whiteLUT, 4);
+        if (ProcessImage.ImageChannelNo>2) {
+        	thisComp.setChannelLut(blueLUT, 3);
+        	if (ProcessImage.ImageChannelNo>3) {
+        		thisComp.setChannelLut(whiteLUT, 4);
+        	}
+        }
         
         thisComp.show();
         
-        channels1 = new ImagePlus[4];
+        channels1 = new ImagePlus[ProcessImage.ImageChannelNo];
         
         ImageName = imageName;
         
@@ -87,7 +93,9 @@ public class EnhanceContrastChannels {
         String[] mergeTitles = new String[4];
         
         //Get titles of channel images before putting them into the composite image
-        for (int a = 1 ; a < 5 ; a++) {
+        int ChannelNoMerge = ProcessImage.ImageChannelNo + 1;
+        
+        for (int a = 1 ; a < ChannelNoMerge ; a++) {
         	IJ.open(OutputDir + "/" + ImageName + "_" + "EnhancedContrast" + "_" + "CDUPLICATE" + "_" + "C" + a + ".tif");
         	
         	channels1[a-1] = IJ.getImage();
@@ -99,16 +107,55 @@ public class EnhanceContrastChannels {
         
         
         //Make composite image from the individual processed channels using their titles. 
-        ImagePlus newImage = IJ.createImage("Combined " , "RGB", channels[0].getWidth(), channels[0].getHeight(), 4, 1, 1);
-        IJ.run("Merge Channels...", "c3="+mergeTitles[0]+" c2="+mergeTitles[1]+" c6="+mergeTitles[2]+" c4="+mergeTitles[3]+" create keep");
-        IJ.run("Make Composite", "");
-        IJ.getImage().setDisplayMode(IJ.COLOR);
-        IJ.getImage().setProp("CompositeProjection", "null");
-        IJ.run("Arrange Channels...", "new=2143");
+	        
+        if (ProcessImage.ImageChannelNo==4) {
+        	ImagePlus newImage = IJ.createImage("Combined " , "RGB", channels[0].getWidth(), channels[0].getHeight(), 4, 1, 1);
+	        IJ.run("Merge Channels...", "c3="+mergeTitles[0]+" c2="+mergeTitles[1]+" c6="+mergeTitles[2]+" c4="+mergeTitles[3]+" create keep");
+	        IJ.run("Make Composite", "");
+	        IJ.getImage().setDisplayMode(IJ.COLOR);
+	        IJ.getImage().setProp("CompositeProjection", "null");
+	        IJ.run("Arrange Channels...", "new=2143");
+	        
+	        combinedImage = IJ.getImage();
+	        IJ.saveAs(combinedImage,  "tiff", OutputDir + "/" + imageName + "_SlicedAllChannels");
+	        
+	        newImage.close();
+	        newImage.flush();
+	        newImage = null;
+	        
+        }	
+        else if (ProcessImage.ImageChannelNo==3) {
+        	ImagePlus newImage = IJ.createImage("Combined " , "RGB", channels[0].getWidth(), channels[0].getHeight(), 3, 1, 1);
+	        IJ.run("Merge Channels...", "c3="+mergeTitles[0]+" c2="+mergeTitles[1]+" c6="+mergeTitles[2]+" create keep");
+	        IJ.run("Make Composite", "");
+	        IJ.getImage().setDisplayMode(IJ.COLOR);
+	        IJ.getImage().setProp("CompositeProjection", "null");
+	        IJ.run("Arrange Channels...", "new=213");
+	        
+	        combinedImage = IJ.getImage();	        
+	        IJ.saveAs(combinedImage,  "tiff", OutputDir + "/" + imageName + "_SlicedAllChannels");
+	        
+	        newImage.close();
+	        newImage.flush();
+	        newImage = null;
+        	
+        }
+        else if (ProcessImage.ImageChannelNo==2) {
+        	ImagePlus newImage = IJ.createImage("Combined " , "RGB", channels[0].getWidth(), channels[0].getHeight(), 2, 1, 1);
+	        IJ.run("Merge Channels...", "c3="+mergeTitles[0]+" c2="+mergeTitles[1]+" create keep");
+	        IJ.run("Make Composite", "");
+	        IJ.getImage().setDisplayMode(IJ.COLOR);
+	        IJ.getImage().setProp("CompositeProjection", "null");
+	        IJ.run("Arrange Channels...", "new=21");
+	        
+	        combinedImage = IJ.getImage();
+	        IJ.saveAs(combinedImage,  "tiff", OutputDir + "/" + imageName + "_SlicedAllChannels");
         
-        combinedImage = IJ.getImage();
-        IJ.saveAs(combinedImage,  "tiff", OutputDir + "/" + imageName + "_SlicedAllChannels");
-     
+	        newImage.close();
+	        newImage.flush();
+	        newImage = null;
+        }
+        
         
         for (ImagePlus imch : channels) {
         	imch.close();
@@ -116,10 +163,7 @@ public class EnhanceContrastChannels {
         	imch = null;
         }
         
-        newImage.close();
-        newImage.flush();
-        newImage = null;
-        
+
         if (thisComp != null) {
         		
         	thisComp.close();

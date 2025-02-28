@@ -241,6 +241,7 @@ public class OverlapTables {
 									thisq=q;
 									cell = row2.createCell(0);
 									cell.setCellValue(thisCombChannel.get(thisq).size());
+									System.out.println(channelSize);
 								}
 							}
 							//c++;
@@ -628,7 +629,11 @@ public class OverlapTables {
 		
 		
 		////Intensity Table
-		for (int a = 1 ; a < 5 ; a++) {
+		
+		int MeasureChannel = ProcessImage.ImageChannelNo;
+		int MeasureChannels = ProcessImage.ImageChannelNo + 1 ;
+		
+		for (int a = 1 ; a < MeasureChannels ; a++) {
 			//IJ.open(OutputDir + "\\" + imageName + "_" + "OriginalDuplicate-" + "C" + a + ".tif");
 			IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + a + ".tif");
 			String thisName = WindowManager.getActiveWindow().getName();
@@ -637,8 +642,7 @@ public class OverlapTables {
 				int backindex = thisName.lastIndexOf("\\");
 				thisName = thisName.substring(0, backindex);
 				WindowManager.getActiveWindow().setName(thisName);
-			}
-			
+			}	
 		}
 		
 		if (measureIntensity == true) {
@@ -685,7 +689,7 @@ public class OverlapTables {
 			
 			double[][] backgrounds = new double[4][3];
 			double[] finalbackgrounds= new double[4];
-			for (int i = 0 ; i < 4 ; i++) {
+			for (int i = 0 ; i < MeasureChannel ; i++) {
 				int a = i + 1;
 				//inputDir2 + "\\" + 
 				
@@ -788,7 +792,7 @@ public class OverlapTables {
 											if (i==2) { a = i + 10;}
 											//if (i==3) { a = i + 14;}
 											
-											for (int j = 0 ; j < 4 ; j++) {
+											for (int j = 0 ; j < MeasureChannel ; j++) {
 												int w = j + 1 ;
 												IJ.selectWindow(imageName + "_" + "OriginalDuplicate-" + "C" + w + ".tif");
 												IJ.getImage().setRoi(((Rox) OverlapRoxx.TripleOverlapRoxx.get(0).get(i).get(co)).getRoi());
@@ -819,7 +823,7 @@ public class OverlapTables {
 									
 									
 									
-									for (int j = 0 ; j < 4 ; j++) {
+									for (int j = 0 ; j < MeasureChannel ; j++) {
 										int w = j + 1 ;
 										IJ.selectWindow(imageName + "_" + "OriginalDuplicate-" + "C" + w + ".tif");
 										
@@ -873,7 +877,7 @@ public class OverlapTables {
 									if (i==1) { a = i + 11;}
 									if (i==2) { a = i + 15;}
 									//if (i==3) { a = i + 14;}
-									for (int j = 0 ; j < 4 ; j++) {
+									for (int j = 0 ; j < MeasureChannel ; j++) {
 										int w = j + 1 ;
 										IJ.selectWindow(imageName + "_" + "OriginalDuplicate-" + "C" + w + ".tif");
 										
@@ -939,7 +943,7 @@ public class OverlapTables {
 								//inputDir2 + "\\" + 
 								int b = i + 1;
 								
-								for (int j = 0 ; j < 4 ; j++) {
+								for (int j = 0 ; j < MeasureChannel ; j++) {
 									
 									int w = j + 1;
 									IJ.selectWindow(imageName + "_" + "OriginalDuplicate-" + "C" + w + ".tif");
@@ -1002,7 +1006,7 @@ public class OverlapTables {
 							if (s==2) { a = s + 10;}
 							if (s==3) { a = s + 14;}
 						
-							for (int j = 0 ; j < 4 ; j ++) {
+							for (int j = 0 ; j < MeasureChannel ; j ++) {
 								int w = j + 1 ;
 								IJ.selectWindow(imageName + "_" + "OriginalDuplicate-" + "C" + w + ".tif");
 								//ImagePlus imp = IJ.getImage();
@@ -1047,7 +1051,7 @@ public class OverlapTables {
 			}
 		}
 		
-		for (int i = 0 ; i < 4 ; i++) {
+		for (int i = 0 ; i < ProcessImage.ImageChannelNo ; i++) {
 			int a = i + 1 ;
 			IJ.selectWindow(imageName + "_" + "OriginalDuplicate-" + "C" + a + ".tif");
 			Window imwin = IJ.getImage().getWindow();
