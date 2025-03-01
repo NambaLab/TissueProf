@@ -215,23 +215,30 @@ public class OverlapTables {
 			}
 			else {
 				if (channelSize==3){
+					int tripleoverlap = 0;
 					for (ArrayList<ArrayList<Rox>> thisCombChannel : OverlapRoxx.TripleOverlapRoxx) {
 						//assert thisCombChan	nel.get(0).size()==thisCombChannel.get(1).size();
 						if (thisCombChannel.size()>0 && (thisCombChannel.get(0).size()>0 || thisCombChannel.get(1).size()>0 || 
 								thisCombChannel.get(2).size()>0)) {
-						int thisq = 0;
-						for (int q = 0 ; q < thisCombChannel.size() ; q++) {
-							if (thisCombChannel.get(q).size()>0) {
-								thisq=q;
-								cell = row2.createCell(0);
-								cell.setCellValue(thisCombChannel.get(thisq).size());
+							int thisq = 0;
+							for (int q = 0 ; q < thisCombChannel.size() ; q++) {
+								if (thisCombChannel.get(q).size()>0) {
+									thisq=q;
+									cell = row2.createCell(0);
+									cell.setCellValue(thisCombChannel.get(thisq).size()); 
+									tripleoverlap++;
+								} 
 							}
+							c++;
 						}
-						c++;
-						}
+					}
+					if (tripleoverlap==0) {
+						cell = row2.createCell(0);
+						cell.setCellValue(0);
 					}
 				} 
 				else if (channelSize==2) {
+					int doubleoverlap = 0;
 					for (ArrayList<ArrayList<Rox>> thisCombChannel : OverlapRoxx.DoubleOverlapRoxx) {
 						//assert thisCombChan	nel.get(0).size()==thisCombChannel.get(1).size();
 						if (thisCombChannel.size()>0 && (thisCombChannel.get(0).size()>0 || thisCombChannel.get(1).size()>0)) {
@@ -242,15 +249,23 @@ public class OverlapTables {
 									cell = row2.createCell(0);
 									cell.setCellValue(thisCombChannel.get(thisq).size());
 									System.out.println(channelSize);
+									doubleoverlap++;
 								}
 							}
 							//c++;
 						}
 					}	
+					if (doubleoverlap==0) {
+						cell = row2.createCell(0);
+						cell.setCellValue(0);
+					}
 				}
 			}	
 			
+			
 			if (row2.getCell(0).getNumericCellValue()>0) {c++;}
+			
+			
 			//}
 			ArrayList<ArrayList<String>> DoubleCombCols = new ArrayList<ArrayList<String>>();
 			for (int i = 0 ; i < 6 ; i ++) {
