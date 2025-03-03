@@ -174,7 +174,7 @@ public class runStardist {
 				        	
 				        	chRois[r].setPosition(0);
 				        	
-				        	chRois[r].setGroup(a);
+				        	chRois[r].setGroup(a); //Remove and make sure it won't affect anything else
 				        	chRois[r].setGroupName(a, "Group " + a);
 				      
 				        	//chRois[r].setGro	
