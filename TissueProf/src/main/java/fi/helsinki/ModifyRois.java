@@ -246,8 +246,10 @@ public class ModifyRois implements Command {
 					
 				}
 				
+
 				for(int i = 0 ; i < ColorNames.length ; i++) {
 					//ColorNames[i]. java.awt.Color.decode();
+					
 					Color decoded = Colors.decode(ColorNames[i]);
 					StrokeColors[i] = decoded;
 					
@@ -274,6 +276,7 @@ public class ModifyRois implements Command {
 				for (int i = 0 ; i < 4 ; i++) {
 					if (ChannelSelect[i]==false) {
 						ChRois.add(i, new ArrayList<Roi>());
+						//BoundsList.add(i, new ArrayList<Rectangle>()); (?)
 						continue;
 					}
 					
@@ -395,7 +398,7 @@ public class ModifyRois implements Command {
 				
 		        // Create a thread pool
 		        ExecutorService executor = Executors.newSingleThreadExecutor();
-		
+		        
 		        // Execute the FutureTask in the thread pool
 		        executor.submit(futureTask);
 		        
@@ -418,6 +421,7 @@ public class ModifyRois implements Command {
 		        }
 		        
 		        if (modcanceled == true) {
+					
 		        	Thread.currentThread().interrupt();
 		        	Thread.currentThread().sleep(1);
 		        	
@@ -428,32 +432,39 @@ public class ModifyRois implements Command {
 				System.out.println("still runnning");
 
 				ChannelSelect = new boolean[4];
-				
 				ColorChoice = new String[4];	
-				
 				StrokeColors = new Color[4];
-				
 				allRoisPath = null;
-				
 				CurrentColor = null;
-
 				CurrentChannel = 0;
-				
 				ChRois = new ArrayList<ArrayList<Roi>>();
-				
 				BoundsList = new ArrayList<ArrayList<Rectangle>>();
-				
-				nowSaving = false;
-				
-				saved = false;
-				
+				//nowSaving = false;
+				//saved = false;
+				modfinished =true;
 				CurrentGroup = 0;
-				
-				RoiManager.getInstance().dispose();
+				//RoiManager.getInstance().dispose();
+
+				RoiManager.getInstance().close();
 				
 				System.out.println("Going on");
+				
 			} catch (InterruptedException e) {
 				System.out.println("Canceled");
+	    		//modcanceled = false;
+	    		modfinished = false;
+	    		saved = false;
+	    		nowSaving = false;
+	    		ChannelSelect = new boolean[4];
+				ColorChoice = new String[4];	
+				StrokeColors = new Color[4];
+				allRoisPath = null;
+				CurrentColor = null;
+				CurrentChannel = 0;
+				ChRois = new ArrayList<ArrayList<Roi>>();
+				BoundsList = new ArrayList<ArrayList<Rectangle>>();
+				CurrentGroup = 0;
+				System.out.println("reset static values");
 				
 			} 
 			
@@ -462,10 +473,12 @@ public class ModifyRois implements Command {
 		modcanceled = false;
 		modfinished = false;
 		saved = false;
+		nowSaving = false;
+		System.out.println("run finished");
 	}
 	
-
-
+	
+	
 	//Thread to call from the 
 	class ChannelThread extends Thread implements Callable {
 		
@@ -475,9 +488,15 @@ public class ModifyRois implements Command {
 	    public ChannelThread() {
 
 	    	this.save = saved;
-
+	    	
 	    }
 		
+	    public boolean getSave() {
+	    	
+	    	this.save = saved;
+	    	return this.save;
+	    	
+	    }
 		
 	    @Override
 	    public Boolean call() throws Exception {
@@ -488,9 +507,13 @@ public class ModifyRois implements Command {
 			//saved = false; 
 			
 			int c = 0;
-			while (saved == false && modcanceled == false ) {
+			while (this.getSave() == false && modcanceled == false ) {
 				if(c==30) {
-					//System.out.println("Saved ? " + saved);
+					System.out.println("thisSave? " + this.save);
+					System.out.println("Saved ? " + saved);
+					c++;
+					c--;
+				
 				}
 				
 				c++;	
@@ -498,13 +521,16 @@ public class ModifyRois implements Command {
 			
 			
 	    	if (saved ==true ) {
+	    		
 	    		System.out.println("saved and returning");
 	    	}
+
+	    	new2Frame.dispose();
 	    	return saved;
 			
 					
 	    }
-	      
+
 	}
 
 	public static class roiFrame2 extends Frame implements ActionListener, WindowListener {
@@ -615,7 +641,12 @@ public class ModifyRois implements Command {
 			}
 			else if (e.getSource().equals(saveButton)) {
 				
+				IJ.log("Saving Modifications...");
+				System.out.println("Saving Modifications");
+				
 				nowSaving = true;
+				
+				System.out.println("mod canceled? " + modcanceled);
 				
 				Path filePatha = Paths.get(allRoisPath);
 				String Ooriginalname = filePatha.getFileName().toString();
@@ -691,18 +722,20 @@ public class ModifyRois implements Command {
 	
 							File deleteTemporary = new File(inputDirr + "/" +Ooriginalname + "intermediate.zip");
 				        	deleteTemporary.delete();
-	
-							
+				        	
 						}
 						p++;
 					}
 				}			
 				
+				IJ.log("All ROI modifications have been saved");
+				System.out.println("All ROI modifications have been saved");
+				
 				System.out.println("window closed");
-				this.dispose();
-				saved = false;
+				//this.dispose();
+				saved = true;
 				//OverlapAnalysis5.getThreadtoStop();
-				WindowManager.closeAllWindows();
+				//WindowManager.closeAllWindows();
 				
 			}
 		}
@@ -715,9 +748,22 @@ public class ModifyRois implements Command {
 		public void windowClosing(WindowEvent e) {
 			if (e.getSource().equals(this)) {
 				System.out.println("window closed");
-				modcanceled =true;
+				//modcanceled =true;
+				System.out.println("modcanceled by window closing?" + modcanceled);
 				//saved = true;
-				this.dispose();
+				if (saved == true) {					
+					System.out.println("now disposing");
+					this.dispose();
+					System.out.println("closing after saving");
+					System.out.println("modcanceled after saving? " + modcanceled);
+				} 
+				else if (saved == false) {
+					System.out.println("Closing without saving i.e canceling mod");
+					System.out.println("modcanceled without saving? " + modcanceled);
+					modcanceled =true;
+					//this.dispose();
+				}
+				
 				//OverlapAnalysis5.getThreadtoStop();
 				WindowManager.closeAllWindows();
 			}

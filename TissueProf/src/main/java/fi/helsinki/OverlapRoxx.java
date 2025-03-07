@@ -381,7 +381,7 @@ public class OverlapRoxx {
 		 
 		System.out.println("comb " + e + "channel " + a + OverlapFilter.TripleRoxx.get(e).get(a).size());
 		System.out.println("comb " + e + "channel " + b + OverlapFilter.TripleRoxx.get(e).get(b).size());
-		System.out.println("comb " + e + "channel " + b + OverlapFilter.TripleRoxx.get(e).get(c).size());
+		System.out.println("comb " + e + "channel " + c + OverlapFilter.TripleRoxx.get(e).get(c).size());
 		
 		
 		System.out.println("a " + a + " b " + b + " c " + c + " r__ " + r);

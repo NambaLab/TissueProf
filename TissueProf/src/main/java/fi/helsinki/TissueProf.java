@@ -879,7 +879,7 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        System.out.println("Output dir " + OutputDir);
 		        
-		        int OpenCh = random.nextInt(4) + 1;
+		        int OpenCh = random.nextInt(ProcessImage.ImageChannelNo) + 1;
 		        
 		        System.out.println("OpenCh " + OpenCh);
 		        System.out.println("open path " + OutputDir + "/" + imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
@@ -1063,7 +1063,7 @@ public class TissueProf implements PlugIn, Command {
 				System.out.println("an unknown exception was thrown...");
 			}
 			
-		System.out.println("finshed ? " + finished);	
+		System.out.println("finished ? " + finished);	
 		}	
 		System.out.println("outside while");
 		

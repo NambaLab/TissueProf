@@ -54,7 +54,7 @@ public class ProblemAreas {
 		
         Random random = new Random();
   	  
-        int OpenCh = random.nextInt(4) + 1;
+        int OpenCh = random.nextInt(ProcessImage.ImageChannelNo) + 1;
         
         IJ.open(OutputDir + "/" + ImageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
 		

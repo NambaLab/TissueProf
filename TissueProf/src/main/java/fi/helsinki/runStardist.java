@@ -165,6 +165,21 @@ public class runStardist {
 			        	ManualCorrection.show();
 			        	
 				        Roi[] chRois = RoiManager.getInstance().getRoisAsArray();
+				        
+				        for (int r = 0 ; r < chRois.length ; r++) {
+				        	
+				        	//System.out.println(Integer.valueOf(a).toString() + "-" + Integer.valueOf(r).toString());
+				        	
+				        	chRois[r].setName(Integer.valueOf(a).toString() + "-" + Integer.valueOf(r).toString());
+				        	
+				        	chRois[r].setPosition(0);
+				        	
+				        	chRois[r].setGroup(a); //Remove and make sure it won't affect anything else
+				        	chRois[r].setGroupName(a, "Group " + a);
+				      
+				        	//chRois[r].setGro	
+				        	
+				        }
 				        		        	
 			        	allRois[i] = chRois;
 			        }
@@ -229,8 +244,6 @@ public class runStardist {
 				        	
 				        	
 				        	allRois[i] = chRois;
-				        	
-				        	
 				        	
 			        	}
 			        }
