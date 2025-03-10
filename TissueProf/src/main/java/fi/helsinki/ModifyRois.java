@@ -1300,8 +1300,6 @@ public class ModifyRois implements Command {
 	    
 	    private static KeyListener[] IJKeyListeners;
 	    
-	    private static ArrayList<KeyListener> OriginalRMKeyListeners;
-	    
 	    private static ImageListener CustomImageListener;
 	    
 	    public static KeyListener[] getIJKeyListeners() {
@@ -1492,48 +1490,8 @@ public class ModifyRois implements Command {
 	    	IJ.log("Break");
 	    }
 	        
-	        
-	        
-	    	
-	    	
-	    	
-	    	
-	    	
-	    	//Remove addButton actionlistener
-	    
-	    	
-
-	    private static ArrayList<KeyListener> saveOriginalRMKeyListeners() {
-	    	System.out.println("saving original rmkeylisteners");
-	    	
-	    	WaitForUserDialog see = new WaitForUserDialog("see");
-	    	see.show();
-	    	
-	        for (Component comp : roiManager.getComponents()) {
-	            for (int i = 0 ; i < comp.getKeyListeners().length ; i++) {
-	            	System.out.println("getting listeners ");
-	            	System.out.println("coriginal comp listener length " + comp.getKeyListeners().length);
-	            	//OriginalRMKeyListeners.add(comp.getKeyListeners()[i]);
-	            }
-	            if (comp instanceof java.awt.Panel) {
-	                for (Component subComp : ((java.awt.Panel) comp).getComponents()) {
-	    	            for (int i = 0 ; i < comp.getKeyListeners().length ; i++) {
-	    	            	System.out.println("getting listenerss");
-	    	            	System.out.println("coriginal subcomp listener length " + subComp.getKeyListeners().length);
-
-	    	            	OriginalRMKeyListeners.add(subComp.getKeyListeners()[i]);
-
-	    	            }
-	                }
-	            }
-	        }
-       	
-	    	return OriginalRMKeyListeners;
-	    	
-	    }
-	    
+	 
 	    private static void addKeyListenersToRoiManager() {
-	    	saveOriginalRMKeyListeners();
 	        FilteredKeyListener.removeKeyListener(roiManager, 't');
 	        roiManager.addWindowListener(new CustomWindowListener());
 	        
