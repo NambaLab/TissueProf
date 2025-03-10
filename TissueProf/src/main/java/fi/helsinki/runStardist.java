@@ -174,7 +174,7 @@ public class runStardist {
 				        	
 				        	chRois[r].setPosition(0);
 				        	
-				        	chRois[r].setGroup(a); //Remove and make sure it won't affect anything else
+				        	//chRois[r].setGroup(a); //Remove and make sure it won't affect anything else
 				        	chRois[r].setGroupName(a, "Group " + a);
 				      
 				        	//chRois[r].setGro	
@@ -235,7 +235,7 @@ public class runStardist {
 					        	
 					        	chRois[r].setPosition(0);
 					        	
-					        	chRois[r].setGroup(a);
+					        	//chRois[r].setGroup(a);
 					        	chRois[r].setGroupName(a, "Group " + a);
 					      
 					        	//chRois[r].setGro	
@@ -321,7 +321,7 @@ public class runStardist {
 		        	
 		        	chRoiss[r].setPosition(0);
 		        	
-		        	chRoiss[r].setGroup(a);
+		        	//chRoiss[r].setGroup(a);
 		        	chRoiss[r].setGroupName(a, "Group " + a);
 		        	
 				}

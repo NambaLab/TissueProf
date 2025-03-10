@@ -142,10 +142,12 @@ public class ModifyRois implements Command {
 	@Override
 	public void run() {
 		
+		System.out.println("Now running");
+		
 		while (modcanceled == false && modfinished == false) {
 			try {
 				//System.out.println("Started");
-				
+				System.out.println("Running once");
 				//get current thread
 				modRunThread = Thread.currentThread();
 				
@@ -430,7 +432,14 @@ public class ModifyRois implements Command {
 				// TODO Auto-generated method stub
 			
 				System.out.println("still runnning");
-
+				
+	        	//Revert RoiManager to original state
+				
+				revertKeyListeners();
+				
+	        	//GlobalEventListener.removeCustomAWTListener();
+				
+	        	
 				ChannelSelect = new boolean[4];
 				ColorChoice = new String[4];	
 				StrokeColors = new Color[4];
@@ -444,7 +453,6 @@ public class ModifyRois implements Command {
 				modfinished =true;
 				CurrentGroup = 0;
 				//RoiManager.getInstance().dispose();
-
 				RoiManager.getInstance().close();
 				
 				System.out.println("Going on");
@@ -452,6 +460,19 @@ public class ModifyRois implements Command {
 			} catch (InterruptedException e) {
 				System.out.println("Canceled");
 	    		//modcanceled = false;
+				Path filePath = Paths.get(allRoisPath);
+				String Ooriginalname = filePath.getFileName().toString(); 
+				String inputDirr = filePath.getParent().toString();
+
+				File deleteTemporary = new File(inputDirr + "/" +Ooriginalname + "intermediate.zip");
+	        	deleteTemporary.delete();
+				
+	        	//Revert RoiManager to original state
+	        	
+	        	revertKeyListeners();
+	        	
+	        	//GlobalEventListener.removeCustomAWTListener();
+	        	
 	    		modfinished = false;
 	    		saved = false;
 	    		nowSaving = false;
@@ -764,8 +785,7 @@ public class ModifyRois implements Command {
 					//this.dispose();
 				}
 				
-				//OverlapAnalysis5.getThreadtoStop();
-				WindowManager.closeAllWindows();
+				//WindowManager.closeAllWindows();
 			}
 		}
 
@@ -825,7 +845,7 @@ public class ModifyRois implements Command {
 			// Set the window location
 			window.setLocation(centerX, centerY);
 		}
-}
+	}
 		
 		
 		
@@ -1159,7 +1179,7 @@ public class ModifyRois implements Command {
 		}
 		
 		
-		RoiManagerKeyListener roiManagerListener = new RoiManagerKeyListener();
+		//RoiManagerKeyListener roiManagerListener = new RoiManagerKeyListener();    INITIALIZE HERE?
 		//Button nowbutton = roiManagerListener.getAddButton();
 		
 		//System.out.println("Add button listener amount " + nowbutton.getActionListeners().length);
@@ -1188,9 +1208,9 @@ public class ModifyRois implements Command {
 		ImageJ ij = IJ.getInstance();
 		
 		myFilteredListener = new FilteredKeyListener(myAdapter);
-		roiManagerListener.initialize();
-			
-		GlobalEventListener.AWTListen();
+		RoiManagerKeyListener roiManagerListener = new RoiManagerKeyListener();
+		RoiManagerKeyListener.GlobalEventListener.AWTListen();
+		//GlobalEventListener.AWTListen();
 		
 		RoiManager.getInstance().setFocusable(true);
 		RoiManager.getInstance().requestFocusInWindow();
@@ -1198,7 +1218,35 @@ public class ModifyRois implements Command {
 		
 	}
 	
-	
+	public void revertKeyListeners() {
+		//Remove GlobalEventListener
+		RoiManagerKeyListener.GlobalEventListener.removeCustomAWTListener();
+		
+		//Remove FilteredKeyListener from each component and keep only original listener 
+		ImageJ ij = IJ.getInstance();
+		
+		System.out.println("showing original RM Listeners");
+		
+		/*
+		int c = 0;
+		for (KeyListener ThisListener: RoiManagerKeyListener.OriginalRMKeyListeners) {
+			System.out.println("c = " + c + " " + ThisListener.toString());			
+			c++; 
+		}
+		*/
+		
+		RoiManagerKeyListener.revertIJKeyListeners(ij, RoiManagerKeyListener.getIJKeyListeners());
+		RoiManagerKeyListener.revertRMKeyListeners();
+		RoiManagerKeyListener.revertImageListener();
+		
+		
+		System.out.println("Custom image listener : " + RoiManagerKeyListener.getCustomImageListener());
+		ImagePlus.removeImageListener(RoiManagerKeyListener.getCustomImageListener());
+		
+		//Remove addButton custom action listener and keep only original action listener
+		
+		
+	}
 	
 	
 	
@@ -1222,7 +1270,14 @@ public class ModifyRois implements Command {
                 
 	        }
 	    }
-	
+	    
+	    /*
+	    public static KeyListener[] getKeyListeners(Component component) {
+	    	KeyListener[] keyListeners = component.getKeyListeners();
+	    	return keyListeners;
+	    }
+	   	*/
+	    
 	    public static void removeKeyListener(Component component, char keyChar) {
 	        KeyListener[] keyListeners = component.getKeyListeners();
 	        for (KeyListener keyListener : keyListeners) {
@@ -1234,6 +1289,7 @@ public class ModifyRois implements Command {
 	            }
 	        }
 	    }
+	    
 	}
 
 		
@@ -1241,9 +1297,24 @@ public class ModifyRois implements Command {
 	public static class RoiManagerKeyListener {
 	
 	    public static RoiManager roiManager;
-	
+	    
+	    private static KeyListener[] IJKeyListeners;
+	    
+	    private static ArrayList<KeyListener> OriginalRMKeyListeners;
+	    
+	    private static ImageListener CustomImageListener;
+	    
+	    public static KeyListener[] getIJKeyListeners() {
+	    	return IJKeyListeners;
+	    }
+	    
+	    public static ImageListener getCustomImageListener() {
+	    	return CustomImageListener;
+	    }
+	    
 	    public RoiManagerKeyListener() {
-	        this.roiManager = RoiManager.getInstance();
+	        this.IJKeyListeners = IJKeyListeners;
+	    	//this.roiManager = RoiManager.getInstance();
 	        initialize();
 	        
 	        System.out.println("roi listener initialized");
@@ -1257,9 +1328,34 @@ public class ModifyRois implements Command {
 	        
 	        addKeyListenersToImageJ();
 	        
+	        ImagePlus.logImageListeners();
+	        CustomImageListener = new ImageListener() {
+	        	  @Override
+		            public void imageOpened(ImagePlus imp) {
+		            	System.out.println("image opened");
+		            	ImagePlus.logImageListeners();
+		                addKeyListenerToImage(imp);
+		            }
+		
+		            @Override
+		            public void imageClosed(ImagePlus imp) {
+		            }
+		
+		            @Override
+		            public void imageUpdated(ImagePlus imp) {
+		            }
+	        	
+	        };
 	        
-	        
+	        IJ.log("Before adding image listener");
+	        ImagePlus.logImageListeners();
+	        ImagePlus.addImageListener(CustomImageListener);
+	        IJ.log("After adding image listener");
+	        ImagePlus.logImageListeners();
+	        IJ.log("Break");
 	        // Add ImageListener to detect new image openings
+	        
+	        /* Original imagelistener addition op
 	        ImagePlus.addImageListener(new ImageListener() {
 	        	
 	            @Override
@@ -1276,7 +1372,9 @@ public class ModifyRois implements Command {
 	            public void imageUpdated(ImagePlus imp) {
 	            }
 	        });
-	
+	        */
+	        
+	        
 	        // Add listeners to RoiManager window
 	        addKeyListenersToRoiManager();
 	        roiManager.setFocusable(true);
@@ -1319,18 +1417,123 @@ public class ModifyRois implements Command {
         }
 	    
 	
-
+	    
 	    private void addKeyListenersToImageJ() {
 	        ImageJ ij = IJ.getInstance();
 	        if (ij != null) {
-	            FilteredKeyListener.removeKeyListener(ij, 't');
+	        	IJKeyListeners = ij.getKeyListeners();
+	        	for (int i = 0 ; i < IJKeyListeners.length ; i++) {
+	        	System.out.println("Current IJ listener " + i + ij.getKeyListeners()[i] + " " + ij.getKeyListeners()[i].hashCode());
+	        	
+	        	}
+	        	FilteredKeyListener.removeKeyListener(ij, 't');
+	            
 	            ij.addKeyListener(myFilteredListener);
+	            
+	        	for (int i = 0 ; i < IJKeyListeners.length ; i++) {
+	        	System.out.println("Current IJ listener after " + i + ij.getKeyListeners()[i] + " " + ij.getKeyListeners()[i].hashCode());
+	        	
+	        	}
 	        }
 	    }
+	    
+	    private static void revertIJKeyListeners(Component component, KeyListener[] KeyListeners) {
+	    	//Remove GlobalKeyListener
+	    	ImageJ ij = IJ.getInstance();
+	    	RoiManagerKeyListener.GlobalEventListener.removeCustomAWTListener();
+	    	//Remove FilteredKeyListener from each component
+	    	int c = 0;
+	    	for (KeyListener keyListener : IJKeyListeners) {
+	    		System.out.println("IJ Key Listener before" + c + keyListener.toString() + "hash " + keyListener.hashCode());
+		    	c++;
+	    	}
 	    	
-	   
+	    	ij.removeKeyListener(myFilteredListener);
+	    	c = 0;
+	    	for (KeyListener keyListener : IJKeyListeners) {
+		    	ij.addKeyListener(keyListener);
+		    	System.out.println("IJ Key Listener after " + c + keyListener.toString() + "hash " + keyListener.hashCode());
+		    	c++;
+	    	}
+	    }
+	    
+	    private static void revertRMKeyListeners() {
+	    	//Remove Roi Manager custom listeners
+	        
+	        for (Component comp : roiManager.getComponents()) {
+	            FilteredKeyListener.removeKeyListener(comp, 't');
+	            comp.addKeyListener(myFilteredListener);
+	            		
+	            if (comp instanceof java.awt.Panel) {
+	                for (Component subComp : ((java.awt.Panel) comp).getComponents()) {
+	                	/* ???
+	                	for (int i = 0 ; i < subComp.getKeyListeners().length ; i++) {
+	                		System.out.println("i = " + i + "Component = " +subComp.getName()+ " " + subComp.getKeyListeners()[i].toString());
+	                		OriginalRMKeyListeners.add(subComp.getKeyListeners()[i]);
+	                	}
+	                	*/
+	                	
+	                	FilteredKeyListener.removeKeyListener(subComp, 't');
+	                    
+	                	subComp.removeKeyListener(myFilteredListener);
+	                	
+	                    System.out.println("subcomp listener length after removing filtered listener" + subComp.getKeyListeners().length);
+	                }
+	            }
+	        }
+	    }
+	    
+	    private static void revertImageListener() {
+	    	System.out.println("removing image listener : " + CustomImageListener.toString());
+	    	ImagePlus.logImageListeners();
+	    	IJ.log("Check image log ");
+	    	ImagePlus.removeImageListener(CustomImageListener);
+	    	ImagePlus.logImageListeners();
+	    	IJ.log("Break");
+	    }
+	        
+	        
+	        
+	    	
+	    	
+	    	
+	    	
+	    	
+	    	//Remove addButton actionlistener
+	    
+	    	
+
+	    private static ArrayList<KeyListener> saveOriginalRMKeyListeners() {
+	    	System.out.println("saving original rmkeylisteners");
+	    	
+	    	WaitForUserDialog see = new WaitForUserDialog("see");
+	    	see.show();
+	    	
+	        for (Component comp : roiManager.getComponents()) {
+	            for (int i = 0 ; i < comp.getKeyListeners().length ; i++) {
+	            	System.out.println("getting listeners ");
+	            	System.out.println("coriginal comp listener length " + comp.getKeyListeners().length);
+	            	//OriginalRMKeyListeners.add(comp.getKeyListeners()[i]);
+	            }
+	            if (comp instanceof java.awt.Panel) {
+	                for (Component subComp : ((java.awt.Panel) comp).getComponents()) {
+	    	            for (int i = 0 ; i < comp.getKeyListeners().length ; i++) {
+	    	            	System.out.println("getting listenerss");
+	    	            	System.out.println("coriginal subcomp listener length " + subComp.getKeyListeners().length);
+
+	    	            	OriginalRMKeyListeners.add(subComp.getKeyListeners()[i]);
+
+	    	            }
+	                }
+	            }
+	        }
+       	
+	    	return OriginalRMKeyListeners;
+	    	
+	    }
 	    
 	    private static void addKeyListenersToRoiManager() {
+	    	saveOriginalRMKeyListeners();
 	        FilteredKeyListener.removeKeyListener(roiManager, 't');
 	        roiManager.addWindowListener(new CustomWindowListener());
 	        
@@ -1342,13 +1545,21 @@ public class ModifyRois implements Command {
 	            		
 	            if (comp instanceof java.awt.Panel) {
 	                for (Component subComp : ((java.awt.Panel) comp).getComponents()) {
-
+	                	/* ???
+	                	for (int i = 0 ; i < subComp.getKeyListeners().length ; i++) {
+	                		System.out.println("i = " + i + "Component = " +subComp.getName()+ " " + subComp.getKeyListeners()[i].toString());
+	                		OriginalRMKeyListeners.add(subComp.getKeyListeners()[i]);
+	                	}
+	                	*/
+	                	
 	                	FilteredKeyListener.removeKeyListener(subComp, 't');
 	                    
 	                    subComp.addKeyListener(myFilteredListener);
+	                    System.out.println("subcomp listener length" + subComp.getKeyListeners().length);
 	                }
 	            }
 	        }
+   
 	    }
 	    
 	    private static Button getAddButton() {
@@ -1366,8 +1577,6 @@ public class ModifyRois implements Command {
 	        }
 	        return null;
 	    }
-	}
-    
 
 	    public static class CustomWindowListener extends WindowAdapter {
 	    	
@@ -1411,7 +1620,21 @@ public class ModifyRois implements Command {
 	    public static class GlobalEventListener {
 	        public static void AWTListen() {
 	            // Add a global AWT event listener
-	            Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+	        	System.out.println("current awteventlisteners ");
+	        	
+	        	AWTEventListener[] AWTListenersNow = Toolkit.getDefaultToolkit().getAWTEventListeners();
+	        	System.out.println("No of AWTListeners currently present " + AWTListenersNow.length);
+	        	
+	        	int awtcount = 0;
+	        	for (AWTEventListener thisAWT : AWTListenersNow) {
+	        		System.out.println("At index " + awtcount + " : " +thisAWT.toString());
+	        		awtcount++;
+	        	}
+	        	
+	        	System.out.println();
+	        	
+	        	System.out.println("adding awtevent listener:");
+	        	Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
 	                @Override
 	                public void eventDispatched(AWTEvent event) {
 	                    if (event instanceof KeyEvent) {
@@ -1422,9 +1645,44 @@ public class ModifyRois implements Command {
 	                    }
 	                }
 	            }, AWTEvent.KEY_EVENT_MASK);
+	        	
+	        	System.out.println("After AWT Listeners");
+	        	AWTEventListener[] AWTListenersAfter = Toolkit.getDefaultToolkit().getAWTEventListeners();
+	        	System.out.println("No of AWTListeners after addition " + AWTListenersAfter.length);
+	        	
+	        	awtcount = 0;
+	        	for (AWTEventListener thisAWT : AWTListenersAfter) {
+	        		System.out.println("At index " + awtcount + " : " +thisAWT.toString());
+	        		awtcount++;
+	        	}
 	        }
+	        
+	    
+	    
+	        public static void removeCustomAWTListener() {
+	        	
+	        	System.out.println("removing custom AWTListener");
+	        	
+	        	AWTEventListener[] AWTListenersNow = Toolkit.getDefaultToolkit().getAWTEventListeners();
+	        	System.out.println("No of AWTListeners currently present " + AWTListenersNow.length);
+	        	
+	        	int awtcount = 0;
+	        	for (AWTEventListener thisAWT : AWTListenersNow) {
+	        		System.out.println("At index " + awtcount + " : " +thisAWT.toString());
+	        		awtcount++;
+	        	}
+	        	
+	        	if (AWTListenersNow.length > 1 ) {
+	        		Toolkit.getDefaultToolkit().removeAWTEventListener(AWTListenersNow[AWTListenersNow.length - 1]);
+	        	}
+	        	
+	        	AWTEventListener[] AWTListenersAfter = Toolkit.getDefaultToolkit().getAWTEventListeners();
+	        	System.out.println("No of AWListeners after removal " + AWTListenersAfter.length);
+	        }
+	    
 	    }
 	    
+	}
     
     public static void savePrefs() {
     	for (int i = 0 ; i < 4 ; i++) {
@@ -1440,6 +1698,7 @@ public class ModifyRois implements Command {
     }
 	
 }
+
 
 
 
