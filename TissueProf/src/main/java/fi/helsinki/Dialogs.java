@@ -62,8 +62,6 @@ public class Dialogs {
 		overTitle = title;
 		theFrame = parent;
 		
-		System.out.println("size before components " + this.getSize().toString());
-		
         String InputDir = prefs.get("InputDir", "");
         
         String imageName = prefs.get("imageName","");
@@ -122,8 +120,6 @@ public class Dialogs {
 		//Model Parameters
 		this.addCheckbox("Make intensity measurements? ", true);
 		
-		System.out.println("size after components " + this.getSize().toString());
-		
 		//this.pack();
 		
 		//this.centerDialog(true);
@@ -131,13 +127,6 @@ public class Dialogs {
 		this.setResizable(false);
 		//centerDialogOnMainScreen(this);
 		setOverlapLocation(this);
-		
-		System.out.println("component count of main dialog "  + this.getComponentCount());
-		for (Component comp:this.getComponents()) {
-			System.out.println(comp.toString());
-		}
-		
-		System.out.println("size after setting size and packing " + this.getSize().toString());
 		
 		addWindowListener(this);
 		this.setVisible(true);	
@@ -149,10 +138,8 @@ public class Dialogs {
 			
 			Component[] compsNow = this.getComponents();
 			
-			System.out.println("inside addModelParameters no of components: " + compsNow.length );
-			
 			for (int i = 24 ; i < compsNow.length ; i++) {
-				System.out.println("removing... component with index " + i);
+				//System.out.println("removing... component with index " + i);
 				this.remove(compsNow[i]);
 			}
 			
@@ -243,11 +230,7 @@ public class Dialogs {
 			//this.setSize(476,710);
 			this.setSize(500,750);
 			
-			System.out.println("size after adding modelparameters " + this.getSize().toString());
-			
 			Font messageFont = this.getFont();
-			
-			System.out.println(messageFont.toString());
 			
 			addWindowListener(this);
 		}
@@ -256,11 +239,9 @@ public class Dialogs {
 		public void addReanalysis() {
 			
 			Component[] compsNow = this.getComponents();
-			
-			System.out.println("inside addReanalysis No of Components " + compsNow.length);
-				
+
 			for (int i = 24 ; i < compsNow.length ; i++) {
-				System.out.println("removing... component with index " + i);
+				//System.out.println("removing... component with index " + i);
 				this.remove(compsNow[i]);
 			}
 			
@@ -296,7 +277,7 @@ public class Dialogs {
 			
 			textPanel2.add(thisField2, BorderLayout.CENTER);
 			textPanel2.setSize(new Dimension(500,25));
-			System.out.println("panel size " + textPanel2.getSize().toString());
+			//System.out.println("panel size " + textPanel2.getSize().toString());
 			textPanel2.setName("Roi message panel");
 			
 			this.addPanel(textPanel2, GridBagConstraints.EAST, new Insets(5,5,5,-40));
@@ -347,21 +328,21 @@ public class Dialogs {
 			//this.pack();
 			//this.centerDialog(true);
 			
-			System.out.println("Reanalysis size " + this.getSize().toString());
+			//System.out.println("Reanalysis size " + this.getSize().toString());
 			
 			//this.setLocation(800, 400);
 			//centerDialogOnMainScreen(this);
 			
+			//Component List for diagnostic purposes
+			/*
 			for (int i = 24 ; i < this.getComponentCount(); i ++) {
 				Component thisComponent = this.getComponent(i);
 				System.out.println("component" + i + " "  + thisComponent.getName() + " size "  + thisComponent.getSize().toString());
 			}
-			
+			*/
 			
 			Font messageFont = this.getFont();
 			
-			System.out.println(messageFont.toString());
-		
 			addWindowListener(this);
 			
 		}
@@ -370,12 +351,12 @@ public class Dialogs {
 		@Override
 		public void actionPerformed(ActionEvent e){
 			if (e.getSource().equals(button)) {
-				System.out.println("button OK pressed ");
+				//System.out.println("button OK pressed ");
 				this.dispose();
 			}
 			else if (e.getSource().equals(button3)){
 				//System.out.println("This thread is making the actionListener " + Thread.currentThread().getName());
-				System.out.println("button 3 pressed ");
+				//System.out.println("button 3 pressed ");
 				TissueProf.getThreadtoStop();
 				WindowManager.closeAllWindows();
 				this.dispose();
@@ -383,13 +364,13 @@ public class Dialogs {
 			}
 			else if (e.getSource().equals(firstMode)) {
 				//this.setVisible(false);
-				System.out.println("comp count after pressing overlap analysis " + this.getComponentCount());
+				//System.out.println("comp count after pressing overlap analysis " + this.getComponentCount());
 				//firstMode.setSelected(true);
 				this.addModelParameters();
 				this.setVisible(true);
 			}
 			else if (e.getSource().equals(secondMode)){
-				System.out.println("Comp count after pressing Reanalysis " + this.getComponentCount());
+				//System.out.println("Comp count after pressing Reanalysis " + this.getComponentCount());
 				//this.setVisible(false);
 				//secondMode.setSelected(true);
 				this.addReanalysis();
@@ -400,7 +381,7 @@ public class Dialogs {
 		@Override 
 		public void windowClosing(WindowEvent e) {
 			if (e.getSource().equals(this)) {
-				System.out.println("window closed");
+				//System.out.println("window closed");
 				this.dispose();
 				TissueProf.getThreadtoStop();
 				WindowManager.closeAllWindows();

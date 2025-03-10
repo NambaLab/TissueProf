@@ -142,13 +142,11 @@ public class ModifyRois implements Command {
 	@Override
 	public void run() {
 		
-		System.out.println("Now running");
+		//System.out.println("Now running");
 		
 		while (modcanceled == false && modfinished == false) {
 			try {
-				//System.out.println("Started");
-				System.out.println("Running once");
-				//get current thread
+				
 				modRunThread = Thread.currentThread();
 				
 				boolean ModifyRois = true; 
@@ -158,9 +156,12 @@ public class ModifyRois implements Command {
 				
 				ColorChoice = Colors.getColors();
 				
+				//Checking colors for diagnostic purposes
+				/*
 				for (String col : ColorChoice) {
 					System.out.println(col);
 				}
+				*/
 				
 				ChRois = new ArrayList<ArrayList<Roi>>();
 				BoundsList = new ArrayList<ArrayList<Rectangle>>();
@@ -202,8 +203,6 @@ public class ModifyRois implements Command {
 				//closest representations of these colors in the Glasbey LUT.
 				
 				LinkedHashMap<String, Integer> ColorsMap = new LinkedHashMap<String, Integer>();
-				
-				System.out.println("ColorChoice length " + ColorChoice.length);
 				
 				int s= 0;
 				for (String Col : ColorChoice) {
@@ -351,12 +350,14 @@ public class ModifyRois implements Command {
 			
 				IJ.log("Loading ROIs and applying Colors");
 				
+				//Check channel ROI set lengths
+				/*
 				int c= 0;
 				for (ArrayList<Roi>thisList : ChRois) {
 					System.out.println("ch " + c + " size " + ChRois.get(c).size());
 					c++;
 				}
-				
+				*/
 				
 				
 				ModifyRoiManager();
@@ -397,16 +398,9 @@ public class ModifyRois implements Command {
 		        	
 		        }
 				
-				// TODO Auto-generated method stub
-			
-				System.out.println("still runnning");
-				
-	        	//Revert RoiManager to original state
+	        	//Revert RoiManager and ImageJ to original states
 				
 				revertKeyListeners();
-				
-	        	//GlobalEventListener.removeCustomAWTListener();
-				
 	        	
 				ChannelSelect = new boolean[4];
 				ColorChoice = new String[4];	
@@ -421,10 +415,9 @@ public class ModifyRois implements Command {
 				modfinished =true;
 				CurrentGroup = 0;
 				//RoiManager.getInstance().dispose();
-				RoiManager.getInstance().close();
-				
-				System.out.println("Going on");
-				
+				if (RoiManager.getInstance()!=null) {
+					RoiManager.getInstance().close();
+				}	
 			} catch (InterruptedException e) {
 				System.out.println("Canceled");
 	    		//modcanceled = false;
@@ -453,7 +446,7 @@ public class ModifyRois implements Command {
 				ChRois = new ArrayList<ArrayList<Roi>>();
 				BoundsList = new ArrayList<ArrayList<Rectangle>>();
 				CurrentGroup = 0;
-				System.out.println("reset static values");
+				//System.out.println("reset static values");
 				
 			} 
 			
@@ -497,15 +490,7 @@ public class ModifyRois implements Command {
 			
 			int c = 0;
 			while (this.getSave() == false && modcanceled == false ) {
-				if(c==30) {
-					System.out.println("thisSave? " + this.save);
-					System.out.println("Saved ? " + saved);
-					c++;
-					c--;
-				
-				}
-				
-				c++;	
+				Thread.sleep(5);	
 			}
 			
 			
@@ -598,35 +583,35 @@ public class ModifyRois implements Command {
 		public void actionPerformed(java.awt.event.ActionEvent  e) {
 			
 			if (e.getSource().equals(ch1toggle)) {
-				System.out.println("Ch1 toggled");
+				//System.out.println("Ch1 toggled");
 				//CurrentColor = StrokeColors[0];
 				CurrentGroup = Groups[0];
 				
 				CurrentChannel = 0;
-				System.out.println("Ch1 event source " + e.getSource().toString());
+				//System.out.println("Ch1 event source " + e.getSource().toString());
 			}
 			else if (e.getSource().equals(ch2toggle)) {
-				System.out.println("ch2 toggled");
+				//System.out.println("ch2 toggled");
 				//CurrentColor = StrokeColors[1];
 				CurrentGroup = Groups[1];
 				
 				CurrentChannel = 1;
-				System.out.println("Ch2 event source " + e.getSource().toString());
+				//System.out.println("Ch2 event source " + e.getSource().toString());
 			}
 			else if (e.getSource().equals(ch3toggle)) {
-				System.out.println("ch3 toggled");
+				//System.out.println("ch3 toggled");
 				//CurrentColor = StrokeColors[2];
 				CurrentGroup = Groups[2];
 				
 				CurrentChannel = 2;
-				System.out.println("Ch3 event source " + e.getSource().toString());
+				//System.out.println("Ch3 event source " + e.getSource().toString());
 			}
 			else if (e.getSource().equals(ch4toggle)) {
 				System.out.println("ch4 toggled");
 				//CurrentColor = StrokeColors[3];
 				CurrentGroup = Groups[3];
 				CurrentChannel = 3;
-				System.out.println("Ch4 event source " + e.getSource().toString());
+				//System.out.println("Ch4 event source " + e.getSource().toString());
 			}
 			else if (e.getSource().equals(saveButton)) {
 				
@@ -635,7 +620,7 @@ public class ModifyRois implements Command {
 				
 				nowSaving = true;
 				
-				System.out.println("mod canceled? " + modcanceled);
+				//System.out.println("mod canceled? " + modcanceled);
 				
 				Path filePatha = Paths.get(allRoisPath);
 				String Ooriginalname = filePatha.getFileName().toString();
@@ -661,10 +646,10 @@ public class ModifyRois implements Command {
 				synchronized(ChRois){
 					for (ArrayList<Roi> ChList : ChRois) {
 						if (ChannelSelect[p]==true) {
-							System.out.println("ChRois " + p + " size " + ChList.size());
+							//System.out.println("ChRois " + p + " size " + ChList.size());
 							RoiManager.getInstance().reset();
 							synchronized(ChList){
-								System.out.println("ChRois " + p + " size " + ChList.size());
+								//System.out.println("ChRois " + p + " size " + ChList.size());
 									
 								Iterator<Roi> RoiIterator = ChList.iterator();
 								int count = 0 ;
@@ -691,7 +676,7 @@ public class ModifyRois implements Command {
 							
 							
 							runStardist.saveRois(inputDir, originalname + "_Modified");
-							System.out.println("saved : " + saved); 
+							//System.out.println("saved : " + saved); 
 							
 							//Delete intermediate file
 	
@@ -706,10 +691,10 @@ public class ModifyRois implements Command {
 				IJ.log("All ROI modifications have been saved");
 				System.out.println("All ROI modifications have been saved");
 				
-				System.out.println("window closed");
+				//System.out.println("window closed");
 				//this.dispose();
 				saved = true;
-				//WindowManager.closeAllWindows();
+				WindowManager.closeAllWindows();
 				
 			}
 		}
@@ -717,19 +702,13 @@ public class ModifyRois implements Command {
 		@Override 
 		public void windowClosing(WindowEvent e) {
 			if (e.getSource().equals(this)) {
-				System.out.println("window closed");
+				//System.out.println("window closed");
 				//modcanceled =true;
-				System.out.println("modcanceled by window closing?" + modcanceled);
 				//saved = true;
 				if (saved == true) {					
-					System.out.println("now disposing");
 					this.dispose();
-					System.out.println("closing after saving");
-					System.out.println("modcanceled after saving? " + modcanceled);
 				} 
 				else if (saved == false) {
-					System.out.println("Closing without saving i.e canceling mod");
-					System.out.println("modcanceled without saving? " + modcanceled);
 					modcanceled =true;
 					//this.dispose();
 				}
@@ -872,11 +851,11 @@ public class ModifyRois implements Command {
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e){
 			if (e.getSource().equals(button)) {
-				System.out.println("button OK pressed ");
+				//System.out.println("button OK pressed ");
 				this.dispose();
 			}
 			else if (e.getSource().equals(button3)){
-				System.out.println("button 3 pressed ");
+				//System.out.println("button 3 pressed ");
 				modcanceled = true;
 				this.dispose();
 			}
@@ -888,7 +867,7 @@ public class ModifyRois implements Command {
 			if (e.getSource().equals(this)) {
 				modcanceled = true;
 				this.dispose();
-				System.out.println("window closed");
+				//System.out.println("window closed");
 			}
 		}
 		
@@ -924,22 +903,16 @@ public class ModifyRois implements Command {
 	
 	public void ModifyRoiManager() {
 		
-		System.out.println("Now modifying the RoiManager");
+		//System.out.println("Now modifying the RoiManager");
 		
 		Component[] roiComps = RoiManager.getInstance().getComponents();
 	
 		Component Componentat = roiComps[1].getComponentAt(5,5);
-		System.out.println(Componentat.getName());
-		System.out.println(Componentat.toString());
 		
 		addButton = (Button) Componentat;
 
 		ActionListener[] originalListeners = addButton.getActionListeners();
 		
-		for (ActionListener listen : originalListeners) {
-			System.out.println(listen.toString());
-		}
-	
 		cc = 0;
 	
 		for (int i = 0 ; i < originalListeners.length ; i++) {
@@ -973,32 +946,37 @@ public class ModifyRois implements Command {
 	        	 	
 	        	 	if (roi != null) {
 	        	 		Integer ChanName = CurrentChannel + 1;
-	        	 		System.out.println(ChRois.size());
+	        	 		//System.out.println(ChRois.size());
 	        	 		
+	        	 		//Diagnostics
+	        	 		/*
 	        	 		for (int h = 0 ; h < ChRois.size() ; h++) {
 	        	 			System.out.println("Ch Rois " + h + " size " + ChRois.get(h).size());
 	        	 			System.out.println("Ch BoundsSize before " + h +" "+ BoundsList.get(h).size());
 	        	 		}
+	        	 		*/
 	        	 		
-	        	 		
-	        	 		System.out.println("Current Channel " + CurrentChannel);
+	        	 		//System.out.println("Current Channel " + CurrentChannel);
 	        	 		Integer CurChan = ChRois.get(CurrentChannel).size() + 1;
 	        	 		
 	        	 		//roi.setGroup(ChanName);
 	        	 		roi.setGroup(CurrentGroup);
 	        	 		roi.setName(ChanName + "-" + CurChan);
-	        	 
+	        	 		
+	        	 		/*
 	        	 		System.out.println("Current Color " + CurrentColor);
 	        	 		System.out.println("Selected current channel?" + ChannelSelect[CurrentChannel]);
 	        	 		System.out.println("now  saving ?" + nowSaving);
+	        	 		*/
+	        	 		
 	        	 		if (!ChannelSelect[CurrentChannel]==false && nowSaving == false ) {
 	        	 			
 		        	 		ChRois.get(CurrentChannel).add(roi);
-			        		System.out.println("added roi to ChrRois");
+			        		//System.out.println("added roi to ChRois");
 		        	 		//System.out.println("Add button clicked!");
 			        		//System.out.println("Roi Stroke Color Before " + roi.getStrokeColor());
 			        		BoundsList.get(CurrentChannel).add(roi.getBounds());
-			        		System.out.println("Added roi to boundslist");
+			        		//System.out.println("Added roi to boundslist");
 			        		
 				            cc++;
 	        	 		}
@@ -1025,14 +1003,17 @@ public class ModifyRois implements Command {
 	        	 	}
 		    	    
 	    	        
-	    	        
-	    	        System.out.println("Roi stroke color after " + roi.getStrokeColor());
-					System.out.println("Roi Manager count after adding " + RoiManager.getInstance().getCount());
-	    	
+	    	        //Check colors
+	    	        //System.out.println("Roi stroke color after " + roi.getStrokeColor());
+					//System.out.println("Roi Manager count after adding " + RoiManager.getInstance().getCount());
+	        	 	
+	        	 	//Check size of ChRois after addition
+	        	 	/*
 	    	 		for (int h = 0 ; h < ChRois.size() ; h++) {
 	    	 			System.out.println("Ch Rois " + h + " size after" + ChRois.get(h).size());
 	    	 			System.out.println("Ch BoundsSize after " + h + BoundsList.get(h).size());
 	    	 		}
+	    	 		*/
 					
 	        }
         	
@@ -1068,21 +1049,23 @@ public class ModifyRois implements Command {
                         				//ChRois.get(CurrentChannel).remove(RoiManager.getInstance().getRoi(index));
                         				Rectangle thisBounds = RoiManager.getInstance().getRoi(index).getBounds();
                         				
-                        				System.out.println("BoundsListSize before " + BoundsList.get(CurrentChannel).size());
-                        				System.out.println("ChanneRoilSize before " + ChRois.get(CurrentChannel).size());
+                        				//Check BoundsList
+                        				//System.out.println("BoundsListSize before " + BoundsList.get(CurrentChannel).size());
+                        				//System.out.println("ChanneRoilSize before " + ChRois.get(CurrentChannel).size());
                         				
                         				int deleteIndex = BoundsList.get(CurrentChannel).indexOf(thisBounds);
                         				
                         				BoundsList.get(CurrentChannel).remove(deleteIndex);
                         				ChRois.get(CurrentChannel).remove(deleteIndex);
                         				
-                        				System.out.println("BoundsListLength after" + BoundsList.get(CurrentChannel).size());
-                        				System.out.println("Current ChannelRois Length after" + ChRois.get(CurrentChannel).size());
+                        				//Check BoundsList after addition
+                        				//System.out.println("BoundsListLength after" + BoundsList.get(CurrentChannel).size());
+                        				//System.out.println("Current ChannelRois Length after" + ChRois.get(CurrentChannel).size());
                         				
                         				//BoundsList.get(CurrentChannel).get(index)
                         				
                         				
-                        				System.out.println("Removed ROI with index " + index + " channel index " + deleteIndex);
+                        				//System.out.println("Removed ROI with index " + index + " channel index " + deleteIndex);
                         				
                         			}
                         			try {
@@ -1093,8 +1076,8 @@ public class ModifyRois implements Command {
                         				f.printStackTrace();
                         			}
                        
-                                	
-                                	System.out.println("Roi Manager after action performed " + RoiManager.getInstance().getCount());
+                                	//Check RoiManager status after deletion
+                                	//System.out.println("Roi Manager after action performed " + RoiManager.getInstance().getCount());
                                 	
                         		}
                         	});
@@ -1135,8 +1118,6 @@ public class ModifyRois implements Command {
 		//Remove FilteredKeyListener from each component and keep only original listener 
 		ImageJ ij = IJ.getInstance();
 		
-		System.out.println("showing original RM Listeners");
-		
 		RoiManagerKeyListener.revertIJKeyListeners(ij, RoiManagerKeyListener.getIJKeyListeners());
 		RoiManagerKeyListener.revertRMKeyListeners();
 		RoiManagerKeyListener.revertImageListener();
@@ -1161,8 +1142,8 @@ public class ModifyRois implements Command {
 	    public void keyPressed(KeyEvent e) {
 	        if (e.getKeyChar() == 't') {
 	            customKeyAdapter.keyPressed(e);
-	            System.out.println("FilteredListener triggered");
-            	System.out.println("event source " + e.getSource());
+	            //System.out.println("FilteredListener triggered");
+            	//System.out.println("event source " + e.getSource());
 	            ActionEvent ae = new ActionEvent(addButton, 1001, "Add [t]");
                 addButton.getActionListeners()[0].actionPerformed(ae);
                 e.consume();
@@ -1218,7 +1199,7 @@ public class ModifyRois implements Command {
 	        CustomImageListener = new ImageListener() {
 	        	  @Override
 		            public void imageOpened(ImagePlus imp) {
-		            	System.out.println("image opened");
+		            	//System.out.println("image opened");
 		            	ImagePlus.logImageListeners();
 		                addKeyListenerToImage(imp);
 		            }
@@ -1347,17 +1328,17 @@ public class ModifyRois implements Command {
 	    	
 	        @Override
 	        public void windowOpened(WindowEvent e) {
-	            System.out.println("RoiManager window opened");
+	            //System.out.println("RoiManager window opened");
 	        }
 
 	        @Override
 	        public void windowClosing(WindowEvent e) {
-	            System.out.println("RoiManager window closing");
+	            //System.out.println("RoiManager window closing");
 	        }
 
 	        @Override
 	        public void windowClosed(WindowEvent e) {
-	            System.out.println("RoiManager window closed");
+	            //System.out.println("RoiManager window closed");
 	        }
 
 	        @Override
@@ -1372,12 +1353,12 @@ public class ModifyRois implements Command {
 
 	        @Override
 	        public void windowActivated(WindowEvent e) {
-	            System.out.println("RoiManager window activated");
+	            //System.out.println("RoiManager window activated");
 	        }
 
 	        @Override
 	        public void windowDeactivated(WindowEvent e) {
-	            System.out.println("RoiManager window deactivated");
+	            //System.out.println("RoiManager window deactivated");
 	        }
 	    }
 	    
@@ -1392,7 +1373,7 @@ public class ModifyRois implements Command {
 	                    if (event instanceof KeyEvent) {
 	                        KeyEvent ke = (KeyEvent) event;
 	                        if (ke.getKeyChar() == 't' && ke.getID() == KeyEvent.KEY_PRESSED) {
-	                            System.out.println("Global listener detected 't' key press: " + ke);
+	                            //System.out.println("Global listener detected 't' key press: " + ke);
 	                        }
 	                    }
 	                }

@@ -59,8 +59,7 @@ public class EnhanceContrastChannels {
         
         //Split channels
 		ImagePlus[] channels = ChannelSplitter.split(thisComp);
-		System.out.println("channels length " + channels.length);
-        //IJ.run("compositeImage", "Split Channels"); 
+		//System.out.println("channels length " + channels.length);
         
 		for (int i = 0 ; i < channels.length ; i++) {
         	
@@ -99,9 +98,8 @@ public class EnhanceContrastChannels {
         	IJ.open(OutputDir + "/" + ImageName + "_" + "EnhancedContrast" + "_" + "CDUPLICATE" + "_" + "C" + a + ".tif");
         	
         	channels1[a-1] = IJ.getImage();
-        	//mergeTitles[a-1] = WindowManager.getActiveWindow().getName();
         	String thisTitle = IJ.getImage().getTitle();
-        	System.out.println("toMerge names " + thisTitle);
+        	//System.out.println("toMerge names " + thisTitle);
         	mergeTitles[a-1] = thisTitle;
         }
         

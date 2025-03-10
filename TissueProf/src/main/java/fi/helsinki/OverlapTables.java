@@ -62,7 +62,7 @@ public class OverlapTables {
 		Cell cell;
 		Cell cell1;
 		
-		System.out.println(OverlapRoxx.QuadOverlapRoxx.size());
+		//System.out.println(OverlapRoxx.QuadOverlapRoxx.size());
 			
 		int QuadCount = OverlapRoxx.QuadOverlapRoxx.get(0).size();
 			
@@ -169,7 +169,7 @@ public class OverlapTables {
 						//System.out.println("TYPE " + type);
 						//System.out.println("i " + i);
 						if (i==3) {	
-							System.out.println("About to make triplecombocols and names, i =  " + i);
+							//System.out.println("About to make triplecombocols and names, i =  " + i);
 							TripleCombCols.get(type).add(Channels[channelInts[p]]);
 							TripleCombCols.get(type).add(Channels[channelInts[p+1]]);
 							TripleCombCols.get(type).add(Channels[channelInts[p+2]]);
@@ -248,7 +248,7 @@ public class OverlapTables {
 									thisq=q;
 									cell = row2.createCell(0);
 									cell.setCellValue(thisCombChannel.get(thisq).size());
-									System.out.println(channelSize);
+									//System.out.println(channelSize);
 									doubleoverlap++;
 								}
 							}
@@ -535,7 +535,7 @@ public class OverlapTables {
 			
 			if (thisCombo.get(0).size()>0) {		
 				int ch = 0 ; 
-				System.out.println(thisCombo.get(ch).size());
+				//System.out.println(thisCombo.get(ch).size());
 
 				try {
 					for (ArrayList<Rox> thisChannel : thisCombo) {
@@ -583,7 +583,7 @@ public class OverlapTables {
 				
 				int ch = 0 ; 
 				if (thisCombo.get(0).size()>0) {
-					System.out.println(thisCombo.get(ch).size());
+					//System.out.println(thisCombo.get(ch).size());
 					for (ArrayList<Rox> thisChannel : thisCombo) {
 
 						nameRow.createCell(cnow+ch+dcount*3 + t).setCellValue(DoubleCombCols.get(chdub).get(ch));

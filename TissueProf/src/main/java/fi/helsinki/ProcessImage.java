@@ -160,15 +160,11 @@ public class ProcessImage {
     //Verify the number of background ROIs 
     while (correctedBackground==false) {    	
     	backgroundRois = RoiManager.getInstance().getRoisAsArray();
-    	System.out.println(backgroundRois.length);
     	if (backgroundRois.length!=3) {
-    		System.out.println("not 3 ");
-  
     		WaitForUserDialog addback = new WaitForUserDialog("Please add exactly 3 background ROIs to the ROI Manager");
     		addback.show();
     		
     	} else if (backgroundRois.length==3) {
-    		System.out.println("is 3");
     		correctedBackground=true;
     	}
 
@@ -233,15 +229,18 @@ public class ProcessImage {
         //get currently open image titles 
         String[] imageTitles = WindowManager.getImageTitles();
         
+        //Check images 
+        /*
         for (int i = 0 ; i < imageTitles.length; i++ ) {
         	System.out.println(imageTitles[i]);
         }
+        */
         
         //save original duplicate images 
         c=0;
         for (Window imageWink: imageWinds) {
-        	System.out.println("C in imagewind duplicate : " + c);
-        	System.out.println(imageWink.getName());
+        	//System.out.println("C in imagewind duplicate : " + c);
+        	//System.out.println(imageWink.getName());
         	if (imageWink.toString().matches("C\\d+-.*")) {
         		String[] stirs = imageWink.toString().split("-");
         		IJ.selectWindow(imageWink.toString());
@@ -316,19 +315,17 @@ public class ProcessImage {
 						
 			zoneRois = RoiManager.getInstance().getRoisAsArray();
 			if (zoneRois.length!=zoneNo) {
-				System.out.println("zoneRois.length!=zoneNo");
+				//System.out.println("zoneRois.length!=zoneNo");
 				WaitForUserDialog correctZones = new WaitForUserDialog("Please add the same number of zones to the ROI Manager as the number you input at the beginning");
 				correctZones.show();
 			} else if (zoneRois.length==zoneNo) {
-				System.out.println("zoneRois good");
 				correctedZones = true;
 			}
 		}
 
 	    //Save ZoneROIs
 	    runStardist.saveRois(OutputDir, imageName + "_ZoneROIs");
-	    
-	    System.out.println("zone count " + RoiManager.getInstance().getCount());
+	   
 	    //Roi[] zoneRois = RoiManager.getInstance().getRoisAsArray();
 	    ShapeRoi[] zoneShapes = new ShapeRoi[zoneRois.length];
 	    
@@ -356,39 +353,30 @@ public class ProcessImage {
 	    //System.out.println("zoneshapes0height" + zoneShapes[0].getBounds().getHeight());
 	    
 	    for (int i = 1 ; i < zoneShapes.length ; i++) {
-	    	System.out.println("inside for ");
 	    	zoneXor = ((ShapeRoi) zoneXor.clone()).xor(zoneShapes[i]);   
 	    }
 	    
-	   //Prepare expanded zones
-		System.out.println("zonexorheight " + zoneXor.getBounds().height);
+	    //Prepare expanded zones
+		//System.out.println("zonexorheight " + zoneXor.getBounds().height);
 	    
 	    RoiManager.getInstance().reset();
 	    
 	    ShapeRoi zoneXorNow = zoneXor;
 	    
-	    System.out.println(zoneXorNow.getBounds().height);
-	   
 	    if (zoneShapes.length==1) {
 	    	zoneXorr = zoneXorNow.getRois()[0];
-	    	System.out.println("nowzoneXorr " + zoneXorr.getBounds().getHeight());
 	    	zoneXorr.setLocation(zoneX, zoneY);
 	    	
 	    }
 	    	else {
 	    		zoneXorr = zoneXorNow.shapeToRoi();
 	    	}
-	    
-	    
-	    System.out.println(zoneXorr.getBounds().getHeight());
-	    
+
 	    RoiManager.getInstance().addRoi(zoneXorr);
 	    
 	    
 	    Roi zoneXorExpanded = expandZones(IJ.getImage(), zoneXorr);    
 		
-	    System.out.println("expanded");
-	    
 	    RoiManager.getInstance().reset();
 	   
 	    RoiManager.getInstance().add(zoneXorr, 0);
@@ -475,7 +463,7 @@ public class ProcessImage {
         }
         
         if (imp2.getWindow()==null) {
-        	System.out.println("imp2 window closed");
+        	//System.out.println("imp2 window closed");
         } else {
         	//System.out.println("imp2 window not closed ");
         	imp2.getWindow().close();
@@ -530,9 +518,7 @@ public class ProcessImage {
         }
         
         imageWinds = new Window[4];
-        
-        System.out.println("now closing all windows");
-        
+      
         WindowManager.closeAllWindows();
         
         //Check memory here if needed
@@ -571,8 +557,6 @@ public class ProcessImage {
 		
 		RoiManager.getInstance().addRoi(zonesRoi);
 		
-		System.out.println("got roi");
-		
 		double thisX = (double) zonesRoi.getBounds().getLocation().getX();
 		
 		double thisY = (double) zonesRoi.getBounds().getLocation().getY();
@@ -593,8 +577,6 @@ public class ProcessImage {
 		ImageStatistics thisRoiPos = ImageStatistics.getStatistics(imp.getProcessor(), Measurements.CENTROID, imp.getCalibration());
 		
 		imp.killRoi();
-		
-		System.out.println("thisRoiPosition " + "x " + thisRoiPos.xCentroid + " y = " + thisRoiPos.yCentroid );
 		
 		double[] roi0Pos = {thisX, thisY};
 		

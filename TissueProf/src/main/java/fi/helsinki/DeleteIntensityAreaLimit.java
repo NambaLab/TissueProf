@@ -51,8 +51,6 @@ public class DeleteIntensityAreaLimit implements Command {
 	@Override
 	public void run() {
 		
-		System.out.println("incanceled " + incanceled);
-		
 		while (incanceled == false) {
 			try {
 				
@@ -162,22 +160,15 @@ public class DeleteIntensityAreaLimit implements Command {
 		
 		float[] means = thisTable.getColumn(1);
 		
-		System.out.println("means column length " + means.length);
-		
 		for (int i = 0 ; i < means.length ; i++) {
 			if (means[i]<MinInt || areas[i]<MinArea) {
 				toDelete.add(i);
 			}
 		} 
 		
-		//System.out.println("selectedindexes length " + selectedRoiIndexes.length);
-		System.out.println("todelteindexes length " + toDelete.size());
-		
 		if (toDelete.size()>0) {
 		
 		Integer[] toDeleteIndexes = toDelete.toArray(new Integer[toDelete.size()]);
-		
-		System.out.println("todelete length " + toDeleteIndexes.length);
 		
 		int[] toDeleteIndexints = new int[toDeleteIndexes.length];
 		
@@ -261,7 +252,6 @@ public class DeleteIntensityAreaLimit implements Command {
 			}
 			else if (e.getSource().equals(button5)) {
 				synchronized(DeleteIntensityAreaLimit.class) {incanceled = true;}
-				System.out.println("cancel button event " + e);
 				alreadycanceled = true;
 				this.dispose();
 			}

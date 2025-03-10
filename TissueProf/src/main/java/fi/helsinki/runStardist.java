@@ -382,7 +382,9 @@ public class runStardist {
 
 	        // Choose a location to save the ZIP file
 	        String zipRoiName = OutputDir + "/" + name + ".zip";			
-	        System.out.println("zipRoiName: " + zipRoiName);
+	        
+	        //See the save name 
+	        //System.out.println("zipRoiName: " + zipRoiName);
 
 	        try (FileOutputStream fos = new FileOutputStream(zipRoiName);
 	             ZipOutputStream zos = new ZipOutputStream(fos)) {

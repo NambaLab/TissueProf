@@ -33,10 +33,12 @@ public class DetectOverlap {
 		
 		RoiManager.getInstance().reset();
 		
+		/*
 		for (Rox[] channelRox : allRox) {
 			System.out.println("ChannelRox length " + channelRox.length);
 		}
-
+		*/
+		
 		c=0;
 		for (Rox[] channelRox: allRox) {
 			if (channelSelection[c]==true && channelRox.length>0) {
@@ -78,19 +80,6 @@ public class DetectOverlap {
 			}
 		c++;
 		}
-		
-		/*
-		for (int i = 0 ; i < 4 ; i++) {
-		
-			if (channelSelection[i]==true) {	
-					System.out.println("i " + i);	
-				if 	(channelCompositeShape[i]!=null) {
-					System.out.println(channelCompositeShape[i].getBounds().getHeight());
-				}
-				else {System.out.println("channel ON but no cells");}
-			}
-		}
-		*/
 		
 		if (channelSize>3) {
 			if (channelCompositeShape[0]!=null && channelCompositeShape[1]!=null && channelCompositeShape[2]!=null && channelCompositeShape[3]!=null) {

@@ -37,7 +37,6 @@ public class DeleteContainedRois implements Command {
 				
 				if (RoiManager.getInstance().getCount()>0) {
 					RoiAdded = true;
-					//System.out.println("Roi count > 0 ");
 				}
 			
 				IJ.run("Set Measurements...", "centroid redirect=None decimal=1");
@@ -48,7 +47,6 @@ public class DeleteContainedRois implements Command {
 					
 					int rcount = RoiManager.getInstance().getCount();
 					if (rcount==0) {
-					System.out.println("Count 0");
 						WaitForUserDialog addRois = new WaitForUserDialog("addRois");
 						addRois.addWindowListener(new WindowListener() {
 							@Override
@@ -231,7 +229,6 @@ public class DeleteContainedRois implements Command {
 				
 				
 			} catch (InterruptedException e) {
-				
 				System.out.println("Canceled");
 				delfinished = true;
 				e.printStackTrace();

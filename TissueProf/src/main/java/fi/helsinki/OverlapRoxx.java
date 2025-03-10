@@ -65,12 +65,7 @@ public class OverlapRoxx {
 		
 		IJ.log("Analyzing overlap of channel ROIs... ");
 		
-		System.out.println("Outputdir in overlaproxx " + OutputDir);
-		System.out.println("Open this image " + OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 1 + ".tif");
-		
 		IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 1 + ".tif");
-		
-		System.out.println("Last Index " + NextIndex);
 		
 		int d = 0;
 		for (ArrayList<Rox> theseRox : OverlapFilter.QuadRoxx) {
@@ -168,8 +163,6 @@ public class OverlapRoxx {
 						//if (!thisEllipse.containsPoint(QuadRox3.getPosition()[0], QuadRox3.getPosition()[1])) {continue;}
 						
 						if (r0 == true && r1 == true && r2 == true) {
-							System.out.println("i " + i + " j " + j + " k " + k + " m " + m);
-							
 							ShapeRoi shape0 = new ShapeRoi(QuadRox0.getRoi());
 							ShapeRoi shape1 = new ShapeRoi(QuadRox1.getRoi());
 							ShapeRoi shape2 = new ShapeRoi(QuadRox2.getRoi());
@@ -184,7 +177,7 @@ public class OverlapRoxx {
 							
 							if (QuadInter.getBounds().getHeight()>0) {
 								//System.out.println("Shape with area " + QuadInter.getBounds());
-								System.out.println("intersect " + i + " " + j + " " + k + " " + m);
+								//System.out.println("intersect " + i + " " + j + " " + k + " " + m);
 								Roi QuadInterRoi = QuadInter.shapeToRoi();
 								RoiManager.getRoiManager().reset();
 								//Here setIndex, setArea and setMean for the RoiData created so that Rox class can find these and make Rox
@@ -199,7 +192,7 @@ public class OverlapRoxx {
 									for (int w=0; w<4; w++) {
 										if (w>v) {
 											RoiManager.getInstance().reset();
-											System.out.println("QuadRox " + v + " intersecting " + "QuadRox " + w);
+											//System.out.println("QuadRox " + v + " intersecting " + "QuadRox " + w);
 											//ShapeRoi CoupleShape = QuadRoxes[v].shape.and(QuadRoxes[w].shape);
 											ShapeRoi CoupleShape = QuadShapes[v].and(QuadShapes[w]);
 											Roi CoupleRoi = CoupleShape.shapeToRoi();
@@ -220,10 +213,10 @@ public class OverlapRoxx {
 								}
 
 								
-								System.out.println("\n" + "Now checking overlap extent");
+								//System.out.println("\n" + "Now checking overlap extent");
 								if ((CoupleRatios[0]>ovth || CoupleRatios[1]>ovth) && (CoupleRatios[2]>ovth || CoupleRatios[3]>ovth) && (CoupleRatios[4]>ovth || CoupleRatios[5]>ovth) 
 										&& (CoupleRatios[6]>ovth || CoupleRatios[7]>ovth) && (CoupleRatios[8]>ovth || CoupleRatios[9]>ovth) && (CoupleRatios[10]>ovth || CoupleRatios[11]>ovth)) {
-									System.out.println("+70%");
+									//System.out.println("+70%");
 									for (int h = 0 ; h < 4 ; h++) {
 										QuadOverlapRoxx.get(h).add(QuadRoxes[h]);
 										allOverlapRoxx.add(QuadRoxes[h]);
@@ -267,7 +260,7 @@ public class OverlapRoxx {
 	
 	
 	if (channelSize>2) {
-		System.out.println("No combs " + OverlapFilter.TripleRoxx.size());
+		//System.out.println("No combs " + OverlapFilter.TripleRoxx.size());
 		synchronized (OverlapFilter.TripleRoxx) {
 			for (ArrayList<ArrayList<Rox>> TripleRoxxList : OverlapFilter.TripleRoxx) {
 				//System.out.println("No. combs " + TripleRoxxList.size());
@@ -293,7 +286,7 @@ public class OverlapRoxx {
 	}
 	
 	if (channelSize>2) {
-		System.out.println("Size of TripleCombSizes " + TripleCombSizes.size());
+		//System.out.println("Size of TripleCombSizes " + TripleCombSizes.size());
 	}
 	
 	////Triple Overlap check for filtered ROIs
@@ -377,14 +370,16 @@ public class OverlapRoxx {
 		 
 		if (chs.size()<3) {continue;}
 		
+		//Check combinations
+		/*
 		System.out.println("This abc a " + a + " " + " b " + b + " c " + c);
-		 
+		
 		System.out.println("comb " + e + "channel " + a + OverlapFilter.TripleRoxx.get(e).get(a).size());
 		System.out.println("comb " + e + "channel " + b + OverlapFilter.TripleRoxx.get(e).get(b).size());
 		System.out.println("comb " + e + "channel " + c + OverlapFilter.TripleRoxx.get(e).get(c).size());
+		*/
 		
-		
-		System.out.println("a " + a + " b " + b + " c " + c + " r__ " + r);
+		//System.out.println("a " + a + " b " + b + " c " + c + " r__ " + r);
 		for (int i = 0 ; i < OverlapFilter.TripleRoxx.get(e).get(a).size(); i++){
 			Rox Rox0 = OverlapFilter.TripleRoxx.get(e).get(a).get(i);
 			double[] roi0Pos = Rox0.getPosition();
@@ -501,7 +496,7 @@ public class OverlapRoxx {
 	for (int i = 0 ; i < 4 ; i ++) {
 		for (int j = 0 ; j < 3 ; j++) {
 			//RoiManager.getInstance().reset();
-			System.out.println("TripleOverlapRoxxComboSize " + TripleOverlapRoxx.get(i).get(j).size());
+			//System.out.println("TripleOverlapRoxxComboSize " + TripleOverlapRoxx.get(i).get(j).size());
 			for (int k = 0 ; k <TripleOverlapRoxx.get(i).get(j).size() ; k++) {
 			RoiManager.getInstance().addRoi(TripleOverlapRoxx.get(i).get(j).get(k).getRoi());
 
@@ -527,7 +522,7 @@ public class OverlapRoxx {
 			//System.out.println("No. combs " + DoubleRoxxList.size());
 			synchronized(DoubleRoxxList) {
 				for (ArrayList<Rox> DoubleCombRoxx : DoubleRoxxList) {
-					System.out.println("This doubleroxx comb size " + DoubleCombRoxx.size());
+					//System.out.println("This doubleroxx comb size " + DoubleCombRoxx.size());
 					DoubleCombSizes.add(DoubleCombRoxx.size());
 					synchronized(DoubleCombRoxx) {
 						Iterator<Rox> iterator = DoubleCombRoxx.iterator();
@@ -538,7 +533,7 @@ public class OverlapRoxx {
 								iterator.remove(); 
 							}
 						}
-						System.out.println("This comb size after " + DoubleCombRoxx.size());
+						//System.out.println("This comb size after " + DoubleCombRoxx.size());
 					}
 				}
 			}
@@ -696,8 +691,7 @@ public class OverlapRoxx {
 	
 	for (int i = 0 ; i < 6 ; i ++) {
 		for (int j = 0 ; j < 2 ; j++) {
-			//RoiManager.getInstance().reset();
-			System.out.println("DoubleOverlapRoxxComboSize " + DoubleOverlapRoxx.get(i).get(j).size());
+			//System.out.println("DoubleOverlapRoxxComboSize " + DoubleOverlapRoxx.get(i).get(j).size());
 			for (int k = 0 ; k <DoubleOverlapRoxx.get(i).get(j).size() ; k++) {
 			RoiManager.getInstance().addRoi(DoubleOverlapRoxx.get(i).get(j).get(k).getRoi());
 			}
@@ -786,7 +780,6 @@ public class OverlapRoxx {
 				//if ((!QuadOverlapRoxx.contains(allRox[i][j])) && (!TripleOverlapRoxx.contains(allRox[i][j])) && (!DoubleOverlapRoxx.contains(allRox[i][j]))){
 				if (!allOverlapIndex.contains(allRox[i][j].getIndex())) {
 					SingleRoxx.get(i).add(allRox[i][j]);
-					System.out.println("i " + i + " j " + j);
 					totalOverlap++;
 				}
 				else { continue;}

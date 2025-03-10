@@ -157,8 +157,6 @@ public class OverlapFilter {
 							if (((ShapeRoi) roxShape.clone()).and(interShape).getBounds().height>0) {
 								DoubleRoxx.get(d).get(c).add(rox);
 								DoubleRoxxAll.get(c).add(rox);
-								System.out.println("Double filtered " + c + " d= " + d + "index" + rox.getIndex());
-								System.out.println("double roxx size " + DoubleRoxx.get(d).get(c).size());
 							}	
 						}	
 					d++;	
