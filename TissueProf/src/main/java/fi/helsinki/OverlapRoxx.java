@@ -810,9 +810,7 @@ public class OverlapRoxx {
 		totalOverlap = 0;
 		
 	}
-			
 
-	
 	OverlapRoxx(){
 		this.QuadOverlapRoxx = QuadOverlapRoxx;
 		this.TripleOverlapRoxx = TripleOverlapRoxx;

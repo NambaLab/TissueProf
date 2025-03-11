@@ -247,21 +247,11 @@ public class runStardist {
 				        	
 			        	}
 			        }
-			        
-			        int h = i+1;
-			        //System.out.println("Count After Removal Ch" + h + " " + allRois[i].length );
-			        		        
+			           
 			        IndexCount = allRois[0].length + allRois[1].length + allRois[2].length + allRois[3].length - 1;
 			        if (RoiManager.getInstance().getCount()>0) {	
 			        	saveRois(OutputDir, imageName + "_Ch" + a);
 			        }
-			        //RoiEncoder.save(newManager.getSelectedRoisAsArray(), inputDir2 + "\\" + "thisRoi.roi");
-			        //newManager.run("Select All");
-			        
-			        //IJ.runMacro("roiManager(\"Save \", C:/Users/Emre/Desktop/EDM025-220321/ + File.separator + \"ImageName\" + \"_/" + ""\"zonenames[i]\" + \".zip\");");
-			        
-			        //WaitForUserDialog seeClose = new WaitForUserDialog("see close");
-			        //seeClose.show();
 			        
 			        IJ.selectWindow(imageName + "_SlicedAllChannels" + ".tif");
 			        
@@ -272,10 +262,7 @@ public class runStardist {
 			        
 			        imwin.dispose();
 			        imwin = null;
-			        
-			        //WaitForUserDialog closed = new WaitForUserDialog("First image closed? Second image there?");
-			        //closed.show();
-			        
+
 			        IJ.selectWindow(imageName + "_" +"EnhancedContrast" + "_" + "ZonesOnlyExpanded" + "_C" + a + ".tif");
 			        
 			        Window imwin2 = IJ.getImage().getWindow();
@@ -290,13 +277,6 @@ public class runStardist {
 			         
 			        System.gc();
 			    }
-			 
-			 /*
-			 System.out.println("allRois0.length " + allRois[0].length);
-			 System.out.println("allRois1.length " + allRois[1].length);
-			 System.out.println("allRois2.length " + allRois[2].length);
-			 System.out.println("allRois3.length " + allRois[3].length);
-			 */
 			 
 		} else if (doReanalysis==true) {
 			for (int i = 0 ; i < 4 ; i++ ) {

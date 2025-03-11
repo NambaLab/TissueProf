@@ -1,17 +1,8 @@
 package fi.helsinki;
 import java.awt.Color;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
 import ij.CompositeImage;
-import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
-import ij.plugin.ChannelSplitter;
-import ij.plugin.Concatenator;
-import ij.process.ImageProcessor;
 import ij.process.LUT;
 
 public class CompositeImageWithLUT {

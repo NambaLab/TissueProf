@@ -1,22 +1,12 @@
 package fi.helsinki;
-import java.awt.Shape;
-import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Random;
-import java.util.Map.Entry;
 
 import ij.IJ;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
-import ij.gui.WaitForUserDialog;
-import ij.measure.Measurements;
 import ij.plugin.frame.RoiManager;
-import ij.process.ImageStatistics;
 
 
 public class ProblemAreas {
@@ -50,7 +40,7 @@ public class ProblemAreas {
 	//ShapeRoi thisComposite;
 	
 	public void detectProblemAreas(OverlapRoxx OverlapRoxx, String OutputDir, String ZoneName, String ImageName, 
-			LinkedHashMap RoxDataMap, double ratio) {
+			LinkedHashMap<Rox, RoiData> RoxDataMap, double ratio) {
 		
         Random random = new Random();
   	  
@@ -102,18 +92,10 @@ public class ProblemAreas {
 		
 		
 		TripleChannelComposites = new ArrayList<ShapeRoi>();
-		int found = 0;
 		
 		if (OverlapRoxx.TripleOverlapRoxx!=null) {
-			for (ArrayList<ArrayList<Rox>> thisCombo : OverlapRoxx.TripleOverlapRoxx) {
-				//System.out.println("thisComboSize " + thisCombo.size());
-				
+			for (ArrayList<ArrayList<Rox>> thisCombo : OverlapRoxx.TripleOverlapRoxx) {		
 				if (thisCombo.get(0).size()>0) {
-					found++;
-					int ch = 0 ; 
-					//System.out.println(thisCombo.get(ch).size());
-					
-	
 					for (ArrayList<Rox> thisChannel : thisCombo) {
 						
 						tripleAllOverlapRoxx.add(thisChannel.get(0));
@@ -121,15 +103,12 @@ public class ProblemAreas {
 						ShapeRoi thisChannelComposite = new ShapeRoi(thisChannel.get(0).getRoi());
 						
 						for (int i = 1 ; i < thisChannel.size() ; i++) {
-							
 							tripleAllOverlapRoxx.add(thisChannel.get(i));
-							
 							thisChannelComposite = ((ShapeRoi) thisChannelComposite.clone()).or(new ShapeRoi(thisChannel.get(i).getRoi()));
 						}				
 						
 						TripleChannelComposites.add(thisChannelComposite);
 						
-						ch++;
 					}
 				}
 			}
@@ -147,11 +126,7 @@ public class ProblemAreas {
 			}
 			
 		}
-				
-		
-		
-		
-		
+
 		DoubleChannelComposites = new ArrayList<ShapeRoi>();
 		
 		
@@ -159,7 +134,6 @@ public class ProblemAreas {
 			for (ArrayList<ArrayList<Rox>> thisCombo : OverlapRoxx.DoubleOverlapRoxx) {
 				
 				if (thisCombo.get(0).size()>0) {		
-					int ch = 0 ; 
 					for (ArrayList<Rox> thisChannel : thisCombo) {
 						
 						doubleAllOverlapRoxx.add(thisChannel.get(0));
@@ -172,8 +146,7 @@ public class ProblemAreas {
 						}				
 						
 						DoubleChannelComposites.add(thisChannelComposite);
-						
-						ch++;
+
 					}
 				}
 			}
@@ -248,12 +221,8 @@ public class ProblemAreas {
 							ProblemRectangles.add(thisRectangle);
 							double recX = interData.X-50;
 							double recY = interData.Y-50;
-							//check coordinates
-							//System.out.println("Rectangle Coordinates : " + recX + ", " + recY);
-							//System.out.println("Rox Coordinates : " + thisRox.getPosition()[0] + ", " + thisRox.getPosition()[1]);
 							double recsX = thisRox.getPosition()[0]-50;
 							double recsY = thisRox.getPosition()[1]-50;
-							//System.out.println("Rectangle Coordinates according to Rox : " + recsX + ", " + recsY);
 						}
 					}
 				}
@@ -282,12 +251,8 @@ public class ProblemAreas {
 							ProblemRectangles.add(thisRectangle);
 							double recX = interData.X-50;
 							double recY = interData.Y-50;
-							//Check area coordinates
-							//System.out.println("Rectangle Coordinates : " + recX + ", " + recY);
-							//System.out.println("Rox Coordinates : " + thisRox.getPosition()[0] + ", " + thisRox.getPosition()[1]);
 							double recsX = thisRox.getPosition()[0]-50;
 							double recsY = thisRox.getPosition()[1]-50;
-							//System.out.println("Rectangle Coordinates according to Rox : " + recsX + ", " + recsY);
 							c++; 
 						}
 					}
@@ -317,12 +282,8 @@ public class ProblemAreas {
 							ProblemRectangles.add(thisRectangle);
 							double recX = interData.X-50;
 							double recY = interData.Y-50;
-							//check coordinates
-							//System.out.println("Rectangle Coordinates : " + recX + ", " + recY);
-							//System.out.println("Rox Coordinates : " + thisRox.getPosition()[0] + ", " + thisRox.getPosition()[1]);
 							double recsX = thisRox.getPosition()[0]-50;
 							double recsY = thisRox.getPosition()[1]-50;
-							//System.out.println("Rectangle Coordinates according to Rox : " + recsX + ", " + recsY);
 							c++;
 						}
 					}
@@ -339,7 +300,6 @@ public class ProblemAreas {
 			}
 			runStardist.saveRois(OutputDir, "ProblematicAreas" + ZoneName);
 		}
-		
 		
 		ProblemRectangles = new ArrayList<Roi>();
 		

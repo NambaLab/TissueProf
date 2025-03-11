@@ -1,5 +1,4 @@
 package fi.helsinki;
-import java.awt.Rectangle;
 import java.awt.Window;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,20 +9,15 @@ import java.util.Iterator;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import ij.IJ;
-import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.Roi;
 import ij.gui.WaitForUserDialog;
 import ij.measure.Measurements;
 import ij.process.ImageStatistics;
-
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 
 public class OverlapTables {
 	
@@ -39,15 +33,8 @@ public class OverlapTables {
 		HSSFWorkbook wb = new HSSFWorkbook();
 		Sheet Counts = wb.createSheet("Counts");
 		Sheet CountsInfo = wb.createSheet("CountsInfo");
-		//Sheet Intensities = wb.createSheet("Intensities");
+		Sheet IntensitiesBin = wb.createSheet("Intensities");
 		
-		Sheet IntensitiesBin;
-		
-		IntensitiesBin = wb.createSheet("Intensities");
-		
-		CellStyle style;
-		HSSFDataFormat format1 = wb.createDataFormat();
-		Row row;
 		Cell cell;
 		Cell cell1;
 		
@@ -102,8 +89,7 @@ public class OverlapTables {
 			}
 			
 			ArrayList<String> TripleCombColsName = new ArrayList<String>();
-			ArrayList<String> DoubleCombName = new ArrayList<String>();
-			
+
 			int c = 0 ; 
 			if (channelSize>3) {
 				for (int v = 0 ; v < 4 ; v ++) {
@@ -125,7 +111,6 @@ public class OverlapTables {
 			}
 			else {
 	 			if (channelSize==3) {
-	 				int ix = 0 ;
 	 				int p = 0 ; 
 	 				int type = 0;
 					for (int i = 0 ; i < 4 ; i ++) {
@@ -308,8 +293,6 @@ public class OverlapTables {
 					}
 				} else if (channelSize==2) {
 					
-					int q = 0 ;
-					
 					if (channelSelection[0]==true && channelSelection[1]==true) {
 						dtype = 0; 
 					}else if (channelSelection[0]==true && channelSelection[2]==true) {
@@ -412,7 +395,7 @@ public class OverlapTables {
 		c=0;
 		
 		Row countRow = Counts.getRow(1);
-		Iterator cellIterate = countRow.cellIterator();
+		Iterator<Cell> cellIterate = countRow.cellIterator();
 		
 		int[] allSizes = new int[15];
 		
@@ -487,7 +470,6 @@ public class OverlapTables {
 		
 		int d = 0 ; 
 		int dcount = 0 ;
-		int m = 0 ; 
 		int t = 0 ;
 		
 		for (ArrayList<ArrayList<Rox>> thisCombo : OverlapRoxx.TripleOverlapRoxx) {
@@ -619,7 +601,6 @@ public class OverlapTables {
 			
 			int firstcol = 6;
 			for (int i = 0 ; i < 2 ; i++) {
-				int chc = 0 ; 
 				if (i==1) {firstcol = 29;}
 				int currentcol = firstcol; 
 				for (int j = 0 ; j < 4 ; j++) {
@@ -687,7 +668,6 @@ public class OverlapTables {
 					for (int i = 0 ; i < 4 ; i++) {
 					
 						int a = i + 2;
-						int cha= i +1 ;
 						//6, 11, 16, 21
 						if (i==0) { a = i +2;}
 						if (i==1) { a = i + 6;}

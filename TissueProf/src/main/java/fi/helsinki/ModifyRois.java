@@ -1,27 +1,25 @@
 package fi.helsinki;
 import java.awt.AWTEvent;
 import java.awt.Button;
-import java.awt.Checkbox;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.KeyboardFocusManager;
 import java.awt.Panel;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.AWTEventListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -32,34 +30,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.prefs.Preferences;
-import java.awt.event.MouseEvent;
-import java.awt.LayoutManager;
-import java.awt.GridLayout;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
-import javax.swing.border.Border;
 
-import org.apache.commons.io.FileSystemUtils;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
-import com.google.api.client.util.Strings;
-
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImageListener;
@@ -68,16 +52,9 @@ import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.gui.ImageWindow;
 import ij.gui.Roi;
-import ij.gui.WaitForUserDialog;
-import ij.measure.ResultsTable;
 import ij.plugin.Colors;
-import ij.plugin.LutLoader;
 import ij.plugin.frame.RoiManager;
 import ij.process.LUT;
-import net.imagej.display.ImageCanvas;
-
-import java.awt.event.AWTEventListener;
-import java.awt.event.ActionEvent;
 
 
 @Plugin(type = Command.class, label = "Command From Macro", menuPath = "Plugins>TissueProf>Tools>ModifyROIs")
@@ -148,20 +125,11 @@ public class ModifyRois implements Command {
 			try {
 				
 				modRunThread = Thread.currentThread();
-				
-				boolean ModifyRois = true; 
-				
-				//create a ROI Manager instance
+
+				//Create a ROI Manager instance
 				RoiManager.getRoiManager();
 				
 				ColorChoice = Colors.getColors();
-				
-				//Checking colors for diagnostic purposes
-				/*
-				for (String col : ColorChoice) {
-					System.out.println(col);
-				}
-				*/
 				
 				ChRois = new ArrayList<ArrayList<Roi>>();
 				BoundsList = new ArrayList<ArrayList<Rectangle>>();
@@ -258,6 +226,7 @@ public class ModifyRois implements Command {
 					IJ.open(roiChannelPaths[i]);
 					
 					Roi[] thisCRois = RoiManager.getInstance().getRoisAsArray();
+					@SuppressWarnings("unused")
 					int cl = 0 ;
 					for (Roi roi : thisCRois) {
 						
@@ -295,6 +264,7 @@ public class ModifyRois implements Command {
 				
 				IJ.open(allRoisPath);
 				
+				@SuppressWarnings("unused")
 				int cl = 0;
 					
 				Roi[] AllRois = RoiManager.getInstance().getRoisAsArray();
@@ -350,18 +320,7 @@ public class ModifyRois implements Command {
 			
 				IJ.log("Loading ROIs and applying Colors");
 				
-				//Check channel ROI set lengths
-				/*
-				int c= 0;
-				for (ArrayList<Roi>thisList : ChRois) {
-					System.out.println("ch " + c + " size " + ChRois.get(c).size());
-					c++;
-				}
-				*/
-				
-				
 				ModifyRoiManager();
-			
 				
 				ChannelThread thisChannelThread = new ChannelThread();
 				
@@ -375,7 +334,8 @@ public class ModifyRois implements Command {
 		        
 		        // Get the result from the FutureTask (blocks until the result is available)
 		       
-		        Boolean channelResult;
+		        @SuppressWarnings("unused")
+				Boolean channelResult;
 		        
 		        try {
 		            channelResult = futureTask.get() != null; 
@@ -484,25 +444,18 @@ public class ModifyRois implements Command {
 	    public Boolean call() throws Exception {
 	    	
 			roiFrame2 new2Frame = new roiFrame2();		
-			String running;
 			
-			//saved = false; 
-			
-			int c = 0;
 			while (this.getSave() == false && modcanceled == false ) {
 				Thread.sleep(5);	
 			}
 			
-			
 	    	if (saved ==true ) {
-	    		
-	    		System.out.println("saved and returning");
+	    		System.out.println("Save complete");
 	    	}
 
 	    	new2Frame.dispose();
 	    	return saved;
-			
-					
+	    	
 	    }
 
 	}
@@ -626,7 +579,6 @@ public class ModifyRois implements Command {
 				String Ooriginalname = filePatha.getFileName().toString();
 				String inputDirr = filePatha.getParent().toString();
 				Roi[] allRoisEnd = RoiManager.getInstance().getRoisAsArray();
-				ActionListener[] actListen = addButton.getActionListeners();
 
 				RoiManager.getInstance().reset();
 
@@ -652,8 +604,7 @@ public class ModifyRois implements Command {
 								//System.out.println("ChRois " + p + " size " + ChList.size());
 									
 								Iterator<Roi> RoiIterator = ChList.iterator();
-								int count = 0 ;
-								
+
 								while (RoiIterator.hasNext()) {
 	
 									Roi roi = (Roi) RoiIterator.next();	 
@@ -666,7 +617,6 @@ public class ModifyRois implements Command {
 										RoiManager.getInstance().addRoi(roi);
 									}
 								}
-								//System.out.println("Count at the end of " + i + " " + count);
 							}
 						
 						
@@ -924,60 +874,19 @@ public class ModifyRois implements Command {
 
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
-
-	        	//System.out.println("addButton ActionListener count " + addButton.getActionListeners().length);
-	        	/*
-	        	System.out.println(this.toString());
-	        	System.out.println("For the 1st event " +
-	    	        	"Command " + e.getActionCommand()
-	    	        	+ "ID " + e.getID()
-	    	        	+ "Source " + e.getSource()
-	    	        	+ "ToString " + e.toString()
-	    	   
-	    	        	);
-				*/
 	        	
 	        	Roi roi = getSelectedRoi();
 	        	
 	        	if (e.getActionCommand()!=null) {
-		        	//System.out.println("Roi Manager count before adding " + RoiManager.getInstance().getCount());
-				
-	        	 	//System.out.println("selected Roi bounds" + roi.getBounds().toString());
-	        	 	
 	        	 	if (roi != null) {
 	        	 		Integer ChanName = CurrentChannel + 1;
-	        	 		//System.out.println(ChRois.size());
-	        	 		
-	        	 		//Diagnostics
-	        	 		/*
-	        	 		for (int h = 0 ; h < ChRois.size() ; h++) {
-	        	 			System.out.println("Ch Rois " + h + " size " + ChRois.get(h).size());
-	        	 			System.out.println("Ch BoundsSize before " + h +" "+ BoundsList.get(h).size());
-	        	 		}
-	        	 		*/
-	        	 		
-	        	 		//System.out.println("Current Channel " + CurrentChannel);
 	        	 		Integer CurChan = ChRois.get(CurrentChannel).size() + 1;
-	        	 		
-	        	 		//roi.setGroup(ChanName);
 	        	 		roi.setGroup(CurrentGroup);
 	        	 		roi.setName(ChanName + "-" + CurChan);
-	        	 		
-	        	 		/*
-	        	 		System.out.println("Current Color " + CurrentColor);
-	        	 		System.out.println("Selected current channel?" + ChannelSelect[CurrentChannel]);
-	        	 		System.out.println("now  saving ?" + nowSaving);
-	        	 		*/
-	        	 		
 	        	 		if (!ChannelSelect[CurrentChannel]==false && nowSaving == false ) {
 	        	 			
 		        	 		ChRois.get(CurrentChannel).add(roi);
-			        		//System.out.println("added roi to ChRois");
-		        	 		//System.out.println("Add button clicked!");
-			        		//System.out.println("Roi Stroke Color Before " + roi.getStrokeColor());
 			        		BoundsList.get(CurrentChannel).add(roi.getBounds());
-			        		//System.out.println("Added roi to boundslist");
-			        		
 				            cc++;
 	        	 		}
 	        	 	}
@@ -986,35 +895,11 @@ public class ModifyRois implements Command {
 	        	 	try {
 		    	        for (ActionListener Listener : originalListeners) {	
 		    	        	Listener.actionPerformed(e);
-		    	        	
-		    	        	//Get event info
-		    	        	/*
-		    	        	System.out.println("For the 2nd event " +
-		    	        	"Command " + e.getActionCommand()
-		    	        	+ "ID " + e.getID()
-		    	        	+ "Source " + e.getSource()
-		    	        	+ "ToString " + e.toString()
-		    	        	);
-		    	        	 */
 		    	        }
 		    	      
 	        	 	} catch (Exception f) {
 	        	 		f.printStackTrace();
-	        	 	}
-		    	    
-	    	        
-	    	        //Check colors
-	    	        //System.out.println("Roi stroke color after " + roi.getStrokeColor());
-					//System.out.println("Roi Manager count after adding " + RoiManager.getInstance().getCount());
-	        	 	
-	        	 	//Check size of ChRois after addition
-	        	 	/*
-	    	 		for (int h = 0 ; h < ChRois.size() ; h++) {
-	    	 			System.out.println("Ch Rois " + h + " size after" + ChRois.get(h).size());
-	    	 			System.out.println("Ch BoundsSize after " + h + BoundsList.get(h).size());
-	    	 		}
-	    	 		*/
-					
+	        	 	}					
 	        }
         	
 	        public Roi getSelectedRoi() {
@@ -1023,11 +908,8 @@ public class ModifyRois implements Command {
 	        	}
 	        	else {return null;}
         	}
-        	
-			}
+		});
 			
-		);									
-		
 		
 		for (Component comp : RoiManager.getInstance().getComponents()) {
             if (comp instanceof Panel) {
@@ -1046,27 +928,11 @@ public class ModifyRois implements Command {
                         			System.out.println("delete!");
                         			if (RoiManager.getInstance().getCount()!=0 && RoiManager.getInstance().selected()!=0 && ChannelSelect[CurrentChannel]!=false) {
                         				int index = RoiManager.getInstance().getSelectedIndex();
-                        				//ChRois.get(CurrentChannel).remove(RoiManager.getInstance().getRoi(index));
                         				Rectangle thisBounds = RoiManager.getInstance().getRoi(index).getBounds();
-                        				
-                        				//Check BoundsList
-                        				//System.out.println("BoundsListSize before " + BoundsList.get(CurrentChannel).size());
-                        				//System.out.println("ChanneRoilSize before " + ChRois.get(CurrentChannel).size());
-                        				
                         				int deleteIndex = BoundsList.get(CurrentChannel).indexOf(thisBounds);
-                        				
                         				BoundsList.get(CurrentChannel).remove(deleteIndex);
                         				ChRois.get(CurrentChannel).remove(deleteIndex);
-                        				
-                        				//Check BoundsList after addition
-                        				//System.out.println("BoundsListLength after" + BoundsList.get(CurrentChannel).size());
-                        				//System.out.println("Current ChannelRois Length after" + ChRois.get(CurrentChannel).size());
-                        				
-                        				//BoundsList.get(CurrentChannel).get(index)
-                        				
-                        				
-                        				//System.out.println("Removed ROI with index " + index + " channel index " + deleteIndex);
-                        				
+                        					
                         			}
                         			try {
                                 	for (int i = 0 ; i < oldListeners.length ; i++) {
@@ -1076,9 +942,6 @@ public class ModifyRois implements Command {
                         				f.printStackTrace();
                         			}
                        
-                                	//Check RoiManager status after deletion
-                                	//System.out.println("Roi Manager after action performed " + RoiManager.getInstance().getCount());
-                                	
                         		}
                         	});
                         }
@@ -1092,8 +955,6 @@ public class ModifyRois implements Command {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyChar() == 't') {
-					// Simulate a button click
-					//System.out.println("t pressed ");
 					addButton.getActionListeners()[0].actionPerformed(new ActionEvent(addButton, 1001, null));
 				}
 			}
@@ -1125,8 +986,6 @@ public class ModifyRois implements Command {
 		ImagePlus.removeImageListener(RoiManagerKeyListener.getCustomImageListener());
 		
 		//Remove addButton custom action listener and keep only original action listener(?)
-		
-		
 	}
 	
 	
@@ -1365,8 +1224,6 @@ public class ModifyRois implements Command {
 	    public static class GlobalEventListener {
 	        public static void AWTListen() {
 	            // Add a global AWT event listener
-	        	AWTEventListener[] AWTListenersNow = Toolkit.getDefaultToolkit().getAWTEventListeners();
-	        	
 	        	Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
 	                @Override
 	                public void eventDispatched(AWTEvent event) {
@@ -1378,9 +1235,6 @@ public class ModifyRois implements Command {
 	                    }
 	                }
 	            }, AWTEvent.KEY_EVENT_MASK);
-	        	
-	        	AWTEventListener[] AWTListenersAfter = Toolkit.getDefaultToolkit().getAWTEventListeners();
-	        	
 	        	
 	        }
 	        

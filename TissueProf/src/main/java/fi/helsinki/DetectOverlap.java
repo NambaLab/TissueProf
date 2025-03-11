@@ -1,14 +1,11 @@
 package fi.helsinki;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 import ij.IJ;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
-import ij.gui.WaitForUserDialog;
 import ij.plugin.frame.RoiManager;
 
 public class DetectOverlap {

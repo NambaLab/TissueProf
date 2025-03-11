@@ -8,9 +8,7 @@
 
 package fi.helsinki;
 
-
 import java.awt.Button;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.TextField;
 import java.awt.Window;
@@ -19,7 +17,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -158,14 +155,7 @@ public class TissueProf implements PlugIn, Command {
 
     @Parameter
     protected DatasetIOService datasetService;
-    
-    
-    //@Parameter
-    //protected Dataset dataset = null;
-    
-    //@Parameter 
-    //static protected ImageJ imj;
-    
+
     @Parameter
     protected StatusService status;
     
@@ -191,31 +181,17 @@ public class TissueProf implements PlugIn, Command {
     // Just use the LogService!
     // There is no need to construct it, since the Context
     // has already provided an appropriate instance.
-	  
 	
   }
 	
-	  
-	 
-	
-	public static void main(String[] args) throws FormatException, IOException, InterruptedException {
-		
-		
-		
-		
-		Font defaultFont = new Font("Default", Font.PLAIN, 12); // Create a dummy font
-		//ImageJ imj = new ImageJ();
-		
+  
+  public static void main(String[] args) throws FormatException, IOException, InterruptedException {
 		imj.launch(args);
-		//imj.command().run(OverlapAnalysis5.class, true);
-		
 	}
 	
 	public TissueProf(){
 		this.OverlappedRoxx = OverlappedRoxx;
 	}
-	
-	
 	
 	@Override
 	public void run(){
@@ -224,19 +200,14 @@ public class TissueProf implements PlugIn, Command {
 		//Make code more modular 
 		//Implement multithreading to increase the speed of DetectOverlap, OverlapFilter, OverlapRoxx and intensity measurements in OverlapTables
 		
-		Window[] nonImage = WindowManager.getAllNonImageWindows();
-		
 		IJ.run("Fresh Start");
 		
 		IJ.wait(400);
-		
-		Thread thisThreadd = Thread.currentThread();
 		
 		while (canceled==false && finished ==false) {	
 			try {		
 			
 			Frame frame1 = new Frame();
-			Frame frame2 = new Frame();
 
 			Dialogs.zoneNoDialog thisDialog = new Dialogs.zoneNoDialog("Number of Zones");
 			
@@ -277,7 +248,6 @@ public class TissueProf implements PlugIn, Command {
 			
 			Vector zoneNamesv = zoneNameDialog.getStringFields();
 			
-			
 			zoneNames = new ArrayList<String>();
 
 			synchronized(zoneNamesv) {
@@ -298,13 +268,8 @@ public class TissueProf implements PlugIn, Command {
 			//Collect inputs
 			
 			String[] channelNames = new String[4];
-			
-			//System.out.println("channelName.length " + channelNames.length);
-			
-			//System.out.println("channelSelection.length" + channelSelection.length);
-			
+
 			String filePathString = overlapDialog.getNextString();
-			//System.out.println("Input File from String input" + filePathString);
 			
 			String OutputDir = overlapDialog.getNextString();
 	
@@ -317,7 +282,6 @@ public class TissueProf implements PlugIn, Command {
 			
 			Path[] filePaths = new Path[1];
 			filePaths[0] = filePath;
-			
 			
 			//Link paths and their string representations
 			LinkedHashMap<Path, String> linkedMap = new LinkedHashMap<Path, String>();
@@ -339,10 +303,6 @@ public class TissueProf implements PlugIn, Command {
 			    	System.out.println("Input Directory: " + " " + inputDir2);
 			    }
 			}
-			
-			//Verify image name 
-			//System.out.println("Image Name 2: " + imageName);
-			
 			
 			////Channel Parameters 
 			
@@ -366,18 +326,7 @@ public class TissueProf implements PlugIn, Command {
 				}
 			}
 			
-			//Check that channel names have been collected correctly
-			//System.out.println("Channel Check");
-			
-			c=0;
-			for (String channelName:channelNames) {
-				System.out.println(channelName);
-				c++;
-			}
-			
-			c=0;
-			
-			//collect overlap threshold, contrast amount, measureintensity option
+			//Collect overlap threshold, contrast amount, measureintensity option
 			overlapThreshold = overlapDialog.getNextNumber();
 			enhanceContrast = overlapDialog.getNextNumber();
 			measureIntensity = overlapDialog.getNextBoolean();
@@ -410,23 +359,18 @@ public class TissueProf implements PlugIn, Command {
 				}
 						
 				for (int i = 0 ; i < 4 ; i++) {
-					int a = i+1;
-					
 					String thisModel=overlapDialog.getNextString();
 				
 					originalModelPaths[i] = thisModel;
-						//Check model path
-						//System.out.println(thisModel);
-						String thisdoublemodel = thisModel.replaceAll("\\\\", "\\\\\\\\");
-						String thisdoublemodell = thisdoublemodel.replaceAll("\\\\\\\\", "\\\\\\\\\\\\\\\\");
+					String thisdoublemodel = thisModel.replaceAll("\\\\", "\\\\\\\\");
+					String thisdoublemodell = thisdoublemodel.replaceAll("\\\\\\\\", "\\\\\\\\\\\\\\\\");
+					
+					if (thisModel.startsWith("\\\\")){
+						thisdoublemodell = thisdoublemodell.substring(2);
 						
-						if (thisModel.startsWith("\\\\")){
-							thisdoublemodell = thisdoublemodell.substring(2);
-							
-						}
-						
-						//System.out.println("model " + a + " " + thisdoublemodell);
-						modelPaths[i]=thisdoublemodell;
+					}
+					
+					modelPaths[i]=thisdoublemodell;
 						
 				}
 				
@@ -616,8 +560,6 @@ public class TissueProf implements PlugIn, Command {
 	        
 	        RoiManager newManager = RoiManager.getInstance();
 	        
-	        int maxLength = Arrays.stream(allRoiLengths).max().getAsInt();
-	        
 			newManager.reset();
 			
 			//Create a 2D Array to fill with RoiData objects
@@ -728,16 +670,9 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        //Clean up Resources
 		        
-		        //IJ.selectWindow(imageName + "_" + "EnhancedContrast_CDUPLICATE_C" + "2" + ".tif");
-		        //Window imwin = IJ.getImage().getWindow();
-		        
-		        
 		        IJ.getImage().flush();
 		        IJ.getImage().close();
-		        
-		        //imwin.dispose();	
-		        //imwin = null;
-		        
+
 		        WindowManager.closeAllWindows();
 		        
 		        //Open an image to be used for measurements by IJ
@@ -774,7 +709,6 @@ public class TissueProf implements PlugIn, Command {
 		        		RoxDataMap.get(rox).setArea(IJ.getImage());
 		        	}
 		        }
-		        
 		        
 		        for (int i = 0 ; i < RoisFiltered.TripleRoxx.size() ; i++) {
 		        	for (int j = 0 ; j < RoisFiltered.TripleRoxx.get(i).size(); j++) {
@@ -851,9 +785,6 @@ public class TissueProf implements PlugIn, Command {
 					}
 				}
 				
-				//Check all overlap instances
-				//System.out.println("OriginalTotalOverlapCount " + allOverlapCount);			
-				
 				Iterator<Rox> quadIter = OverlappedRoxx.QuadInterRoxx.iterator();
 				while (quadIter.hasNext()) {
 					RoiManager.getInstance().addRoi(((Rox) quadIter.next()).getRoi());
@@ -880,9 +811,6 @@ public class TissueProf implements PlugIn, Command {
 					}
 				}
 				
-				//Check the number of ROIs participating in overlaps together with the overlapping area ROIs 
-				//System.out.println("allOverlapCount with all InterRox Added " + allOverlapCount);
-				
 				runStardist.saveRois(OutputDir, imageName + "_" + zoneNames.get(c) + "_AllROIs");
 				
 				WindowManager.closeAllWindows();
@@ -896,7 +824,6 @@ public class TissueProf implements PlugIn, Command {
 					// TODO Auto-generated catch block				
 					e.printStackTrace();
 				}
-		        
 		        
 		        NextIndex = 0 ;
 
@@ -1040,17 +967,11 @@ public class TissueProf implements PlugIn, Command {
 			List<Display<?>> finalList = imj.display().getDisplays();
 			
 			//Check the number of displays working with ImageJ
-			//System.out.println("FinalList size " + finalList.size());
-			
-	    	ListIterator finalIterated = finalList.listIterator();
-			
-	    	int dis = 0 ; 
-	    	
+
+	    	ListIterator<Display<?>> finalIterated = finalList.listIterator();
+				    	
 	    	while (finalIterated.hasNext()) {
-	    		
 	    		Display thisDisplay = (Display) finalIterated.next();
-	    		
-	    		dis++;	
 	    	}
 	    	
 	    	finalList.removeAll(finalList);
@@ -1069,8 +990,7 @@ public class TissueProf implements PlugIn, Command {
 			}
 	        
 	        IJ.wait(5000);
-	        
-	    	
+	       
 			System.gc();
 			
 			if(finished == true) {
@@ -1084,13 +1004,9 @@ public class TissueProf implements PlugIn, Command {
 		canceled = false;
 		finished = false;
 		
-		
-	
 	}
 
-
-
-
+	
 	@Override
 	public void run(String arg) {
 		// TODO Auto-generated method stub

@@ -450,11 +450,11 @@ public class Dialogs {
 		String ZoneName;
 		OverlapRoxx OverlapRoxx;
 		String ImageName; 
-		LinkedHashMap RoxDataMap;
+		LinkedHashMap<Rox, RoiData> RoxDataMap;
 		double ratio;
 		
     	public ProblemAreaDialog(String Title, OverlapRoxx OverlapRoxx, String OutputDir, String ZoneName, String ImageName, 
-    			LinkedHashMap RoxDataMap, double ratio) {
+    			LinkedHashMap<Rox, RoiData> RoxDataMap, double ratio) {
     		super(Title);
     		this.OverlapRoxx = OverlapRoxx;
     		this.Title = Title;

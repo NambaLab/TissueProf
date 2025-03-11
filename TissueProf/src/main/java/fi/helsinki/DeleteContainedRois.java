@@ -1,5 +1,4 @@
 package fi.helsinki;
-import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -8,14 +7,10 @@ import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
 import ij.IJ;
-import ij.ImagePlus;
-import ij.WindowManager;
 import ij.gui.Roi;
 import ij.gui.WaitForUserDialog;
-import ij.measure.Measurements;
 import ij.measure.ResultsTable;
 import ij.plugin.frame.RoiManager;
-import ij.process.ImageStatistics;
 
 @Plugin(type = Command.class, label = "Command From Macro", menuPath = "Plugins>TissueProf>Tools>DeleteContainedROIs")
 public class DeleteContainedRois implements Command {
@@ -235,7 +230,6 @@ public class DeleteContainedRois implements Command {
 			} catch (NullPointerException e) {
 				e.printStackTrace();
 			}
-			
 			
 		}
 		
