@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 public class OverlapThread extends Thread implements Callable {
 	
 	OverlapFilter overlapFilter; 
-	LinkedHashMap roxDataMap; 
+	LinkedHashMap<Rox,RoiData> roxDataMap; 
 	Rox[][] allRox;
 	int NextIndex;
 	Boolean[] channelSelection;

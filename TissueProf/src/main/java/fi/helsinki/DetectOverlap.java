@@ -48,35 +48,20 @@ public class DetectOverlap {
 				channelCompositeShape[c] = new ShapeRoi(channelRox[0].getRoi());
 				
 			    for (int i = 1 ; i < channelRox.length ; i++) {
-			    	
-			    	//System.out.println("inside channel" + i);
-			    	
-			    	int lengthbefore = channelCompositeShape[c].getRois().length;
-			    	
-			    	//System.out.println("ChannelCompositeLengthBefore " + lengthbefore);
-			    	
 			    	Roi thisRoi = channelRox[i].getRoi();
-			    	
 			    	ShapeRoi channelRoiShape = new ShapeRoi(thisRoi); 
 			    	//ShapeRoi channelRoiShape = new ShapeRoi(channelRox[i].getRoi()); 
 			    	ShapeRoi channelCompositeClone =(ShapeRoi) channelCompositeShape[c].clone();
 			    	channelCompositeShape[c] = channelCompositeClone.xor(channelRoiShape);
 			    	
 			    	int lengthafter = channelCompositeShape[c].getRois().length;
-			    	
-			    	//System.out.println("ChannelCompositeLengthAfter " + lengthafter);
-			   
 			    }
 			    
 			    //System.out.println("saving into composite array " + "Composite " + c + " " + channelCompositeShape[c].getRois().length);
 
 			    channelCompositeRoi[c] = channelCompositeShape[c].shapeToRoi();
-			    
-			    
 			    RoiManager.getInstance().reset();
-			    
 			    RoiManager.getInstance().addRoi(channelCompositeShape[c].shapeToRoi());
-
 			}
 		c++;
 		}
@@ -87,9 +72,8 @@ public class DetectOverlap {
 					
 					QuadInterComposite = ((ShapeRoi) channelCompositeShape[0].clone()).and(channelCompositeShape[1]).and(channelCompositeShape[2]).and(channelCompositeShape[3]);
 					
-					//System.out.println("there is at least one quad " + QuadInterComposite.getBounds().height);
 				}
-				else {System.out.println("no quadruple intersection");
+				else {System.out.println("No quadruple intersection");
 				}
 			}
 		}
@@ -113,11 +97,9 @@ public class DetectOverlap {
 								channelCompositeShape[w]!=null && channelCompositeShape[y]!=null) {
 							ShapeRoi channelVClone = (ShapeRoi) channelCompositeShape[v].clone();
 							if (channelVClone.and(channelCompositeShape[w]).and(channelCompositeShape[y]).getBounds().height>0){
-								//System.out.println("r = " + r);
 								ShapeRoi channelVClone2 = (ShapeRoi) channelCompositeShape[v].clone();
 								ShapeRoi TripleInterComposite = channelVClone2.and(channelCompositeShape[w]).and(channelCompositeShape[y]);
 								TripleInterComposites[r] = TripleInterComposite;
-								//System.out.println("Triple found v " + v + "w " + w + "y " + y + "r " + r);
 							}
 						}
 					r++;
@@ -131,12 +113,10 @@ public class DetectOverlap {
 			for (int w=1; w<4; w++) {
 				if (w>v) {
 					if (channelSelection[v]==true && channelSelection[w]==true && channelCompositeShape[v]!=null && channelCompositeShape[w]!=null) {
-					//System.out.println("v = " + v + " w = " + w + " r = " + r);
-					if (((ShapeRoi) channelCompositeShape[v].clone()).and(channelCompositeShape[w]).isArea()){
-						//System.out.println("Double found " + " v = " + v + " w = " + w + " r = " + r);
-						ShapeRoi DoubleInterComposite = new ShapeRoi(((ShapeRoi) channelCompositeShape[v].clone()).and(channelCompositeShape[w]));
-						DoubleInterComposites[r]=DoubleInterComposite;
-					}
+						if (((ShapeRoi) channelCompositeShape[v].clone()).and(channelCompositeShape[w]).isArea()){
+							ShapeRoi DoubleInterComposite = new ShapeRoi(((ShapeRoi) channelCompositeShape[v].clone()).and(channelCompositeShape[w]));
+							DoubleInterComposites[r]=DoubleInterComposite;
+						}
 					}
 				r++;
 			}
@@ -165,14 +145,6 @@ public class DetectOverlap {
 		}
 		
 		channelCompositeShape = new ShapeRoi[4];
-		
-		//QuadInterComposite = null;
-		//throws nullpointer in next run
-		
-		
-		//QuadInterComposite = new ShapeRoi;
-		
-		
 		
 		for (int i = 0 ; i < TripleInterComposites.length ; i++) {
 			TripleInterComposites[i]= null;

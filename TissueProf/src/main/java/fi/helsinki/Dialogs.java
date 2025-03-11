@@ -56,7 +56,8 @@ public class Dialogs {
 		public overlapDialog(String title, Frame parent) {
 			super(title, parent);
 			// TODO Auto-generated constructor stub
-		//GenericDialog myOverlapDialog = new GenericDialog("Parameters");
+			//Center buttons and panels properly
+			
 			this.setSize(500,350);	
 			
 		overTitle = title;
@@ -72,8 +73,6 @@ public class Dialogs {
 		this.addFileField("Image File", InputDir + "/" + imageName, 25);
 		this.addDirectoryField("Output Folder", prefs.get("OutputDir", imageName), 25);
 		this.addStringField("File type (suffix)", prefs.get("suffix", ""));	
-		
-		String[] radioNames = {"Co-expression Analysis", "Reanalysis"};
 		
 		Panel radioPanel = new Panel();
 		
@@ -204,8 +203,6 @@ public class Dialogs {
 			this.addToSameRow();
 			this.addNumericField("Delete smaller than (µm²) ->", prefs.getDouble("deleteArea4", 25),6);
 			
-			
-			
 			panel = new Panel();
 			
 			button = new Button();
@@ -229,9 +226,6 @@ public class Dialogs {
 					
 			//this.setSize(476,710);
 			this.setSize(500,750);
-			
-			Font messageFont = this.getFont();
-			
 			addWindowListener(this);
 		}
 		
@@ -261,12 +255,6 @@ public class Dialogs {
 			Border emptyBorder = BorderFactory.createEmptyBorder();
 			thisField2.setBorder(emptyBorder);
 			
-			
-			
-			//thisField.setFont(new Font(30));
-			
-			//family=Dialog,name=Dialog,style=plain,size=12
-			
 			Font thisFont = new Font(Font.DIALOG, Font.BOLD, 12);
 			
 			thisField2.setFont(thisFont);
@@ -277,20 +265,10 @@ public class Dialogs {
 			
 			textPanel2.add(thisField2, BorderLayout.CENTER);
 			textPanel2.setSize(new Dimension(500,25));
-			//System.out.println("panel size " + textPanel2.getSize().toString());
 			textPanel2.setName("Roi message panel");
 			
 			this.addPanel(textPanel2, GridBagConstraints.EAST, new Insets(5,5,5,-40));
-			
-			
-			
-			
-			//this.repaint();
-			
-			//this.setVisible(false);
-			//Dialogs.overlapDialog newDialog = new Dialogs.overlapDialog(overTitle, theFrame);
-			
-			//this.addFileField("Image File", "");
+
 			this.addFileField("ROIs for Ch1", prefs.get("Ch1Rois", ""),25);
 			this.addFileField("ROIs for Ch2", prefs.get("Ch2Rois", ""),25);
 			this.addFileField("ROIs for Ch3", prefs.get("Ch3Rois", ""),25);
@@ -298,19 +276,12 @@ public class Dialogs {
 			
 			panel = new Panel();
 			
-			
 			button = new Button();
 			button.setLabel("OK");
 			button.setFocusable(true);
 			panel.add(button);
 			button.addActionListener(this);
-			//button.setLocation
-			/*button2 = new Button();
-			button.setLabel("OK");
-			panel.add(button2);
-			button2.addActionListener(this);
-			 */
-			//this.addPanel
+			
 			button3 = new Button();
 			button3.setLabel("Cancel");
 			panel.add(button3);
@@ -319,30 +290,8 @@ public class Dialogs {
 			panel.setName("OK Cancel panel");
 			//this.addPanel(panel, GridBagConstraints.EAST, new Insets(0,0,0,-37));
 			this.addPanel(panel, GridBagConstraints.EAST, new Insets(0,0,0,-58));
-			
-			
-			
 			this.setSize(500,550);
-			
 			this.doLayout();
-			//this.pack();
-			//this.centerDialog(true);
-			
-			//System.out.println("Reanalysis size " + this.getSize().toString());
-			
-			//this.setLocation(800, 400);
-			//centerDialogOnMainScreen(this);
-			
-			//Component List for diagnostic purposes
-			/*
-			for (int i = 24 ; i < this.getComponentCount(); i ++) {
-				Component thisComponent = this.getComponent(i);
-				System.out.println("component" + i + " "  + thisComponent.getName() + " size "  + thisComponent.getSize().toString());
-			}
-			*/
-			
-			Font messageFont = this.getFont();
-			
 			addWindowListener(this);
 			
 		}

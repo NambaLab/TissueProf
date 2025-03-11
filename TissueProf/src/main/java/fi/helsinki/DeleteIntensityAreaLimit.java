@@ -34,9 +34,6 @@ import ij.measure.ResultsTable;
 import ij.plugin.frame.RoiManager;
 
 
-
-	
-
 @Plugin(type = Command.class, label = "Command From Macro", menuPath = "Plugins>TissueProf>Tools>DeleteAreaIntensity")
 public class DeleteIntensityAreaLimit implements Command {
 	
@@ -60,20 +57,15 @@ public class DeleteIntensityAreaLimit implements Command {
 				
 				ExecutorService executor = Executors.newSingleThreadExecutor();
 				
-				// Execute the FutureTask in the thread pool
 				executor.submit(futureTask);
 				
+				@SuppressWarnings("unused")
 				Boolean deleteResult;
 				
 		        try {
 		            deleteResult = futureTask.get() != null; 
-		            // Use overlapRoxxResult obtained from the thread
 		        } catch (InterruptedException | ExecutionException | NullPointerException e) {
-		            // Handle exceptions
 					incanceled = true;
-					
-					//System.out.println("Canceled2");
-		        	
 					e.printStackTrace();
 		        	
 		        } finally {
@@ -105,9 +97,7 @@ public class DeleteIntensityAreaLimit implements Command {
 			incanceled = false;
 			infinished = false;
 		}
-		
-		//System.out.println("cancafter " + incanceled);
-		
+		//System.out.println("cancafter " + incanceled)
 	}
 	
 	public static void deleteAreaIntensity(deleteFrame deleteFrame) {
@@ -219,7 +209,7 @@ public class DeleteIntensityAreaLimit implements Command {
 			
 			this.pack();
 			if (frames ==0) {
-				this.centerDialogOnMainScreen(this);
+				centerDialogOnMainScreen(this);
 			}
 			else if (frames>0){
 				this.setLocation(X,Y);
@@ -239,14 +229,9 @@ public class DeleteIntensityAreaLimit implements Command {
 				frames++;
                 
 				Point lastPoint = this.getLocationOnScreen();
-				//infinished = true;
+
 				this.dispose();
-				
-				//prefsin.putInt("deleteFrameX", lastPoint.x);
-				//prefsin.putInt("deleteFrameY", lastPoint.y);
-				
-				//prefs.putInt(PREF_X, location.x);
-                //prefs.putInt(PREF_Y, location.y);
+
 				thisFrame = new deleteFrame("DeleteAreaIntensity", new Frame(), lastPoint.x, lastPoint.y);
 
 			}
@@ -263,11 +248,7 @@ public class DeleteIntensityAreaLimit implements Command {
 				alreadycanceled = true;	
 				this.actionPerformed(new ActionEvent(button5, ActionEvent.ACTION_PERFORMED, "Cancel"));
 			}
-			/*
-			synchronized(DeleteIntensityAreaLimit.class) {incanceled = true;}
-			this.dispose();
-			Thread.currentThread().interrupt();
-			*/
+
 		}
 
 		
@@ -293,8 +274,7 @@ public class DeleteIntensityAreaLimit implements Command {
 	
 	class deleteThread extends Thread implements Callable {
 		
-		//OverlapRoxx overlapThis;
-	Boolean finish;
+		Boolean finish;
 		
 	    public deleteThread() {
 
@@ -315,7 +295,6 @@ public class DeleteIntensityAreaLimit implements Command {
 				if(c==30) {
 					//System.out.println("canceled ? " + this.finish);
 				}
-				
 				c++;	
 			}		
 			return incanceled;

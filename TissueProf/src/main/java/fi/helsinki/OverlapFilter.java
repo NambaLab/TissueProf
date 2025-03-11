@@ -3,16 +3,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 
 import ij.IJ;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
-import ij.gui.WaitForUserDialog;
-import ij.measure.Measurements;
 import ij.plugin.frame.RoiManager;
-import ij.process.ImageStatistics;
 
 public class OverlapFilter {
 	static ArrayList<ArrayList<Rox>> QuadRoxx;
@@ -22,6 +17,8 @@ public class OverlapFilter {
 	
 	OverlapFilter(ArrayList<ArrayList<Rox>> QuadRoxx, ArrayList<ArrayList<ArrayList<Rox>>> TripleRoxx, 
 			ArrayList<ArrayList<ArrayList<Rox>>> DoubleRoxx, ArrayList<ArrayList<Rox>> SingleRoxx){
+		//TODO 
+		//Deal with static access warnings
 		this.QuadRoxx = QuadRoxx;
 		this.TripleRoxx = TripleRoxx;
 		this.DoubleRoxx = DoubleRoxx;
@@ -29,9 +26,6 @@ public class OverlapFilter {
 	}
 	
 	public static OverlapFilter overlapFilter(Rox[][] allRox, DetectOverlap NewOverlap, Boolean[] channelSelection, int channelSize) {
-		
-		//check intercomposite roi array length
-		//System.out.println("doubleintercomposite length " + NewOverlap.DoubleInterComposites.length);
 		
 		IJ.log("Filtering overlaps...");
 		

@@ -14,7 +14,7 @@
 
 	<groupId>fi.helsinki</groupId>        <!-- FIXME: Your organization groupId here -->
 	<artifactId>TissueProf</artifactId> <!-- FIXME: Your project artifactId here   -->
-	<version>0.2.2</version>
+	<version>0.1.0-beta</version>
 
 	<name>TissueProf</name>                                               <!-- FIXME: Your project name here          -->
 	<description>

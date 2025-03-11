@@ -1,33 +1,14 @@
 package fi.helsinki;
-import java.awt.Rectangle;
 import java.awt.Window;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 
-import org.scijava.Context;
-import org.scijava.platform.Platform;
-import org.scijava.service.Service;
-
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import ij.IJ;
-import ij.ImagePlus;
 import ij.gui.EllipseRoi;
-import ij.gui.OvalRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
-import ij.gui.WaitForUserDialog;
-import ij.measure.Measurements;
 import ij.plugin.frame.RoiManager;
-import ij.process.ImageStatistics;
-import loci.poi.util.SystemOutLogger;
-import org.scijava.module.Module;
-import org.scijava.module.ModuleItem;
-import org.scijava.module.process.InitPreprocessor;
-import org.scijava.module.process.PreprocessorPlugin;
 
 public class OverlapRoxx {
 	
@@ -63,10 +44,14 @@ public class OverlapRoxx {
 		//all the sites for each type of interaction. While running through this searchspace we will continue using also the 
 		//proximity filter built on the first Rox in the loop, using a circle and the roi.contains method
 		
+		//TODO
+		//Deal with static access warnings
+		
 		IJ.log("Analyzing overlap of channel ROIs... ");
 		
 		IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 1 + ".tif");
 		
+		@SuppressWarnings("unused")
 		int d = 0;
 		for (ArrayList<Rox> theseRox : OverlapFilter.QuadRoxx) {
 			int c=0;
@@ -184,7 +169,7 @@ public class OverlapRoxx {
 								Rox[] QuadRoxes = {QuadRox0, QuadRox1, QuadRox2, QuadRox3};
 								ShapeRoi[] QuadShapes = {shape0, shape1, shape2, shape3};
 								
-								double[] CoupleAreas = new double[6];
+								//double[] CoupleAreas = new double[6];
 								double[] CoupleRatios = new double[12];
 								
 								int x = 0 ;
@@ -562,9 +547,12 @@ public class OverlapRoxx {
 	
 	//intialize counters for indexing 
 	
+	@SuppressWarnings("unused")
 	int countdownDouble = 0;
+	@SuppressWarnings("unused")
 	int finalcountdownDouble = 0 ; 
 	r = 0 ;
+	@SuppressWarnings("unused")
 	int counterDouble = 0;
 	
 	//check overlapfilter size
@@ -712,46 +700,8 @@ public class OverlapRoxx {
 	SingleRoxx = new ArrayList<ArrayList<Rox>>();
 	
 	for (int i = 0 ; i < 4 ; i++) {
-		ArrayList<Rox> newList = new ArrayList();
+		ArrayList<Rox> newList = new ArrayList<Rox>();
 		SingleRoxx.add(newList);	
-	}
-	
-	
-	
-	c=0;
-	for (ArrayList<Rox> qRox :QuadOverlapRoxx) {
-		//check quadoverlaproxx at this point
-		//System.out.println("QuadOverlapRoxx" + c + " length " + qRox.size());
-	c++;
-	}
-	
-	c=0;
-	for (ArrayList<ArrayList<Rox>> tripleList:TripleOverlapRoxx) {
-		d=0;
-		for (ArrayList tripleRox : tripleList) {
-			//check tripleoverlaproxx at this point
-			//System.out.println("TripleOverlapRoxx" + c + d + " size " + tripleRox.size());
-		d++;
-		}
-	c++;
-	}
-	
-	c=0;
-	for (ArrayList<ArrayList<Rox>> doubleList:DoubleOverlapRoxx) {
-		d=0;
-		for (ArrayList doubleRox : doubleList) {
-			//check doubleoverlaproxx at this point
-			//System.out.println("DoubleOverlapRoxx" + c + d + " size " + doubleRox.size());
-		d++;
-		}
-	c++;	
-	}
-	
-	c=0;
-	for (int i = 0 ; i < SingleRoxx.size(); i++) {
-		//check singleroxx at this point
-		//System.out.println("SingleRox" + c + " size " + SingleRoxx.get(i).size());
-	c++;
 	}
 	
 	ArrayList<Roi>allOverlapRoi = new ArrayList<Roi>();
@@ -760,15 +710,13 @@ public class OverlapRoxx {
 		allOverlapRoi.add(roox.getRoi());
 	}
 	
-	//int allRoxSize = allRox.length;
-	Roi[][] allRoi = new Roi[allRox.length][50];
-	//Roi[][] allRoi = new Roi[2][2];
+	//Roi[][] allRoi = new Roi[allRox.length][50];
 	
-	//Make andfil an ArrayList for allOverlapIndexes
+	//Make and fill an ArrayList for allOverlapIndexes
 	
 	ArrayList<Integer> allOverlapIndex = new ArrayList<Integer>();
 	
-	Iterator allOverIterator = allOverlapRoxx.iterator();
+	Iterator<Rox> allOverIterator = allOverlapRoxx.iterator();
 	
 	while (allOverIterator.hasNext()) {
 		allOverlapIndex.add(((Rox) allOverIterator.next()).getIndex());

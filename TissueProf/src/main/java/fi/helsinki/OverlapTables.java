@@ -25,17 +25,6 @@ import ij.process.ImageStatistics;
 
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 
-
-//import loci.poi.hssf.usermodel.HSSFDataFormat;
-
-//import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-//import org.apache.poi.ss.usermodel.Cell;
-//import org.apache.poi.ss.usermodel.CellStyle;
-//import org.apache.poi.ss.usermodel.DataFormat;
-//import org.apache.poi.ss.usermodel.Row;
-//import org.apache.poi.ss.usermodel.Sheet;
-
-
 public class OverlapTables {
 	
 	static int[] channelInts;
@@ -166,10 +155,8 @@ public class OverlapTables {
 								}
 							}
 						}
-						//System.out.println("TYPE " + type);
-						//System.out.println("i " + i);
+
 						if (i==3) {	
-							//System.out.println("About to make triplecombocols and names, i =  " + i);
 							TripleCombCols.get(type).add(Channels[channelInts[p]]);
 							TripleCombCols.get(type).add(Channels[channelInts[p+1]]);
 							TripleCombCols.get(type).add(Channels[channelInts[p+2]]);
@@ -179,15 +166,11 @@ public class OverlapTables {
 				} 
 			}
 			
-			//System.out.println("After TripleCombCols");
-
-			
 			try {
 			if (channelSize>3) {
 				for(int i = 1 ; i < 5 ; i++) {
 					int a = i-1;
 					cell = row1.createCell(i);
-					//System.out.println(TripleCombColsName[a].getClass());
 					cell.setCellValue(TripleCombColsName.get(a));	
 				}
 			}
@@ -201,9 +184,7 @@ public class OverlapTables {
 			}catch(Exception e ) {
 				e.printStackTrace();
 			}
-			
-			//row = Counts.createRow(1);
-			
+
 			c=0;
 			if (channelSize>3) {
 				for (ArrayList<ArrayList<Rox>> thisCombChannel : OverlapRoxx.TripleOverlapRoxx) {
@@ -240,7 +221,6 @@ public class OverlapTables {
 				else if (channelSize==2) {
 					int doubleoverlap = 0;
 					for (ArrayList<ArrayList<Rox>> thisCombChannel : OverlapRoxx.DoubleOverlapRoxx) {
-						//assert thisCombChan	nel.get(0).size()==thisCombChannel.get(1).size();
 						if (thisCombChannel.size()>0 && (thisCombChannel.get(0).size()>0 || thisCombChannel.get(1).size()>0)) {
 							int thisq = 0;
 							for (int q = 0 ; q < thisCombChannel.size() ; q++) {
@@ -264,16 +244,13 @@ public class OverlapTables {
 			
 			
 			if (row2.getCell(0).getNumericCellValue()>0) {c++;}
-			
-			
-			//}
+
 			ArrayList<ArrayList<String>> DoubleCombCols = new ArrayList<ArrayList<String>>();
 			for (int i = 0 ; i < 6 ; i ++) {
 				ArrayList<String> thisList = new ArrayList<String>();
 				DoubleCombCols.add(thisList);
 			}
 				
-		
 			ArrayList<String> DoubleCombColsName = new ArrayList<String>();
 			
 			int dub=0;
@@ -287,9 +264,7 @@ public class OverlapTables {
 					}
 				}
 			}
-			
-			//System.out.println("After double combcolnames");
-			
+
 			int dtype = 0;
 			
 			if (channelSize>3) {
@@ -361,10 +336,7 @@ public class OverlapTables {
 			if (channelSize>3) {
 				c=0;
 				for (ArrayList<ArrayList<Rox>> thisCombChannel : OverlapRoxx.DoubleOverlapRoxx) {
-					//assert thisCombChannel.get(0).size()==thisCombChannel.get(1).size();
 					cell = row2.createCell(c+5);
-					//System.out.println("comboChannel 0 " + thisCombChannel.get(0).size());
-					//System.out.println("comboChannel 1 " + thisCombChannel.get(1).size());
 					cell.setCellValue(thisCombChannel.get(0).size());
 					c++;
 				}
@@ -457,9 +429,6 @@ public class OverlapTables {
 		
         maxSize = Arrays.stream(allSizes).max().getAsInt();
 		
-		//System.out.println("Max Size " + maxSize);
-		
-		
 		Row[] cellRows = new Row[maxSize+5];
 		
 		for (int i = 1 ; i < cellRows.length ; i ++) {
@@ -467,13 +436,6 @@ public class OverlapTables {
 		}
 		
 		Row nameRow = CountsInfo.createRow(0);
-		
-		/*
-		System.out.println("Quadoverlaproxxes0 " + OverlapRoxx.QuadOverlapRoxx.get(0).size());
-		System.out.println("Quadoverlaproxxes1 " + OverlapRoxx.QuadOverlapRoxx.get(1).size());
-		System.out.println("Quadoverlaproxxes2 " + OverlapRoxx.QuadOverlapRoxx.get(2).size());
-		System.out.println("Quadoverlaproxxes3 " + OverlapRoxx.QuadOverlapRoxx.get(3).size());
-		*/
 		
 		if (channelSize>3) {
 			if (OverlapRoxx.QuadOverlapRoxx.get(0).size()>0) {
@@ -512,9 +474,7 @@ public class OverlapTables {
 				}
 			}
 		}
-		
-		
-		
+
 		int cnow = 0 ; 
 		if (channelSize>3) {cnow = c+2;
 		}
@@ -531,12 +491,8 @@ public class OverlapTables {
 		int t = 0 ;
 		
 		for (ArrayList<ArrayList<Rox>> thisCombo : OverlapRoxx.TripleOverlapRoxx) {
-			//System.out.println("thisComboSize " + thisCombo.size());
-			
 			if (thisCombo.get(0).size()>0) {		
 				int ch = 0 ; 
-				//System.out.println(thisCombo.get(ch).size());
-
 				try {
 					for (ArrayList<Rox> thisChannel : thisCombo) {
 
@@ -549,7 +505,6 @@ public class OverlapTables {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					//System.out.println("ch " + ch + " " + d);
 				}
 				
 				nameRow.createCell(t + cnow+ch+dcount*3).setCellValue("Cell Index");
@@ -566,57 +521,57 @@ public class OverlapTables {
 		}
 		
 		
-			cnow = c + t + cnow;
-			d = 0 ; 
-			dcount = 0 ;
-			t=0;
+		cnow = c + t + cnow;
+		d = 0 ; 
+		dcount = 0 ;
+		t=0;
+		
+		if (channelSize==2) {
+			c=0;
+			cnow = 0;
+		}
+		
+		int chdub = 0 ; 
+		
+		for (ArrayList<ArrayList<Rox>> thisCombo : OverlapRoxx.DoubleOverlapRoxx) {
+			//System.out.println("thisComboSize " + thisCombo.size());
 			
-			if (channelSize==2) {
-				c=0;
-				cnow = 0;
-			}
-			
-			int chdub = 0 ; 
-			
-			for (ArrayList<ArrayList<Rox>> thisCombo : OverlapRoxx.DoubleOverlapRoxx) {
-				//System.out.println("thisComboSize " + thisCombo.size());
-				
-				int ch = 0 ; 
-				if (thisCombo.get(0).size()>0) {
-					//System.out.println(thisCombo.get(ch).size());
-					for (ArrayList<Rox> thisChannel : thisCombo) {
+			int ch = 0 ; 
+			if (thisCombo.get(0).size()>0) {
+				//System.out.println(thisCombo.get(ch).size());
+				for (ArrayList<Rox> thisChannel : thisCombo) {
 
-						nameRow.createCell(cnow+ch+dcount*3 + t).setCellValue(DoubleCombCols.get(chdub).get(ch));
+					nameRow.createCell(cnow+ch+dcount*3 + t).setCellValue(DoubleCombCols.get(chdub).get(ch));
 
-						//System.out.println("d " + d + " ch " + ch);
-						for (int i = 0 ; i < thisChannel.size() ; i++) {
-							//System.out.println(thisChannel.size());
-							try {
-							cellRows[i].createCell(cnow + ch +dcount*3 + t).setCellValue(thisChannel.get(i).getIndex());
-							} catch (NullPointerException e) {
-								e.printStackTrace();
-							}
-							c= cnow + ch + dcount*3 + t;
-						}				
-						ch++;	
-					}
-					nameRow.createCell(cnow + ch + dcount*3 + t).setCellValue("Cell Index");
-					for (int i = 0 ; i < OverlapRoxx.DoubleInterRoxx.get(chdub).size() ; i++) {
+					//System.out.println("d " + d + " ch " + ch);
+					for (int i = 0 ; i < thisChannel.size() ; i++) {
+						//System.out.println(thisChannel.size());
 						try {
-						cellRows[i].createCell(cnow + ch +dcount*3 + t).setCellValue(OverlapRoxx.DoubleInterRoxx.get(chdub).get(i).getIndex());
-						//System.out.println("Cell Index " + OverlapRoxx.DoubleInterRoxx.get(chdub).get(i).getIndex());
+						cellRows[i].createCell(cnow + ch +dcount*3 + t).setCellValue(thisChannel.get(i).getIndex());
 						} catch (NullPointerException e) {
 							e.printStackTrace();
 						}
-					}	
-					dcount++;
-					t++;
+						c= cnow + ch + dcount*3 + t;
+					}				
+					ch++;	
 				}
-				chdub++;
-				c++;
-				c= cnow + dcount*3 + t;
+				nameRow.createCell(cnow + ch + dcount*3 + t).setCellValue("Cell Index");
+				for (int i = 0 ; i < OverlapRoxx.DoubleInterRoxx.get(chdub).size() ; i++) {
+					try {
+					cellRows[i].createCell(cnow + ch +dcount*3 + t).setCellValue(OverlapRoxx.DoubleInterRoxx.get(chdub).get(i).getIndex());
+					//System.out.println("Cell Index " + OverlapRoxx.DoubleInterRoxx.get(chdub).get(i).getIndex());
+					} catch (NullPointerException e) {
+						e.printStackTrace();
+					}
+				}	
+				dcount++;
+				t++;
 			}
-		
+			chdub++;
+			c++;
+			c= cnow + dcount*3 + t;
+		}
+	
 			
 		cnow = c;
 		d = 0 ; 
@@ -626,11 +581,9 @@ public class OverlapTables {
 		for (ArrayList<Rox> thisSingle : OverlapRoxx.SingleRoxx) {
 			if (thisSingle.size()>0) {
 				nameRow.createCell(dcount + cnow + d).setCellValue(Channels[d]);
-				int it = 0 ;
 				for (int i = 0 ; i < thisSingle.size(); i++) {
 					//Row cellRow = CountsInfo.createRow(i+1);
 					Cell newcell = cellRows[i].createCell(dcount + cnow + d);
-					it++;	
 					newcell.setCellValue(thisSingle.get(i).getIndex());
 					//thisOverlapQuad.get(i)
 				}
@@ -639,8 +592,6 @@ public class OverlapTables {
 			}                                                                       
 			d++;
 		}
-		
-		
 		
 		
 		////Intensity Table
