@@ -346,7 +346,7 @@ public class ModifyRois implements Command {
 		        	
 		        } finally {
 		        	if (saved ==true) {
-		        	System.out.println("Saving...");
+		        	System.out.println("Save complete");
 		        	}
 		        	executor.shutdown(); // Shutdown the executor
 		        }
@@ -450,9 +450,9 @@ public class ModifyRois implements Command {
 			}
 			
 	    	if (saved ==true ) {
-	    		System.out.println("Save complete");
+	    		System.out.println("Saving...");
 	    	}
-
+	    	
 	    	new2Frame.dispose();
 	    	return saved;
 	    	
@@ -652,9 +652,6 @@ public class ModifyRois implements Command {
 		@Override 
 		public void windowClosing(WindowEvent e) {
 			if (e.getSource().equals(this)) {
-				//System.out.println("window closed");
-				//modcanceled =true;
-				//saved = true;
 				if (saved == true) {					
 					this.dispose();
 				} 
@@ -662,7 +659,6 @@ public class ModifyRois implements Command {
 					modcanceled =true;
 					//this.dispose();
 				}
-				
 				WindowManager.closeAllWindows();
 			}
 		}
@@ -742,6 +738,7 @@ public class ModifyRois implements Command {
 			this.addChoice("Color", ColorChoice, prefss.get("Color1", "magenta"));
 			
 			
+			
 			this.addCheckbox("", prefss.getBoolean("Channel2Selectionn", false));
 			this.addToSameRow();
 			this.addFileField("Channel 2", prefss.get("inputRoi2",""), 12);
@@ -764,52 +761,37 @@ public class ModifyRois implements Command {
 			
 			panel = new Panel();
 			
-			
 			button = new Button();
 			button.setLabel("OK");
 			button.setFocusable(true);
 			panel.add(button);
 			button.addActionListener(this);
-			//button.setLocation
-			/*button2 = new Button();
-			button.setLabel("OK");
-			panel.add(button2);
-			button2.addActionListener(this);
-			 */
-			//this.addPanel
+
 			button3 = new Button();
 			button3.setLabel("Cancel");
 			panel.add(button3);
 			button3.addActionListener(this);
 			panel.setSize(476, 25);
 			panel.setName("OK Cancel panel");
-			//this.addPanel(panel, GridBagConstraints.EAST, new Insets(0,0,0,-37));
+
 			this.addPanel(panel, GridBagConstraints.EAST, new Insets(0,0,0,-90));
-			//this.pack();
-			//this.setSize(150,50);
-			//this.setPreferredSize(new Dimension(150,50));
-			
 			
 			this.setSize(600,300);
 			this.addWindowListener(this);
-			
-			
+			centerDialogOnMainScreen(this);
 			
 		}
 			
 
 		@Override
-		public void actionPerformed(java.awt.event.ActionEvent e){
+		public void actionPerformed(java.awt.event.ActionEvent e) throws java.lang.ArrayIndexOutOfBoundsException {
 			if (e.getSource().equals(button)) {
-				//System.out.println("button OK pressed ");
-				this.dispose();
+				this.dispose();	
 			}
 			else if (e.getSource().equals(button3)){
-				//System.out.println("button 3 pressed ");
 				modcanceled = true;
 				this.dispose();
 			}
-		
 		}
 		
 		@Override 
@@ -817,14 +799,11 @@ public class ModifyRois implements Command {
 			if (e.getSource().equals(this)) {
 				modcanceled = true;
 				this.dispose();
-				//System.out.println("window closed");
 			}
 		}
 		
-	
 		
-		
-	    public static void centerDialogOnMainScreen(Frame Frame) {
+	    public static void centerDialogOnMainScreen(GenericDialog Frame) {
 	    	// Get the default graphics environment
 	    	GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	    	
@@ -925,22 +904,28 @@ public class ModifyRois implements Command {
                         		
                         		@Override
                         		public void actionPerformed(ActionEvent e){
-                        			System.out.println("delete!");
                         			if (RoiManager.getInstance().getCount()!=0 && RoiManager.getInstance().selected()!=0 && ChannelSelect[CurrentChannel]!=false) {
                         				int index = RoiManager.getInstance().getSelectedIndex();
                         				Rectangle thisBounds = RoiManager.getInstance().getRoi(index).getBounds();
                         				int deleteIndex = BoundsList.get(CurrentChannel).indexOf(thisBounds);
+                        				
+                        				try {
                         				BoundsList.get(CurrentChannel).remove(deleteIndex);
                         				ChRois.get(CurrentChannel).remove(deleteIndex);
-                        					
+                        				
+		                        			try {
+		                                	for (int i = 0 ; i < oldListeners.length ; i++) {
+		                                		oldListeners[i].actionPerformed(e);
+		                                	}
+		                        			} catch (Exception f) { 
+		                        				f.printStackTrace();
+		                        			}
+                        				} catch (java.lang.ArrayIndexOutOfBoundsException ex) {
+                        					IJ.showMessage("Please toggle the correct channel before attempting to delete the channel ROI");
+                        				}
+	                        			
                         			}
-                        			try {
-                                	for (int i = 0 ; i < oldListeners.length ; i++) {
-                                		oldListeners[i].actionPerformed(e);
-                                	}
-                        			} catch (Exception f) { 
-                        				f.printStackTrace();
-                        			}
+                        			
                        
                         		}
                         	});
@@ -1058,8 +1043,6 @@ public class ModifyRois implements Command {
 	        CustomImageListener = new ImageListener() {
 	        	  @Override
 		            public void imageOpened(ImagePlus imp) {
-		            	//System.out.println("image opened");
-		            	ImagePlus.logImageListeners();
 		                addKeyListenerToImage(imp);
 		            }
 		
