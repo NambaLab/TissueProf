@@ -316,7 +316,6 @@ public class OverlapRoxx {
 			if (thiscombchannel.size()==0 && chs.size()!=3) {
 				chs.remove(v);
 			}
-			chs.forEach(n->System.out.print("chs " +  n + " "));
 		v++;
 		}
 			

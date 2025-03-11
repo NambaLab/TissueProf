@@ -875,7 +875,6 @@ public class TissueProf implements PlugIn, Command {
 		//Clean-up resources
 		try {
 			
-			
 			DetectOverlap.clear();
 			
 			DetectOverlap.c=0;   
@@ -914,7 +913,6 @@ public class TissueProf implements PlugIn, Command {
 			if (frames != null) {
 				for (Window fram : frames) {
 					if (!fram.getName().matches("frame0") && !fram.getName().matches("win0") && !fram.getName().matches("frame1")) {
-						//System.out.println("frame with name " + fram.getName() + " closing");
 						fram.dispose();
 						fram=null;
 					}
@@ -926,7 +924,6 @@ public class TissueProf implements PlugIn, Command {
 			if (imageWinds!=null && imageWinds.length>0) {
 				for (Window imageWind : imageWinds) {
 					if (imageWind!= null) {
-						//System.out.println("image window with name " + imageWind.getName() + " closing");
 						imageWind.dispose();
 						imageWind = null;
 					}
@@ -948,11 +945,6 @@ public class TissueProf implements PlugIn, Command {
 			Window[] openWindows = Window.getWindows();
 			
 			for (Window thisWindow : openWindows) {	
-				/*
-				System.out.println(thisWindow.getName());
-				System.out.println(thisWindow.toString());
-				System.out.println("displayable? " + thisWindow.isDisplayable());
-				*/
 				if (!thisWindow.getName().matches("frame0") && !thisWindow.getName().matches("win0") && !thisWindow.getName().matches("frame1")) {
 					thisWindow.dispose();
 					thisWindow = null;
