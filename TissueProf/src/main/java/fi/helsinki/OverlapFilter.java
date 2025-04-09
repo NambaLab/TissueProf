@@ -19,6 +19,8 @@ public class OverlapFilter {
 			ArrayList<ArrayList<ArrayList<Rox>>> DoubleRoxx, ArrayList<ArrayList<Rox>> SingleRoxx){
 		//TODO 
 		//Deal with static access warnings
+		//Wait For changes in FasterAndMore
+		
 		this.QuadRoxx = QuadRoxx;
 		this.TripleRoxx = TripleRoxx;
 		this.DoubleRoxx = DoubleRoxx;

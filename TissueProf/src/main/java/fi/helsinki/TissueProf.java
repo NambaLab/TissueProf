@@ -59,6 +59,7 @@ import net.imagej.lut.LUTService;
 import net.imagej.patcher.LegacyInjector;
 
 //Waiting for merge after work on FasterAndMore branch is done
+//Wait For changes in FasterAndMore
 
 @Plugin(type = Command.class, menuPath = "Plugins>TissueProf>TissueProf")
 public class TissueProf implements PlugIn, Command {
