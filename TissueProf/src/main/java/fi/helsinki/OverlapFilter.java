@@ -9,6 +9,12 @@ import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.plugin.frame.RoiManager;
 
+//TODO
+//Multithread individual Combos and Channels and ROI groups of n inside channels.
+//Decide on how to determine n, maximum number of threads, stack size and how much RAM to use
+//Determine the right execution policy 
+//Multithread!
+
 public class OverlapFilter {
 	static ArrayList<ArrayList<Rox>> QuadRoxx;
 	static ArrayList<ArrayList<ArrayList<Rox>>> TripleRoxx;
