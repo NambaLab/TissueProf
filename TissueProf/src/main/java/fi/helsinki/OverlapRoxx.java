@@ -46,6 +46,7 @@ public class OverlapRoxx {
 		
 		//TODO
 		//Deal with static access warnings
+		//Clean up more
 		
 		IJ.log("Analyzing overlap of channel ROIs... ");
 		
@@ -310,7 +311,6 @@ public class OverlapRoxx {
 		chs.add(0); chs.add(1); chs.add(2); chs.add(3);
 		ArrayList<ArrayList<Rox>> thisComb = OverlapFilter.TripleRoxx.get(e);
 		
-		
 		int v=0;
 		for (ArrayList<Rox> thiscombchannel:thisComb) {
 			if (thiscombchannel.size()==0 && chs.size()!=3) {
@@ -318,9 +318,7 @@ public class OverlapRoxx {
 			}
 		v++;
 		}
-			
-					
-					
+							
 		int a = chs.get(0) ;
 		int b = chs.get(1) ;
 		int c = chs.get(2) ;
@@ -394,7 +392,6 @@ public class OverlapRoxx {
 						ShapeRoi shape0clone = (ShapeRoi) shape0.clone();
 						ShapeRoi shape1clone = (ShapeRoi) shape1.clone();
 						ShapeRoi shape2clone = (ShapeRoi) shape2.clone();
-						
 						
 						ShapeRoi QuadInter = (shape0clone).and(shape1clone).and(shape2clone); 
 						
@@ -526,7 +523,7 @@ public class OverlapRoxx {
 
 	
 	////From the filtered ROIs associated with double-overlap areas, check overlap extent 
-	//of inndividual ROIs
+	//of individual ROIs
 	
 	//First adjust ArrayLists
 	
