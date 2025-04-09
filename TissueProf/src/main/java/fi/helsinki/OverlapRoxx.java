@@ -12,6 +12,14 @@ import ij.plugin.frame.RoiManager;
 
 public class OverlapRoxx {
 	
+	//TODO
+	//Create a master method for overlaps of all kinds supporting n number of channels
+	//Skip pairwise overlap of remaining pairs in an overlap if at any point one of the two 
+	//pairwise overlaps falls below the overlap threshold.
+	//Find any possible ways to reduce the number of steps and make the execution more efficient
+	//Possibly find a better approach with less steps and less memory consumption for the whole
+	//overlap analysis while maintaining the same overall logic
+	
 	int c = 0 ;
 	
 	int totalOverlap = 0; 
