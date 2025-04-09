@@ -58,10 +58,11 @@ import net.imagej.ImageJ;
 import net.imagej.lut.LUTService;
 import net.imagej.patcher.LegacyInjector;
 
+//Waiting for merge after work on FasterAndMore branch is done
 
 @Plugin(type = Command.class, menuPath = "Plugins>TissueProf>TissueProf")
 public class TissueProf implements PlugIn, Command {
-
+	
 	
 	//static CompositeImage combinedenhanced;
 	static OverlapRoxx OverlappedRoxx;
