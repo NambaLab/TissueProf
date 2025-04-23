@@ -2,26 +2,37 @@ package fi.helsinki;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ArrayList;
 
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import ij.IJ;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.plugin.frame.RoiManager;
+import Util.Combinations;
+import Util.Combinations.ChannelCombinations;
 
 public class DetectOverlap {
 	
 	static int c;
 	static int r;
 
-	static Roi channelCompositeRoi[] = new Roi[4];
-	static ShapeRoi channelCompositeShape[]= new ShapeRoi[4];
+	public Roi channelCompositeRoi[] = new Roi[4];
+	public ShapeRoi channelCompositeShape[]= new ShapeRoi[4];
 	
-	static ShapeRoi QuadInterComposite;
-	static ShapeRoi[] TripleInterComposites = new ShapeRoi[4];
-	static ShapeRoi[] DoubleInterComposites = new ShapeRoi[6];
+	public ShapeRoi QuadInterComposite;
+	public ShapeRoi[] TripleInterComposites = new ShapeRoi[4];
+	public ShapeRoi[] DoubleInterComposites = new ShapeRoi[6];
 	
+	DetectOverlap(){
+		this.QuadInterComposite = QuadInterComposite;
+		this.TripleInterComposites = TripleInterComposites;
+		this.DoubleInterComposites = DoubleInterComposites;
+	}
 	
-	public static DetectOverlap detectOverlap(Rox[][] allRox, LinkedHashMap RoiRox, Boolean[] channelSelection, int channelSize){
+	public /*static*/ DetectOverlap detectOverlap(Rox[][] allRox, LinkedHashMap<Roi, Rox> RoiRox, Boolean[] channelSelection, int channelSize){
+		//Make it more flexible to accomodate varying numbers of combinations and 4+ channels.
 		
 		System.out.println("detecting... ");
 		IJ.log("Detecting overlap...");
@@ -36,6 +47,7 @@ public class DetectOverlap {
 		}
 		*/
 		
+		//This is good and flexible ^^
 		c=0;
 		for (Rox[] channelRox: allRox) {
 			if (channelSelection[c]==true && channelRox.length>0) {
@@ -62,6 +74,23 @@ public class DetectOverlap {
 			}
 		c++;
 		}
+		
+		
+		int n = channelSize;
+		
+		Combinations combinech = new Combinations();
+		
+		ChannelCombinations combinechs = combinech.new ChannelCombinations();
+	
+		List<List<List<Integer>>> AllChCombinations = combinechs.generateCombinations(n, n);
+		
+		ArrayList<ArrayList<ComboInterComposite>> ComboComposites = new ArrayList<ArrayList<ComboInterComposite>>();
+		
+		ArrayList<ArrayList<ComboInterComposite>> AllComboComposites = findChComboIntersections(channelCompositeShape, AllChCombinations, ComboComposites, channelSelection);
+		
+		
+		
+		
 		
 		if (channelSize>3) {
 			if (channelCompositeShape[0]!=null && channelCompositeShape[1]!=null && channelCompositeShape[2]!=null && channelCompositeShape[3]!=null) {
@@ -122,18 +151,100 @@ public class DetectOverlap {
 			
 		}
 		
-		DetectOverlap nowDetect = new DetectOverlap(QuadInterComposite, TripleInterComposites, DoubleInterComposites /*QuadrupleInterRox, TripleInterRox, DoubleInterRox,*/);
+		DetectOverlap nowDetect = new DetectOverlap();
 		
 		return nowDetect;
 	}
 	
-	DetectOverlap(ShapeRoi QuadInterComposite, ShapeRoi[] TripleInterComposites, ShapeRoi[] DoubleInterComposites){
-		this.QuadInterComposite = QuadInterComposite;
-		this.TripleInterComposites = TripleInterComposites;
-		this.DoubleInterComposites = DoubleInterComposites;
+
+	
+	
+	public ArrayList<ArrayList<ComboInterComposite>> findChComboIntersections(ShapeRoi[] ChannelComposites, List<List<List<Integer>>> ChannelComboRs, 
+			ArrayList<ArrayList<ComboInterComposite>> ComboComposites, Boolean[] ChannelSelection) {
+		
+		//For each combination, select the relevant ROIs from the array storing composites according to the stored indexes.
+		//Feed the selected indexes in the form of an Array to FindIntersection
+		//Inside FindIntersection, sequentially find the intersection between all the composites that were fed into it 
+		//Return the intersection shapeROI from FindIntersections to this method 
+		//Add the returned shapeROI to its position in the ComboComposites.
+		
+		//ArrayList<ArrayList<ShapeRoi>> theseShapes = new ArrayList<ArrayList<ShapeRoi>>();
+		
+		
+		int n = 0;
+		for (List<List<Integer>> thisComboRList : ChannelComboRs) {
+			
+			for (List<Integer> thisComboR : thisComboRList) {
+				//List = e.g 1,2,3
+				ArrayList<ShapeRoi> thisChCombo = new ArrayList<ShapeRoi>();
+				boolean ChComboSelections[] = new boolean[thisComboR.size()];
+				
+				boolean AreSelected = false;
+				
+				int c = 0;
+				int d = 0; 
+				
+				for (boolean thisSelect : ChComboSelections) {
+					if (ChannelSelection[c] == true) {
+						ChComboSelections[d] = true;
+						d++;
+					}
+					c++;
+					if (ComboComposites.get(n)==null) {ComboComposites.add(new ArrayList<ComboInterComposite>());}
+				}
+				
+				if (d == ChComboSelections.length) { AreSelected = true;}
+				
+				if (AreSelected==true) {
+					
+					//ArrayList<ShapeRoi> thisComboShapes = new ArrayList<ShapeRoi>();
+					
+					thisComboR.forEach(m->System.out.printf("index " + m + " "));
+					thisComboR.forEach(m->thisChCombo.add(ChannelComposites[m]));
+					
+					ShapeRoi thisComboIntersection = FindIntersection(thisChCombo);
+					ComboInterComposite thisInterComposite = new ComboInterComposite(thisComboIntersection, thisComboR.size(), thisComboR);
+					ComboComposites.get(n).add(thisInterComposite);
+				}	
+				
+			}
+			n++;
+		}
+		return ComboComposites;
 	}
 	
-	public static void clear() {
+	public static ShapeRoi FindIntersection(ArrayList<ShapeRoi> ShapeRois) {
+		
+		System.out.println("ShapeRois Length " + ShapeRois.size());
+		
+		ShapeRoi CurrentIntersection  = (ShapeRoi) ShapeRois.get(0).clone();
+		
+		System.out.println("current intersection before loop " + CurrentIntersection.getBounds().getHeight());
+		
+		int c = 0;
+		for (ShapeRoi thisShape : ShapeRois ) {
+			if (c==0) {System.out.println("c " + c); c++; continue;}
+			
+			System.out.println("c " + c + "CurrentIntersection height " + CurrentIntersection.getBounds().getHeight());
+			CurrentIntersection = CurrentIntersection.and((ShapeRoi) (thisShape.clone()));	
+			c++;
+		 
+		}
+		
+		return CurrentIntersection; 
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public void clear() {
 		
 		channelCompositeRoi = new Roi[4];
 		
@@ -156,6 +267,51 @@ public class DetectOverlap {
 		DoubleInterComposites = new ShapeRoi[6];
 		
 	}
+	
+	
+	public class ComboInterComposite {
+		
+		private ShapeRoi InterShape; 
+		private int ComboSize;
+		private List<Integer> ComboIndexes; 
+		
+		public ComboInterComposite(ShapeRoi interShape, int comboSize , List<Integer> comboIndexes) {
+			this.setInterShape(interShape);
+			this.setComboSize(comboSize);
+			this.setComboIndexes(comboIndexes);
+		}
+		
+		private void setInterShape(ShapeRoi interShape){
+			this.InterShape = interShape;
+		}
+		
+		private void setComboSize(int comboSize) {
+			this.ComboSize = comboSize;
+		}
+		
+		private void setComboIndexes(List<Integer> comboIndexes) {
+			this.ComboIndexes = comboIndexes;
+		}
+		
+		public ShapeRoi getInterShape() {
+			return InterShape;
+		}
+		
+		public int getComboSize() {
+			return ComboSize;
+		}
+		
+		public List<Integer> getComboIndexes(){
+			return ComboIndexes;
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
 }
 
 		

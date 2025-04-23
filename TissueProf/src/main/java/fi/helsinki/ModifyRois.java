@@ -230,7 +230,7 @@ public class ModifyRois implements Command {
 					int cl = 0 ;
 					for (Roi roi : thisCRois) {
 						
-						//Get ROI groups based on their assigned names during co-expression analysis of reanalysis
+						//Get ROI groups based on their assigned names during co-expression analysis or reanalysis
 						//and set new  groups based on the chosen colors. (Each color corresponding to its closest 
 						//in the Glasbey LUT
 						

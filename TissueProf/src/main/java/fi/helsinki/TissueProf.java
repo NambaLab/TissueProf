@@ -48,6 +48,7 @@ import org.scijava.ui.UIService;
 import ij.IJ;
 import ij.WindowManager;
 import ij.gui.Roi;
+import ij.gui.ShapeRoi;
 import ij.gui.WaitForUserDialog;
 import ij.plugin.PlugIn;
 import ij.plugin.frame.RoiManager;
@@ -201,6 +202,48 @@ public class TissueProf implements PlugIn, Command {
 		//Make code more modular 
 		//Implement multithreading to increase the speed of DetectOverlap, OverlapFilter, OverlapRoxx and intensity measurements in OverlapTables
 		
+		//Experimental space
+		
+		
+		
+		/*Check FindIntersection method
+		RoiManager.getRoiManager();
+		
+		WaitForUserDialog drawROIs = new WaitForUserDialog("Draw ROIs");
+		drawROIs.show();
+		
+		
+		Roi[] drawnROIs = RoiManager.getInstance().getRoisAsArray();
+		
+		ShapeRoi[] drawnShapes = new ShapeRoi[drawnROIs.length];
+		
+		for (int i = 0 ; i < drawnROIs.length ; i++) {
+			drawnShapes[i] = new ShapeRoi(drawnROIs[i]);
+		}
+		
+		ArrayList<ShapeRoi> drawnShapesList = new ArrayList<ShapeRoi>();
+		
+		for(int i = 0 ; i < drawnShapes.length ; i++) {
+			drawnShapesList.add(drawnShapes[i]);
+		}
+		
+		drawnShapesList.forEach(n->System.out.println(n.getBounds().getHeight()));
+		
+		ShapeRoi IntersectionShape = DetectOverlap.FindIntersection(drawnShapesList);
+		
+		RoiManager.getInstance().addRoi(IntersectionShape.getRois()[0]);
+		
+		WaitForUserDialog seeRoi = new WaitForUserDialog("See Intersection ROI");
+		seeRoi.show();
+		
+		System.exit(0);
+		
+		
+		*/
+		
+		
+		
+		//
 		IJ.run("Fresh Start");
 		
 		IJ.wait(400);
@@ -680,7 +723,10 @@ public class TissueProf implements PlugIn, Command {
 			    IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
 		        
 			    //Detect Overlap Positions 
-			    DetectOverlap DetectResults = DetectOverlap.detectOverlap(thisAllRox, RoiRox, channelSelection, channelSize);
+			    
+			    DetectOverlap newOverlap = new DetectOverlap();
+			    
+			    DetectOverlap DetectResults = newOverlap.detectOverlap(thisAllRox, RoiRox, channelSelection, channelSize);
 		        IJ.selectWindow(imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
 		       
 		        //Close windows to clean up resources
@@ -876,7 +922,7 @@ public class TissueProf implements PlugIn, Command {
 		//Clean-up resources
 		try {
 			
-			DetectOverlap.clear();
+			//newOverlap.clear();
 			
 			DetectOverlap.c=0;   
 		
