@@ -3,10 +3,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
+import fi.helsinki.DetectOverlap.ComboInterComposite;
 import ij.IJ;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
+import ij.gui.WaitForUserDialog;
 import ij.plugin.frame.RoiManager;
 
 //TODO
@@ -21,214 +24,197 @@ public class OverlapFilter {
 	static ArrayList<ArrayList<ArrayList<Rox>>> DoubleRoxx;
 	static ArrayList<ArrayList<Rox>> SingleRoxx;
 	
-	OverlapFilter(ArrayList<ArrayList<Rox>> QuadRoxx, ArrayList<ArrayList<ArrayList<Rox>>> TripleRoxx, 
-			ArrayList<ArrayList<ArrayList<Rox>>> DoubleRoxx, ArrayList<ArrayList<Rox>> SingleRoxx){
+	private ArrayList<ComboRoxx> ComboRoxx;
+	
+	
+	OverlapFilter(Rox[][] allRox, DetectOverlap NewOverlap, Boolean[] channelSelection, int channelSize){
 		//TODO 
 		//Deal with static access warnings
-		this.QuadRoxx = QuadRoxx;
-		this.TripleRoxx = TripleRoxx;
-		this.DoubleRoxx = DoubleRoxx;
-		this.SingleRoxx = SingleRoxx;
+		overlapFilter(allRox, NewOverlap, channelSelection, channelSize);
 	}
 	
-	public static OverlapFilter overlapFilter(Rox[][] allRox, DetectOverlap NewOverlap, Boolean[] channelSelection, int channelSize) {
+	public /*static*/ void overlapFilter(Rox[][] allRox, DetectOverlap NewOverlap, Boolean[] channelSelection, int channelSize) {
 		
 		IJ.log("Filtering overlaps...");
 		
 		//Create ArrayLists to fill with filtered ROIs.
+		ArrayList<ArrayList<ComboInterComposite>> InterComboComposites = NewOverlap.getDetectResults();
+		ArrayList<ComboRoxx> ComboRoxxes = null;
 		
-		QuadRoxx = new ArrayList<ArrayList<Rox>>();
-		for (int i = 0 ; i < 4 ; i++) {
-		ArrayList<Rox> theseRoxx = new ArrayList<Rox>();
-		QuadRoxx.add(theseRoxx);
+		int c = 0 ;
+		for (Rox [] theseRox : allRox) {
+			if (channelSelection[c] == true) {
+				for (ArrayList<ComboInterComposite> theseComposite : InterComboComposites) {
+					
+					for (ComboInterComposite thisComposite : theseComposite) {
+						int f=0;
+						ArrayList<Rox> thisFilteredRoxx = null;
+						ComboRoxx thisComboRoxx = null; 
+						
+						for (Rox thisRox : theseRox) {
+							ArrayList<ShapeRoi> InterParticipants = new ArrayList<ShapeRoi>();
+							InterParticipants.add(thisRox.shape);
+							InterParticipants.add(thisComposite.getInterShape());
+							ShapeRoi interShape = DetectOverlap.FindIntersection(InterParticipants);
+							if (interShape!=null && interShape.getBounds().height>0) {
+								f++;
+								if (f ==1 ) {
+									thisFilteredRoxx = new ArrayList<Rox>();
+									thisComboRoxx = new ComboRoxx(thisFilteredRoxx, c, thisComposite.getComboSize(), thisComposite.getComboIndexes());
+									System.out.println("f " + f + " foundFilteredRox" );
+								}
+								thisComboRoxx.addRox(thisRox);
+								System.out.println("f " + f + " thisComboRoxx.Filtered.size " + thisComboRoxx.getFilteredRoxx().size());
+							}
+							
+						}
+						
+						if (f>=1) {
+							System.out.println("f " + f + " Now adding comboroxx to comboroxxes");
+							if (ComboRoxxes==null) {
+								ComboRoxxes = new ArrayList<ComboRoxx>();
+							}
+							
+							Collections.sort(thisComboRoxx.getFilteredRoxx(), Comparator.comparingDouble(r -> r.getRoi().getBounds().getY())) ;
+							ComboRoxxes.add(thisComboRoxx);
+							
+							System.out.println("f " + f + "Comoroxxeslength after adding " + ComboRoxxes.size());
+						}
+					}
+				
+				}
+				
+			}
+			c++;
 		}
 		
-		TripleRoxx = new ArrayList<ArrayList<ArrayList<Rox>>>();
-		for (int i = 0 ; i < 4 ; i++) {
-			ArrayList<ArrayList<Rox>> thisOne = new ArrayList<ArrayList<Rox>>();
-			TripleRoxx.add(thisOne);
-			for (int j = 0 ; j < 4 ; j++) {
-				ArrayList<Rox> theseRoxx = new ArrayList<Rox>();
-				TripleRoxx.get(i).add(theseRoxx);
+		//Add the single positive Roxx
+		
+		for (int i = 0 ; i < allRox.length ; i++) {
+			if (channelSelection[i] == true) {
+				List<Integer> thisChannel = new List<Integer>();
+				thisChannel.add(i);
+				ComboRoxx SingleRoxx = new ComboRoxx(allRox[i], i, 1, thisChannel);
+				
 			}
 		}
 		
-		DoubleRoxx = new ArrayList<ArrayList<ArrayList<Rox>>>();
-		for (int i = 0 ; i < 6 ; i++) {
-			ArrayList<ArrayList<Rox>> thisOne1 = new ArrayList<ArrayList<Rox>>();
-			DoubleRoxx.add(thisOne1);
-			for (int j = 0 ; j < 4 ; j++) {
-				ArrayList<Rox> theseRoxx1 = new ArrayList<Rox>();
-				DoubleRoxx.get(i).add(theseRoxx1);
+		
+		
+		for (ComboRoxx thisComboRoxx : ComboRoxxes) {
+			int d = 0;
+			for (Rox thisRox : thisComboRoxx.FilteredRoxx) {
 			
-			}
-		}
+				String concatenated = thisComboRoxx.getComboIndexes().get(0).toString();
 		
-		SingleRoxx = new ArrayList<ArrayList<Rox>>();
-		ArrayList<Rox> thisList= new ArrayList<Rox>();
-		SingleRoxx.add(thisList);
-		SingleRoxx.add(thisList);
-		SingleRoxx.add(thisList);
-		SingleRoxx.add(thisList);
-		
-		//ArrayList to put all filtered triple intersecting ROIs 
-		ArrayList<ArrayList<Rox>> TripleRoxxAll = new ArrayList<ArrayList<Rox>>(); 
-		TripleRoxxAll.add(thisList);
-		TripleRoxxAll.add(thisList);
-		TripleRoxxAll.add(thisList);
-		TripleRoxxAll.add(thisList);
-		
-		//ArrayList to put all filtered double intersecting ROIs
-		ArrayList<ArrayList<Rox>> DoubleRoxxAll = (ArrayList<ArrayList<Rox>>) TripleRoxxAll.clone();
-		//ArrayList<ArrayList<Rox>> DoubleRoxxAll = new ArrayList<ArrayList<Rox>>(); 
-		
-		//Filter those Rox which are found to be intersecting with InterComposite ROIs which designate the whole map of
-		//where intersections between certain ROIs are known to occur, for each combination.
-		
-		if (channelSize>3 && NewOverlap.QuadInterComposite!=null) {
-			int c=0;
-			for (Rox[] thisRoxy:allRox) {
-				if (channelSelection[c]==true) {
-					for (Rox rox:thisRoxy) {
-						Roi roxRoi = rox.getRoi();
-						ShapeRoi roxShape = new ShapeRoi((Roi) roxRoi.clone());
-						try {
-						if (roxShape.and(NewOverlap.QuadInterComposite).getBounds().height>0) {
-							QuadRoxx.get(c).add(rox);
-							}
-						}
-						catch (NullPointerException e) {
-							e.printStackTrace();
-						}
-					}
+				int con = 0;
+				for (Integer thisInt : thisComboRoxx.getComboIndexes()) {
+					if (con == 0 ) {con++;continue;}
+					concatenated = String.join("", concatenated, thisInt.toString());
 				}
-			c++;
+		
+				thisRox.getRoi().setName(thisComboRoxx.ComboSize + "combo-" + concatenated + "_" + d);
+				d++;
 			}
-		}
-		
-		int c=0;
-		for (Rox[] thisRoxy:allRox) {
-			if (channelSelection[c]==true) {	
-				for (Rox rox:thisRoxy) {
-					int d=0;
-					for(ShapeRoi interShape:NewOverlap.TripleInterComposites) {
-						ShapeRoi roxShape = new ShapeRoi((Roi) rox.getRoi().clone());
-						if (interShape!=null) {
-							if (((ShapeRoi) roxShape.clone()).and(interShape).getBounds().height>0) {
-								TripleRoxx.get(d).get(c).add(rox);
-								TripleRoxxAll.get(c).add(rox);
-								//System.out.println("Triple " + c + " d= " + d + "index" + rox.getIndex());
-							}
-						}		
-					d++;	
-					}
-				}
+			
+			if (RoiManager.getInstance()==null) {
+				RoiManager.getRoiManager();
 			}
-		c++;
+			
+			//RoiManager.getInstance().reset();
+			
+			//addRoxxToRoiManager((ArrayList<Rox>)thisComboRoxx.FilteredRoxx);
+			
+			//WaitForUserDialog seeFiltered = new WaitForUserDialog("See FilteredRoxx");
+			//seeFiltered.show();
 		}
+			
+		//set the Roxx
 		
-		c=0;
-		for (ArrayList<ArrayList<Rox>> TripleList:TripleRoxx) {
-			if (channelSelection[c]==true) {
-				int d = 0;
-				for(ArrayList<Rox> RoxList:TripleList) {
-					if (RoxList!=null) {
-						Iterator addRoiIterator = RoxList.iterator();
-						RoiManager.getInstance().reset();
-						while (addRoiIterator.hasNext()){
-							RoiManager.getInstance().addRoi((Roi) ((Rox) addRoiIterator.next()).getRoi());
-						}
-						
-					}
-					d++;
-				}
-			}
-			c++;
-		}
+		setRoxx(ComboRoxxes);
+			
+			
+			
+			
 		
-		c=0;
-		for (Rox[] thisRoxy:allRox) {
-			if (channelSelection[c]==true) {
-				for (Rox rox:thisRoxy) {
-					int d=0;
-					for(ShapeRoi interShape:NewOverlap.DoubleInterComposites) {
-						if (interShape!=null) {
-							ShapeRoi roxShape = new ShapeRoi(rox.getRoi());
-							if (((ShapeRoi) roxShape.clone()).and(interShape).getBounds().height>0) {
-								DoubleRoxx.get(d).get(c).add(rox);
-								DoubleRoxxAll.get(c).add(rox);
-							}	
-						}	
-					d++;	
-					}
-				}
-			}	
-		c++;
-		}
-		
-		
-		c=0;
-		for (ArrayList<ArrayList<Rox>> DoubleList:DoubleRoxx) {
-			if (DoubleList!=null) {	
-				int d = 0;
-				for(ArrayList<Rox> RoxList:DoubleList) {
-					if (channelSelection[d]==true) {	
-						Iterator addRoiIterator = RoxList.iterator();
-						RoiManager.getInstance().reset();
-						while (addRoiIterator.hasNext()){
-							RoiManager.getInstance().addRoi((Roi) ((Rox) addRoiIterator.next()).getRoi());
-						}
-						
-						d++;
-						//WaitForUserDialog sd = new WaitForUserDialog("Check DoubleRox Combo");
-						//sd.show();
-					}
-				}
-			}
-			c++;
-		}
-		
-		c=0;
-		for (Rox[] thisRoxy:allRox) {
-
-			if (channelSelection[c]==true) {	
-				for (Rox rox:thisRoxy) {
-					SingleRoxx.get(c).add(rox);
-				}
-			}
-		c++;
-		}
-		
-		for (ArrayList<Rox> thisRoxx:QuadRoxx) {
-			Collections.sort(thisRoxx, Comparator.comparingDouble(r -> r.getRoi().getBounds().getY())) ;
-		}
-		
-		for (ArrayList<ArrayList<Rox>> RoxList:TripleRoxx) {
-			for (ArrayList<Rox>thisRoxx1:RoxList) {
-				Collections.sort(thisRoxx1, Comparator.comparingDouble(r -> r.getRoi().getBounds().getY())) ;
-			}
-		}
-		
-		for (ArrayList<ArrayList<Rox>> RoxList:DoubleRoxx) {
-			for (ArrayList<Rox>thisRoxx2:RoxList) {
-				Collections.sort(thisRoxx2, Comparator.comparingDouble(r -> r.getRoi().getBounds().getY())) ;
-			}
-		}
-		
-		//Pack the OverlapFilter object
-		
+		/*
 		OverlapFilter thisFilter = new OverlapFilter(QuadRoxx, TripleRoxx, DoubleRoxx, SingleRoxx);
 		
 		TripleRoxxAll.clear();
 		TripleRoxxAll = null;
 		DoubleRoxxAll.clear();
 		DoubleRoxxAll = null;
+		*/
 		
-		//returned the packed OverlapFilter object
-		return thisFilter;
 	}
-
 	
+	
+	
+	
+	public class ComboRoxx {
+		
+		ArrayList<Rox> FilteredRoxx;
+		int ComboSize;
+		List<Integer> ChIndexes;
+		
+		
+		ComboRoxx(ArrayList<Rox> comboRoxx, int Channel, int ComboSize, List<Integer> ChIndexes){
+			this.setFilteredRoxx(comboRoxx);
+			this.setComboSize(ComboSize);
+			this.setChIndexes(ChIndexes);
+		}
+		
+		private void setFilteredRoxx(ArrayList<Rox> FilteredRoxx) {
+			this.FilteredRoxx = FilteredRoxx;
+		}
+		private void setComboSize(int ComboSize) {
+			this.ComboSize = ComboSize;
+		}
+		private void setChIndexes(List<Integer> ChIndexes) {
+			this.ChIndexes = ChIndexes;
+		}
+		private void addRox(Rox rox) {
+			this.FilteredRoxx.add(rox);
+		}
+		
+		public List<Integer> getComboIndexes(){
+			return ChIndexes;
+		}
+		
+		public int getComboSize() {
+			return ComboSize;
+		}
+		
+		public ArrayList<Rox> getFilteredRoxx(){
+			return FilteredRoxx;
+		}
+		
+	}
+	
+	
+	public void addRoxxToRoiManager(ArrayList<Rox> Roxx) {
+		
+		if (RoiManager.getInstance()==null) {
+			RoiManager.getRoiManager();
+		}
+		
+		for (Rox rox : Roxx) {
+			RoiManager.getInstance().addRoi(rox.getRoi());
+		}
+		
+	}
+	
+	private void setRoxx(ArrayList<ComboRoxx> ComboRoxxes) {
+		this.ComboRoxx = ComboRoxxes;
+	}
+	
+	public ArrayList<ComboRoxx> getRoxx() {
+		return ComboRoxx;
+	}
+	
+	
+	
+	/*
 	public static void clear() {
 		
 		if(QuadRoxx!= null) {		
@@ -253,6 +239,8 @@ public class OverlapFilter {
 		}
 	
 	}
+	*/
+	
 	
 }
 	

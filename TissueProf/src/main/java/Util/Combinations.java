@@ -22,7 +22,7 @@ public class Combinations {
 	        List<List<List<Integer>>> result = new ArrayList<>();
 	        
 	        // Generate combinations for each r from maxR down to 2
-	        for (int r = maxR; r >= 1; r--) {
+	        for (int r = maxR; r >= 2; r--) {
 	            List<List<Integer>> combinationsForR = new ArrayList<>();
 	            if (r <= n) {  // Only generate if r <= n
 	                backtrack(combinationsForR, new ArrayList<>(), 0, n, r);

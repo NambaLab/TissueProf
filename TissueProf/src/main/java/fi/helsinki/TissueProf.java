@@ -45,6 +45,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
+import fi.helsinki.DetectOverlap.ComboInterComposite;
 import ij.IJ;
 import ij.WindowManager;
 import ij.gui.Roi;
@@ -724,9 +725,11 @@ public class TissueProf implements PlugIn, Command {
 		        
 			    //Detect Overlap Positions 
 			    
-			    DetectOverlap newOverlap = new DetectOverlap();
+			    DetectOverlap newOverlapDetect = new DetectOverlap(thisAllRox, RoiRox, channelSelection, channelSize);
 			    
-			    DetectOverlap DetectResults = newOverlap.detectOverlap(thisAllRox, RoiRox, channelSelection, channelSize);
+			    //ArrayList<ArrayList<ComboInterComposite>> DetectResults = newOverlap.getDetectResults();
+			    
+			    // DetectOverlap DetectResults = newOverlap.detectOverlap(thisAllRox, RoiRox, channelSelection, channelSize);
 		        IJ.selectWindow(imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
 		       
 		        //Close windows to clean up resources
@@ -738,8 +741,11 @@ public class TissueProf implements PlugIn, Command {
 		        thisim.dispose();
 		        thisim = null;
 		        
+			    IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
 		        //Filter ROIs from Channel ROIs that overlap with ROIs from other channels
-		        OverlapFilter RoisFiltered = OverlapFilter.overlapFilter(thisAllRox, DetectResults, channelSelection, channelSize);   
+		       
+		        OverlapFilter RoisFiltered = new OverlapFilter();
+		        RoisFiltered.overlapFilter(thisAllRox, newOverlapDetect, channelSelection, channelSize);   
 		        
 		        //Open a random image for measurements done by RoiData and Rox classes
 		        Random random = new Random();
