@@ -19,10 +19,6 @@ import ij.plugin.frame.RoiManager;
 //Multithread!
 
 public class OverlapFilter {
-	static ArrayList<ArrayList<Rox>> QuadRoxx;
-	static ArrayList<ArrayList<ArrayList<Rox>>> TripleRoxx;
-	static ArrayList<ArrayList<ArrayList<Rox>>> DoubleRoxx;
-	static ArrayList<ArrayList<Rox>> SingleRoxx;
 	
 	private ArrayList<ComboRoxx> ComboRoxx;
 	
@@ -31,6 +27,7 @@ public class OverlapFilter {
 		//TODO 
 		//Deal with static access warnings
 		overlapFilter(allRox, NewOverlap, channelSelection, channelSize);
+		
 	}
 	
 	public /*static*/ void overlapFilter(Rox[][] allRox, DetectOverlap NewOverlap, Boolean[] channelSelection, int channelSize) {
@@ -92,10 +89,14 @@ public class OverlapFilter {
 		
 		for (int i = 0 ; i < allRox.length ; i++) {
 			if (channelSelection[i] == true) {
-				List<Integer> thisChannel = new List<Integer>();
+				List<Integer> thisChannel = new ArrayList<Integer>();
 				thisChannel.add(i);
-				ComboRoxx SingleRoxx = new ComboRoxx(allRox[i], i, 1, thisChannel);
-				
+				ArrayList<Rox> thisChannelRoxx = new ArrayList<Rox>();
+				for (Rox rox:allRox[i]) {
+					thisChannelRoxx.add(rox);
+				}
+				ComboRoxx SingleRoxx = new ComboRoxx(thisChannelRoxx, i, 1, thisChannel);
+				ComboRoxxes.add(SingleRoxx);
 			}
 		}
 		
@@ -133,9 +134,6 @@ public class OverlapFilter {
 		
 		setRoxx(ComboRoxxes);
 			
-			
-			
-			
 		
 		/*
 		OverlapFilter thisFilter = new OverlapFilter(QuadRoxx, TripleRoxx, DoubleRoxx, SingleRoxx);
@@ -154,18 +152,23 @@ public class OverlapFilter {
 	public class ComboRoxx {
 		
 		ArrayList<Rox> FilteredRoxx;
+		int Channel; 
 		int ComboSize;
 		List<Integer> ChIndexes;
 		
 		
 		ComboRoxx(ArrayList<Rox> comboRoxx, int Channel, int ComboSize, List<Integer> ChIndexes){
 			this.setFilteredRoxx(comboRoxx);
+			this.setChannel(Channel);
 			this.setComboSize(ComboSize);
 			this.setChIndexes(ChIndexes);
 		}
 		
 		private void setFilteredRoxx(ArrayList<Rox> FilteredRoxx) {
 			this.FilteredRoxx = FilteredRoxx;
+		}
+		private void setChannel(int Channel) {
+			this.Channel = Channel;
 		}
 		private void setComboSize(int ComboSize) {
 			this.ComboSize = ComboSize;
@@ -183,6 +186,10 @@ public class OverlapFilter {
 		
 		public int getComboSize() {
 			return ComboSize;
+		}
+		
+		public int getChannel() {
+			return this.Channel;
 		}
 		
 		public ArrayList<Rox> getFilteredRoxx(){

@@ -46,6 +46,7 @@ import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
 import fi.helsinki.DetectOverlap.ComboInterComposite;
+import fi.helsinki.OverlapFilter.ComboRoxx;
 import ij.IJ;
 import ij.WindowManager;
 import ij.gui.Roi;
@@ -744,8 +745,8 @@ public class TissueProf implements PlugIn, Command {
 			    IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
 		        //Filter ROIs from Channel ROIs that overlap with ROIs from other channels
 		       
-		        OverlapFilter RoisFiltered = new OverlapFilter();
-		        RoisFiltered.overlapFilter(thisAllRox, newOverlapDetect, channelSelection, channelSize);   
+		        OverlapFilter RoisFiltered = new OverlapFilter(allRox, newOverlapDetect, channelSelection, channelSize);
+		        //RoisFiltered.overlapFilter(thisAllRox, newOverlapDetect, channelSelection, channelSize);   
 		        
 		        //Open a random image for measurements done by RoiData and Rox classes
 		        Random random = new Random();
@@ -755,34 +756,16 @@ public class TissueProf implements PlugIn, Command {
 		        IJ.open(OutputDir + "/" + imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
 		        
 		        //Area Measurements for the Rox that overlap with an unknown ratio with other channel ROIs in the particular combinations.
-		        for (int i = 0 ; i < RoisFiltered.QuadRoxx.size(); i++) {
-		        	for (Rox rox:RoisFiltered.QuadRoxx.get(i)) {
-		        		newManager.reset();
-		        		newManager.add(rox.getRoi(), 0);
+		       
+		        
+		        for (ComboRoxx thisRoxx : RoisFiltered.getRoxx()) {
+		        	for (Rox rox : thisRoxx.getFilteredRoxx()) {
+		        		RoiManager.getInstance().reset();
+		        		RoiManager.getInstance().addRoi(rox.getRoi());
 		        		RoxDataMap.get(rox).setArea(IJ.getImage());
 		        	}
 		        }
-		        
-		        for (int i = 0 ; i < RoisFiltered.TripleRoxx.size() ; i++) {
-		        	for (int j = 0 ; j < RoisFiltered.TripleRoxx.get(i).size(); j++) {
-		        		for (Rox rox:RoisFiltered.TripleRoxx.get(i).get(j)) {
-		        			newManager.reset();
-		            		newManager.add(rox.getRoi(), 0);
-		            		RoxDataMap.get(rox).setArea(IJ.getImage());
-		        		}
-		        	}
-		        }
-		        
-		        for (int i = 0 ; i < RoisFiltered.DoubleRoxx.size() ; i++) {
-		        	for (int j = 0 ; j < RoisFiltered.DoubleRoxx.get(i).size(); j++) {
-		        		for (Rox rox:RoisFiltered.DoubleRoxx.get(i).get(j)) {
-		        			newManager.reset();
-		            		newManager.add(rox.getRoi(), 0);
-		            		RoxDataMap.get(rox).setArea(IJ.getImage());
-		        		}
-		        	}
-		        }
-		        
+		        	
 		        //Clean up resources
 		        
 		        IJ.selectWindow(imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
@@ -932,7 +915,7 @@ public class TissueProf implements PlugIn, Command {
 			
 			DetectOverlap.c=0;   
 		
-			OverlapFilter.clear();
+			//OverlapFilter.clear();
 			
 			if (allRois != null) {
 				for (int i = 0 ; i < allRois.length ; i++) {

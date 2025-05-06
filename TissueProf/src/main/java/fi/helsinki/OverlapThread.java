@@ -3,7 +3,7 @@ package fi.helsinki;
 import java.util.LinkedHashMap;
 import java.util.concurrent.Callable;
 
-public class OverlapThread extends Thread implements Callable {
+public class OverlapThread extends Thread implements Callable<OverlapRoxx> {
 	
 	OverlapFilter overlapFilter; 
 	LinkedHashMap<Rox,RoiData> roxDataMap; 
