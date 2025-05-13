@@ -1,6 +1,8 @@
 package fi.helsinki;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class Rox  {
 	
@@ -12,6 +14,8 @@ public class Rox  {
 	private double Y;
 	private double[] position = {X,Y};
 	public ShapeRoi shape;
+	//private LinkedHashMap<List<Integer>, double> thisMap = new LinkedHashMap<List<Integer>, double>();
+	private LinkedHashMap<List<Integer>, Double> ChIndexInterAreaMap = new LinkedHashMap<List<Integer>, Double>();
 
 
 	private double[] pos(double X, double Y) {
@@ -84,6 +88,12 @@ public class Rox  {
 		roi = this.roi;
 		this.shape = new ShapeRoi(roi);
 	}
+	
+	public void setInterArea(List<Integer> ChIndexes, double InterArea) {
+		ChIndexInterAreaMap.put(ChIndexes, InterArea);	
+	}
+
+
 }
 
 

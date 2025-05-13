@@ -37,7 +37,7 @@ public class OverlapThread extends Thread implements Callable<OverlapRoxx> {
     public OverlapRoxx call() throws Exception {
     	
         OverlapRoxx overlapThis = new OverlapRoxx();
-        overlapThis.overlapRox(overlapFilter, allRox, roxDataMap, NextIndex, channelSelection, channelSize, inputDir2, OutputDir, imageName, overlapThreshold);        
+        overlapThis.overlapRoxx(overlapFilter, allRox, roxDataMap, NextIndex, channelSelection, channelSize, inputDir2, OutputDir, imageName, overlapThreshold);        
         //Thread.currentThread().notifyAll();
     	return overlapThis;
     	

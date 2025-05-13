@@ -1,16 +1,20 @@
 package fi.helsinki;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import Util.Combinations;
 import fi.helsinki.OverlapFilter.ComboRoxx;
 import ij.IJ;
 import ij.gui.EllipseRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
+import ij.gui.WaitForUserDialog;
 import ij.plugin.frame.RoiManager;
+
 
 public class OverlapRoxx {
 	
@@ -71,7 +75,7 @@ public class OverlapRoxx {
 
 	boolean done = false;
 	//change return type to OverlapRoxx later after having built the constructor
-	public synchronized void overlapRox(OverlapFilter OverlapFilter, Rox[][] allRox, LinkedHashMap<Rox, RoiData> RoxDataMap,
+	public synchronized void overlapRoxx(OverlapFilter OverlapFilter, Rox[][] allRox, LinkedHashMap<Rox, RoiData> RoxDataMap,
 			int NextIndex, Boolean[] channelSelection, int channelSize, String inputDir2, String OutputDir, String imageName,
 			double ovth){
 		//Same logic as in the macro, except we will run through a smaller searchspace for interactions as we have already detected
@@ -85,11 +89,28 @@ public class OverlapRoxx {
 	
 		ArrayList<ComboRoxx> AllTheseComboRoxx = OverlapFilter.getRoxx();
 		
+		int x = 0;
+		for (ComboRoxx thisComboRoxx : AllTheseComboRoxx) {
+			
+			System.out.println("ComboRoxx  " + x + " size = " + thisComboRoxx.getFilteredRoxx().size() );
+			List<Integer> thisInt = thisComboRoxx.getComboIndexes();
+			thisInt.forEach(n->System.out.print(n.toString() + " "));
+			x++;
+			
+		}
+		
+			
+		
+		
+		
+		
+		
+		
 		System.out.println(AllTheseComboRoxx.size());
 		
 		ArrayList<List<Integer>> AllFilteredChIndexes = new ArrayList<List<Integer>>();
 		
-		for (ComboRoxx thisComboRoxx : AllTheseComboRoxx) {
+		for (ComboRoxx thisComboRoxx : AllTheseComboRoxx) {     
 			List<Integer> thisChIndexes = thisComboRoxx.getComboIndexes();
 			if (!AllFilteredChIndexes.contains(thisChIndexes)) {
 				AllFilteredChIndexes.add(thisChIndexes);
@@ -97,38 +118,74 @@ public class OverlapRoxx {
 		}
 		
 		
+		//Get All Rox combinations of Rox in each other's vicinity for each overlap category
+
+		
+		
+		if (RoiManager.getInstance()==null) {
+			RoiManager.getRoiManager();
+		}
+					
+		ArrayList<ComboOverlapRoxx> allCombinedOverlapRoxx = new ArrayList<ComboOverlapRoxx>();
 		
 		for (List<Integer> ChIndexes : AllFilteredChIndexes) {
 			
 			ArrayList<ArrayList<Rox>> theseRoxx = new ArrayList<ArrayList<Rox>>();
 			
+			RoiManager.getInstance().reset();
+			
 			for (ComboRoxx thisComboRoxx : AllTheseComboRoxx) {
 				if (thisComboRoxx.getComboIndexes()==ChIndexes) {
 					theseRoxx.add(thisComboRoxx.getFilteredRoxx());
+					System.out.print("Added comboroxx to theseRoxx ");
+					for (Rox rox : thisComboRoxx.getFilteredRoxx()) {
+						RoiManager.getInstance().addRoi(rox.getRoi());
+					}
+					
+					WaitForUserDialog seeComboRox = new WaitForUserDialog("See FilteredRox");
+					seeComboRox.show();
+					
+					List<Integer> thisChIndexes = thisComboRoxx.getComboIndexes();
+					thisChIndexes.forEach(n->System.out.print(n + " "));
+					System.out.println("\n");
+					
 				}
 			}
 			
 			ComboOverlapRoxx thisComboOverlapRoxx = new ComboOverlapRoxx(theseRoxx, ChIndexes); 
 			
+			allCombinedOverlapRoxx.add(thisComboOverlapRoxx);
 			
 			//Method to take in varying no of comboroxxes and apply a submethod to do overlap analysis
 			//Then return ComboOverlapRoxx
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 		}
+		
+		
+		
+		
+		//Using the groups in allCombinedOverlapRoxx (With differing set sizes) do OverlapAnalysis
+		//Looping over allCombinedOverlapRoxx,
+		//First, make a simple pairwise overlap analysis method returning true or false
+		//(optional) create a flexible overlap analysis method which takes variable number of ROIs and do the following:
+			//Once ComboOverlapRox group is set, create ranking based on InterArea.
+			//Starting with the rox with the lowest interarea, create overlap pairs 
+			//Do sequential overlap analysis of the pairs, once a pair does not satisfy overlap threshold, continue to the next ComboOverlapRox
+			//If all pairs satisfy overlap criteria, 
+			//save the Roxes in the group into a new OverlapRox object. 
+			//Add these Rox to the allOverlapRox list
+			//increment the counter
+			//
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -579,7 +636,7 @@ public class OverlapRoxx {
 	
 	
 	//Checking triple overlaps
-	
+	/*
 	for (int i = 0 ; i < 4 ; i ++) {
 		for (int j = 0 ; j < 3 ; j++) {
 			//RoiManager.getInstance().reset();
@@ -590,13 +647,13 @@ public class OverlapRoxx {
 			}
 		}
 	}
-	
+	*/
 	
 	
 	////Interlude: adjusting doubleoverlap ArrayLists 
 	
+		/*
 	ArrayList<Integer> DoubleCombSizes = new ArrayList<Integer>();
-	/*
 	DoubleCombSizes.ensureCapacity(24);
 	
 	System.out.println("Doing double overlap... ");
@@ -968,7 +1025,35 @@ public class OverlapRoxx {
 			//set chindexes
 			//Remove positive rox from their original Roxx ---Needs to be static?
 			
+			//ArrayList<ArrayList<Rox>> RoxCombinations = new ArrayList<ArrayList<Rox>>(); 
 			
+
+			//RoxCombinations = CombineRox.getRoxCombinations(theseRoxx); 
+			
+			CombineRox combineTheseRox = new CombineRox();
+			
+			ArrayList<ArrayList<Rox>> RoxCombinations = combineTheseRox.getRoxCombinations(theseRoxx);
+			
+			//Proceed with OverlapRox
+			
+			RoxCombinations.forEach(n->System.out.println("n = " + n.size()));
+			
+			
+			if (RoiManager.getInstance() == null) {
+				RoiManager.getRoiManager();
+			}
+			
+			for (ArrayList<Rox> thisRoxx : RoxCombinations) {
+				RoiManager.getInstance().reset();
+				
+				for (Rox rox : thisRoxx) {
+					RoiManager.getInstance().addRoi(rox.getRoi());
+				}
+				
+				WaitForUserDialog seeRois = new WaitForUserDialog("See Rois");
+				seeRois.show();
+				
+			}
 			
 			
 			
@@ -1034,7 +1119,7 @@ public class OverlapRoxx {
 	
 	public OverlapRox overlapRox(ArrayList<Rox> Roxy) {
 		
-	
+		
 		
 		
 		
@@ -1053,31 +1138,92 @@ public class OverlapRoxx {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public class CombineRox {
+
+	    public ArrayList<ArrayList<Rox>> getRoxCombinations(ArrayList<ArrayList<Rox>> Roxxes) {
+	        ArrayList<ArrayList<Rox>> RoxCombinations = new ArrayList<>();
+	        if (Roxxes.isEmpty()) {
+	            RoxCombinations.add(new ArrayList<>());
+	            return RoxCombinations;
+	        }
+	  
+	        // Start with the first list's elements as initial combinations
+	        ArrayList<Rox> firstRoxx = Roxxes.get(0);
+	        for (Rox rox : firstRoxx) {
+	            RoxCombinations.add(new ArrayList<>(Arrays.asList(rox)));
+	        }
+	        
+	        // For each remaining list, expand the existing combinations
+	        for (int i = 1; i < Roxxes.size(); i++) {
+	            ArrayList<Rox> currentList = Roxxes.get(i);
+	            ArrayList<ArrayList<Rox>> newCombinations = new ArrayList<>();
+	            
+	            for (ArrayList<Rox> combination : RoxCombinations) {
+	               
+	            	for (Rox rox : currentList) {
+        				
+	            		ArrayList<Rox> newCombination = new ArrayList<>(combination);
+	                    
+	                    //Add proximity filter here 
+	                    Rox rox0 = combination.get(combination.size()-1);
+	    				
+	        			double[] roi0Pos = rox0.getPosition();
+	                    EllipseRoi thisEllipse = new EllipseRoi(roi0Pos[0],roi0Pos[1]-100,roi0Pos[0]-100,roi0Pos[1]+100, 1);
+	                    double[] roi1Pos = rox.getPosition();
+	                   
+	                    if(thisEllipse.containsPoint(roi1Pos[0], roi1Pos[1])) {
+	                    	newCombination.add(rox);
+	                    	newCombinations.add(newCombination);
+	            
+	                    }
+	                    else {	
+	                    	newCombination.removeAll(newCombination);
+	                    	newCombination.clear();
+	                    	
+	                    }
+	                    
+	                    //Also do overlap analysis here and already make the overlaproxx?
+	                    //Turn this whole method into overlap method?
+	                    //or pass resulting groups to overlaprox and do the overlap analysis there?
+	                    //but then some sets will have differing numbers of rox.. Filter them out later according to chindexes.size()?
+	                    //or delete them once there is no overlap, which serves the main point anyway
+	                    //All you'll have to do is keep track of the alloverlaproxx and also filter out already detected overlaprox
+	                    //Nope-- Doing overlap without making sure all the rox in the set are in vicinity of each other will increase
+	                    //complexity. Go ahead with returning the proximity filtered sets to combooverlapRoxx and pick up from there.
+	                    
+	                }
+	            }
+	            
+	            RoxCombinations = newCombinations;
+	        }
+	        
+	        return RoxCombinations;
+	    }
+	}
 	
 	
 }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	
 
