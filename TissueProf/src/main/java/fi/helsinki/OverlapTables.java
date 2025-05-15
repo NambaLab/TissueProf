@@ -628,7 +628,7 @@ public class OverlapTables {
 			
 			IntNamesRow.createCell(26).setCellValue("Backgrounds");
 			
-			Row[] intcellRows = new Row[OverlapRoxx.totalOverlap + 10];
+			Row[] intcellRows = new Row[OverlapRoxx.overlapCount + 10];
 				
 			for (int i = 2 ; i < intcellRows.length ; i ++) {
 				intcellRows[i-2] = IntensitiesBin.createRow(i);

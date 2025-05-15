@@ -16,7 +16,7 @@ public class Rox  {
 	public ShapeRoi shape;
 	//private LinkedHashMap<List<Integer>, double> thisMap = new LinkedHashMap<List<Integer>, double>();
 	private LinkedHashMap<List<Integer>, Double> ChIndexInterAreaMap = new LinkedHashMap<List<Integer>, Double>();
-
+	private int channelSource;
 
 	private double[] pos(double X, double Y) {
 		double[] coors = {X,Y};
@@ -61,6 +61,10 @@ public class Rox  {
 
 	}
 	
+	public int getChannelSource() {
+		return channelSource;
+	}
+	
 	public void setRoi(Roi roi) {
 		this.roi = roi;
 	}
@@ -92,7 +96,12 @@ public class Rox  {
 	public void setInterArea(List<Integer> ChIndexes, double InterArea) {
 		ChIndexInterAreaMap.put(ChIndexes, InterArea);	
 	}
-
+	
+	public void setChannelSource(int ch) {
+		this.channelSource = ch;
+		
+	}
+	
 
 }
 

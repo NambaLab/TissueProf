@@ -655,6 +655,7 @@ public class TissueProf implements PlugIn, Command {
 	        		Rox thisRox = new Rox(thisData);
 	        		thisRox.setIndex(c);
 	        		thisRox.setShape();
+	        		thisRox.setChannelSource(i);
 	        		allRox[i][j] = thisRox;
 	        		DataRoxMap.put(thisData, thisRox);
 	        		RoxDataMap.put(thisRox, thisData);
