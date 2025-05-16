@@ -2,6 +2,8 @@ package fi.helsinki;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -105,13 +107,13 @@ public class OverlapRoxx {
 		
 		List<List<List<Integer>>> AllChCombinations = combinechs.generateCombinations(channelSize, channelSize);
 		
-		List<List<Integer>> ChIndexes = new ArrayList<List<Integer>>();
+		List<List<Integer>> AllFilteredChIndexesOrdered = new ArrayList<List<Integer>>();
 		
 		
 		for (List<List<Integer>> Chind : AllChCombinations) {
 			
 			for (List<Integer> thisind : Chind) {
-				ChIndexes.add(thisind);
+				AllFilteredChIndexesOrdered.add(thisind);
 				thisind.forEach(n->System.out.print(n + " "));
 				System.out.print("\n");
 			}
@@ -124,6 +126,29 @@ public class OverlapRoxx {
 				AllFilteredChIndexes.add(thisChIndexes);
 			}
 		}
+	
+		synchronized(AllFilteredChIndexesOrdered) {
+			for (List<Integer> ChIndex : AllFilteredChIndexesOrdered) {
+				if (!AllFilteredChIndexes.contains(ChIndex)) {
+						AllFilteredChIndexesOrdered.remove(ChIndex);
+				}
+			}
+		}
+		
+		
+		System.out.println("ChIndexes after filtering in proper order");
+		for (List<Integer> thisind : AllFilteredChIndexesOrdered) {
+			thisind.forEach(n->System.out.print(n + " "));
+			System.out.print("\n");
+		}
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		//Get All Rox combinations of Rox in each other's vicinity for each overlap category
@@ -135,7 +160,7 @@ public class OverlapRoxx {
 					
 		ArrayList<ComboOverlapRoxx> allCombinedOverlapRoxx = new ArrayList<ComboOverlapRoxx>();
 		
-		for (List<Integer> ChIndexes : AllFilteredChIndexes) {
+		for (List<Integer> ChIndexes : AllFilteredChIndexesOrdered) {
 			
 			ArrayList<ArrayList<Rox>> theseRoxx = new ArrayList<ArrayList<Rox>>();
 			
@@ -172,7 +197,7 @@ public class OverlapRoxx {
 			System.out.print("TheseRoxx size " + theseRoxx.size());
 			System.out.print("\n");
 			
-			ComboOverlapRoxx thisComboOverlapRoxx = new ComboOverlapRoxx(theseRoxx, ChIndexes, AllOverlapRox, overlapCount, currentIndex); 
+			ComboOverlapRoxx thisComboOverlapRoxx = new ComboOverlapRoxx(theseRoxx, ChIndexes, AllOverlapRox, overlapCount, currentIndex, ovth); 
 			
 			allCombinedOverlapRoxx.add(thisComboOverlapRoxx);
 			
@@ -551,7 +576,7 @@ public class OverlapRoxx {
 			for (int j = 0 ; j < OverlapFilter.TripleRoxx.get(e).get(b).size() ; j++) {
 				Rox Rox1 = OverlapFilter.TripleRoxx.get(e).get(b).get(j);
 				if (allOverlapRoxx.contains(Rox0)||allOverlapRoxx.contains(Rox1)) {continue;}
-		
+				
 				double[] roi1Pos = Rox1.getPosition();
 				boolean r0 = (thisEllipse.containsPoint(roi1Pos[0], roi1Pos[1]));
 				
@@ -1004,10 +1029,11 @@ public class OverlapRoxx {
 		int overlapCount;
 		
 		
-		ComboOverlapRoxx(ArrayList<ArrayList<Rox>> theseRoxx, List<Integer> ChIndexes, ArrayList<Rox> allOverlapRox, int currentIndex, int overlapCount){
+		ComboOverlapRoxx(ArrayList<ArrayList<Rox>> theseRoxx, List<Integer> ChIndexes, ArrayList<Rox> allOverlapRox, int currentIndex, 
+																							int overlapCount, double overlapThreshold){
 			
 			
-			overlapComboRoxx(theseRoxx, ChIndexes, allOverlapRox, currentIndex, overlapCount);
+			overlapComboRoxx(theseRoxx, ChIndexes, allOverlapRox, currentIndex, overlapCount, overlapThreshold);
 			
 			//this.setOverlapRoxx(overlapRoxx);
 			//this.setChIndexes(chIndexes);
@@ -1034,7 +1060,8 @@ public class OverlapRoxx {
 			return ChIndexes;
 		}
 		
-		public void overlapComboRoxx(ArrayList<ArrayList<Rox>> theseRoxx, List<Integer> ChIndexes, ArrayList<Rox> allOverlapRox, int currentIndex, int overlapCount){
+		public void overlapComboRoxx(ArrayList<ArrayList<Rox>> theseRoxx, List<Integer> ChIndexes, ArrayList<Rox> allOverlapRox,
+																	int currentIndex, int overlapCount, double overlapThreshold){
 			
 			//Go through combinations of groupings of Rox from the Roxx
 			//Group Rox, send to overlapRox
@@ -1045,11 +1072,11 @@ public class OverlapRoxx {
 			//set overlapComboRoxx
 			//setCount ---Also, gonna have to return the updated count 
 			//set chindexes
-			//Remove positive rox from their original Roxx ---Needs to be static?
+			//Remove positive rox from their original Roxx ---Needs to be static? --neeeded at all? Just check allOverlap.contains 
+			//in each iteration as usual and continue that way? Number of roxx increase exponentially with no.channels anyway...
 			
 			//ArrayList<ArrayList<Rox>> RoxCombinations = new ArrayList<ArrayList<Rox>>(); 
 			
-
 			//RoxCombinations = CombineRox.getRoxCombinations(theseRoxx); 
 			
 			CombineRox combineTheseRox = new CombineRox();
@@ -1078,6 +1105,42 @@ public class OverlapRoxx {
 			}
 			
 			
+			ArrayList<OverlapRox> foundOverlapRoxx = new ArrayList<OverlapRox>();
+			
+			for (ArrayList<Rox> thisRoxy : RoxCombinations) {
+				
+				OverlapRox thisOverlapRox = new OverlapRox();
+				
+				if(	thisOverlapRox.isOverlapped(thisRoxy, ChIndexes, overlapThreshold)){
+					foundOverlapRoxx.add(thisOverlapRox);
+				}
+				
+			}
+			
+			setOverlapRoxx(foundOverlapRoxx);
+			setChIndexes(ChIndexes);
+			
+			
+			
+			
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			
+			//
+			
+			
+			
+			
+			
+			
 			
 			
 			
@@ -1100,14 +1163,15 @@ public class OverlapRoxx {
 		
 		ArrayList<Rox> OverlappingRoxes;
 		Rox InterRox;
+		ArrayList<Rox> PairwiseInterRoxes;
 		int InterIndex;
 		
 		
-		OverlapRox(ArrayList<Rox> overlappingRoxes, Rox interRox, int interIndex){
+		OverlapRox(){
 			
-			this.setOverlappingRoxes(OverlappingRoxes);
-			this.setInterRox(InterRox);
-			this.setInterIndex(InterIndex);
+			//this.setOverlappingRoxes(OverlappingRoxes);
+			//this.setInterRox(InterRox);
+			//this.setInterIndex(InterIndex);
 			
 		}
 		
@@ -1130,7 +1194,141 @@ public class OverlapRoxx {
 		public int getInterIndex () {
 			return InterIndex;
 		}
-	
+		
+		/*
+		public OverlapRox overlapRox(ArrayList<Rox> overlappedRoxy, List<Integer> ChIndexes) {
+			
+			
+			
+			Rox thisFinalRox = overlappedRoxy.get(0);
+			
+			return thisFinalRox; 
+			
+		}
+		*/
+		
+		
+		public boolean isOverlapped(ArrayList<Rox> Roxy, List<Integer> ChIndexes, double overlapThreshold) {
+			
+			ArrayList<Rox> overlappedRoxy = new ArrayList<Rox>();
+			
+			Rox thisFinalRox = Roxy.get(0);
+			
+			overlappedRoxy.add(thisFinalRox);
+			List<Integer> thisChIndexes = new ArrayList<Integer>();
+			
+			//Create pairs
+			//Pass to pairwise overlap
+			//If all pairwise overlaps==true
+			//Create OverlapRox
+			//Set required info
+			//Return
+			boolean overlapped = false;
+			
+			Combinations thisComb = new Combinations();
+			Combinations.ChannelCombinations combinechs = thisComb.new ChannelCombinations();
+			List<List<List<Integer>>> thisCombination = combinechs.generateCombinations(Roxy.size()-1, 2);
+			
+			List<List<Integer>> pairs = new ArrayList<List<Integer>>();
+			
+			for (List<List<Integer>> thisListofLists: thisCombination) {
+				for (List<Integer> thisList : thisListofLists) {
+					
+					thisList.forEach(n->System.out.print(n + " "));
+					System.out.print("\n");
+					
+					pairs.add(thisList);
+					
+				}
+			}
+			
+			Collections.sort(Roxy, Comparator.comparingDouble(r -> r.getInterArea(ChIndexes))) ;
+			
+			int c = 0 ;
+			for (List<Integer> thisPair : pairs) {
+				
+				Rox rox1 = Roxy.get(thisPair.get(0));
+				Rox rox2 = Roxy.get(thisPair.get(1));
+				
+				boolean pairwiseOverlapped = pairwiseOverlap(rox1, rox2, overlapThreshold);
+				
+				if(pairwiseOverlapped == false) {
+					overlapped = false;
+					break;
+				}
+				else {
+					c++;
+				}
+			}
+			
+			if (c == Roxy.size()-1) {
+				overlapped = true;
+				
+				
+				setInterRox(findInterRox(Roxy));
+				setOverlappingRoxes(Roxy);
+				
+				//Take care of indexing 
+				//Take care of AllOverlapRox
+				
+				
+			}
+			
+			
+			return overlapped;
+		}
+		
+		
+		public Rox findInterRox(ArrayList<Rox> Roxy) {
+			ArrayList<ShapeRoi> OverlappingRoxShapes = new ArrayList<ShapeRoi>();
+			
+			for (Rox rox: Roxy) {
+				OverlappingRoxShapes.add((ShapeRoi)rox.shape.clone());
+			}
+			
+			ShapeRoi InterShape = DetectOverlap.FindIntersection(OverlappingRoxShapes);
+			Roi InterRoi = InterShape.shapeToRoi();
+			RoiData InterData = new RoiData(IJ.getImage(), InterRoi);
+			Rox InterRox = new Rox(InterData);
+			return InterRox;
+		}
+		
+		public boolean pairwiseOverlap(Rox rox1, Rox rox2, double overlapThreshold) {
+			
+			boolean pairwiseOverlapped = false;
+			
+			ShapeRoi ShapeRoi1 = new ShapeRoi((Roi) rox1.getRoi().clone());
+			ShapeRoi ShapeRoi2 = new ShapeRoi((Roi) rox2.getRoi().clone());
+			ShapeRoi interShape = ((ShapeRoi) ShapeRoi1.clone()).and((ShapeRoi) ShapeRoi2.clone());
+			
+			Roi InterRoi = interShape.shapeToRoi();
+			
+			double rox1Area = rox1.getArea();
+			double rox2Area = rox2.getArea();
+			
+			if (interShape!=null && interShape.getBounds().height>0){
+				
+				RoiData InterData = new RoiData(IJ.getImage(), InterRoi);
+				double ShapeArea = InterData.setArea(IJ.getImage());
+				
+				double ratio1 = ShapeArea/rox1Area;
+				double ratio2 = ShapeArea/rox2Area;
+				
+				if (ratio1> overlapThreshold || ratio2 > overlapThreshold) {
+					pairwiseOverlapped = true;
+					PairwiseInterRoxes.add(new Rox(InterData));
+				}
+				else {
+					pairwiseOverlapped = false;
+				}
+				
+			}
+			
+			return pairwiseOverlapped;
+			
+		}
+		
+		
 	}
 		
 		
@@ -1139,19 +1337,9 @@ public class OverlapRoxx {
 	
 	
 	
-	public OverlapRox overlapRox(ArrayList<Rox> Roxy) {
-		
-		ArrayList<Rox> overlappedRoxy = new ArrayList<Rox>();
-		
-		Rox thisFinalRox = Roxy.get(0);
-		
-		overlappedRoxy.add(thisFinalRox);
-		List<Integer> thisChIndexes = new ArrayList<Integer>();
-		
-		OverlapRox finalOverlapRox = new OverlapRox(overlappedRoxy, thisFinalRox, 1);		
-		return finalOverlapRox; 
-		
-	}
+	
+	
+	
 	
 	
 	public class CombineRox {

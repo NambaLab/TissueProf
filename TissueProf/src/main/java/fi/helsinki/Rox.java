@@ -61,6 +61,13 @@ public class Rox  {
 
 	}
 	
+	public Double getInterArea(List<Integer> ChIndexes){
+		Double thisArea = ChIndexInterAreaMap.get(ChIndexes); 
+		return thisArea;		
+				
+	}
+	
+	
 	public int getChannelSource() {
 		return channelSource;
 	}
