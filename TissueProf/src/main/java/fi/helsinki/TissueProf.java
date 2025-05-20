@@ -47,6 +47,8 @@ import org.scijava.ui.UIService;
 
 import fi.helsinki.DetectOverlap.ComboInterComposite;
 import fi.helsinki.OverlapFilter.ComboRoxx;
+import fi.helsinki.OverlapRoxx.ComboOverlapRoxx;
+import fi.helsinki.OverlapRoxx.OverlapRox;
 import ij.IJ;
 import ij.WindowManager;
 import ij.gui.Roi;
@@ -781,6 +783,10 @@ public class TissueProf implements PlugIn, Command {
 		   
 		        WindowManager.closeAllWindows();
 		        
+		        OpenCh = random.nextInt(ProcessImage.ImageChannelNo) + 1;
+		        
+		        IJ.open(OutputDir + "/" + imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
+		        
 		        //Create a separate thread for detailed overlap analysis of Rox that have been filtered and are known to interact
 		        OverlapThread overlapThread = new OverlapThread(RoisFiltered, thisAllRox, RoxDataMap, NextIndex, channelSelection, 
 		        		channelSize, inputDir2, OutputDir, imageName, overlapThreshold);
@@ -811,42 +817,54 @@ public class TissueProf implements PlugIn, Command {
 		        RoiManager.getInstance().reset();
 		        
 		        ////Add all ROIs and overlap ROIs to the ROI Manager and save them as the allROIs ROI sets
-		        int allOverlapCount = 0;  
+		        
+		        
+		        for (ComboOverlapRoxx thisComboOverlapRoxx: OverlappedRoxx.getComboOverlapRoxxes()) {
+		        	System.out.print(thisComboOverlapRoxx.getComboSize() + "ComboOverlapRoxx indexes ");
+		        	thisComboOverlapRoxx.ChIndexes.forEach(n->System.out.print(n + " "));
+		        	System.out.print("\n");
+		        	int r = 0 ; 
+		        	for (OverlapRox thisOverlapRox : thisComboOverlapRoxx.getOverlapRoxx()) {
+		        		System.out.print("OverlapRox " + c + " interRox index" + thisOverlapRox.getInterIndex() + " Overlapping Rox indexes : ");
+		        		thisOverlapRox.getOverlappingRoxes().forEach(n->System.out.print(n.getIndex() + " "));
+		        		System.out.print("\n");
+		        		
+		        		RoiManager.getInstance().reset();
+		        		thisOverlapRox.getOverlappingRoxes().forEach(n->RoiManager.getInstance().addRoi(n.getRoi()));
+		        		RoiManager.getInstance().addRoi(thisOverlapRox.getInterRox().getRoi());
+		        		
+		        		WaitForUserDialog seeOverlap = new WaitForUserDialog("See overlap rox "); 
+		        		seeOverlap.show();
+		        		
+		        		r++;
+		        	}
+		        	
+		        }
+		        
+		 
+		        
+		        
+		        
+		        
+		        int allRoxCount = 0;  
 		        
 				for (int i = 0 ; i < thisAllRox.length ; i++) {
 					if (channelSelection[i]==false) {continue;}
 					for (int j = 0 ; j < thisAllRox[i].length ; j++) {
-						thisAllRox[i][j].setIndex(allOverlapCount);
+						thisAllRox[i][j].setIndex(allRoxCount);
 						RoiManager.getInstance().addRoi(thisAllRox[i][j].getRoi());
-						allOverlapCount++;
+						allRoxCount++;
 					}
 				}
 				
-				Iterator<Rox> quadIter = OverlappedRoxx.QuadInterRoxx.iterator();
-				while (quadIter.hasNext()) {
-					RoiManager.getInstance().addRoi(((Rox) quadIter.next()).getRoi());
-					allOverlapCount++;
-				}
 				
-				for (ArrayList<Rox> tripleRus : OverlappedRoxx.TripleInterRoxx) {
-					if (tripleRus.size()>0) {
-						Iterator<Rox> tripleIterate = tripleRus.iterator();
-						while (tripleIterate.hasNext()) {
-							RoiManager.getInstance().addRoi(((Rox) tripleIterate.next()).getRoi());
-							allOverlapCount++;
-						}
-					}
-				}
 				
-				for (ArrayList<Rox> dubRus : OverlappedRoxx.DoubleInterRoxx) {
-					if (dubRus.size()>0) {
-						Iterator<Rox> doubleIterate = dubRus.iterator();
-						while(doubleIterate.hasNext()) {
-							RoiManager.getInstance().addRoi(((Rox) doubleIterate.next()).getRoi());
-							allOverlapCount++;
-						}
-					}
-				}
+				
+				
+				
+				
+				
+				
 				
 				runStardist.saveRois(OutputDir, imageName + "_" + zoneNames.get(c) + "_AllROIs");
 				
