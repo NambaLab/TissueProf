@@ -887,7 +887,7 @@ public class TissueProf implements PlugIn, Command {
 			if (allRois != null) {
 				for (int i = 0 ; i < allRois.length ; i++) {
 					for (int j =0 ; j< allRois[i].length ; j++) {
-						if (allRois[i][i]!=null) {
+						if (allRois[i][j]!=null) {
 							allRois[i][j]=null;
 						}
 					}
