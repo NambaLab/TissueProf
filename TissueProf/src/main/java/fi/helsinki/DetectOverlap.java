@@ -126,8 +126,8 @@ public class DetectOverlap {
 		}
 		
 		
-		WaitForUserDialog seeRois = new WaitForUserDialog("See combocomposites");
-		seeRois.show();
+		//WaitForUserDialog seeRois = new WaitForUserDialog("See combocomposites");
+		//seeRois.show();
 		
 		setDetectResults(ComboInterComposites);
 		

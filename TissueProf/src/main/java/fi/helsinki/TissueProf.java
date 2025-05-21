@@ -765,7 +765,7 @@ public class TissueProf implements PlugIn, Command {
 		        	for (Rox rox : thisRoxx.getFilteredRoxx()) {
 		        		RoiManager.getInstance().reset();
 		        		RoiManager.getInstance().addRoi(rox.getRoi());
-		        		RoxDataMap.get(rox).setArea(IJ.getImage());
+		        		rox.setArea(RoxDataMap.get(rox).setArea(IJ.getImage()));
 		        	}
 		        }
 		        	
@@ -814,8 +814,9 @@ public class TissueProf implements PlugIn, Command {
 		            executor.shutdown(); // Shutdown the executor
 		        }
 		        
-		        RoiManager.getInstance().reset();
-		        
+		        if (RoiManager.getInstance()!=null) {
+		        	RoiManager.getInstance().reset();
+		        }
 		        ////Add all ROIs and overlap ROIs to the ROI Manager and save them as the allROIs ROI sets
 		        
 		        
@@ -824,20 +825,45 @@ public class TissueProf implements PlugIn, Command {
 		        	thisComboOverlapRoxx.ChIndexes.forEach(n->System.out.print(n + " "));
 		        	System.out.print("\n");
 		        	int r = 0 ; 
+		        	
+		        	
+		        	
 		        	for (OverlapRox thisOverlapRox : thisComboOverlapRoxx.getOverlapRoxx()) {
-		        		System.out.print("OverlapRox " + c + " interRox index" + thisOverlapRox.getInterIndex() + " Overlapping Rox indexes : ");
-		        		thisOverlapRox.getOverlappingRoxes().forEach(n->System.out.print(n.getIndex() + " "));
-		        		System.out.print("\n");
 		        		
-		        		RoiManager.getInstance().reset();
-		        		thisOverlapRox.getOverlappingRoxes().forEach(n->RoiManager.getInstance().addRoi(n.getRoi()));
-		        		RoiManager.getInstance().addRoi(thisOverlapRox.getInterRox().getRoi());
+		        		String concatenated = thisComboOverlapRoxx.getChIndexes().get(0).toString();
+						
+						
+						int con = 0;
+						for (Integer thisInt : thisComboOverlapRoxx.getChIndexes()) {
+							if (con == 0 ) {con++;continue;}
+							concatenated = String.join("", concatenated, thisInt.toString());
+						}
+						
 		        		
-		        		WaitForUserDialog seeOverlap = new WaitForUserDialog("See overlap rox "); 
-		        		seeOverlap.show();
+		        		//System.out.print(concatenated + "OverlapRox" + c + " interRox index" + thisOverlapRox.getInterIndex() + " Overlapping Rox indexes : ");
+		        		//thisOverlapRox.getOverlappingRoxes().forEach(n->System.out.print(n.getIndex() + " "));
+		        		//System.out.print("\n");
 		        		
+		        		//RoiManager.getInstance().reset();
+		        		//thisOverlapRox.getOverlappingRoxes().forEach(n->RoiManager.getInstance().addRoi(n.getRoi()));
+		        		//RoiManager.getInstance().addRoi(thisOverlapRox.getInterRox().getRoi());
+		        		
+		        		//WaitForUserDialog seeOverlap = new WaitForUserDialog("See overlap rox "); 
+		        		//seeOverlap.show();
+		        		c++;
 		        		r++;
 		        	}
+		        	String concatenated = thisComboOverlapRoxx.getChIndexes().get(0).toString();
+					
+					
+					int con = 0;
+					for (Integer thisInt : thisComboOverlapRoxx.getChIndexes()) {
+						if (con == 0 ) {con++;continue;}
+						concatenated = String.join("", concatenated, thisInt.toString());
+					}
+					
+					System.out.println(concatenated + "ComboOverlapRoxx Count = " + thisComboOverlapRoxx.getOverlapRoxx().size() 
+							+ "(overlapCount " +  thisComboOverlapRoxx.getOverlapCount() + ")");
 		        	
 		        }
 		        

@@ -148,8 +148,8 @@ public class OverlapFilter {
 			
 			addRoxxToRoiManager((ArrayList<Rox>)thisComboRoxx.FilteredRoxx);
 			
-			WaitForUserDialog seeFiltered = new WaitForUserDialog("See FilteredRoxx in OverlapFilter");
-			seeFiltered.show();
+			//WaitForUserDialog seeFiltered = new WaitForUserDialog("See FilteredRoxx in OverlapFilter");
+			//seeFiltered.show();
 		}
 			
 		//set the Roxx
