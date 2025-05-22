@@ -1348,7 +1348,7 @@ public class OverlapRoxx {
 			double rox1Area = rox1.getArea(); System.out.print("rox1Area = " + rox1Area);
 			double rox2Area = rox2.getArea(); System.out.print("rox2Area = " + rox2Area); System.out.print("\n");
 			
-			if (interShape!=null && interShape.getBounds().height>0){
+			if (interShape!=null && interShape.getBounds().getHeight()>0){
 				
 				RoiData InterData = new RoiData(IJ.getImage(), InterRoi);
 				double ShapeArea = InterData.setArea(IJ.getImage());
@@ -1436,15 +1436,6 @@ public class OverlapRoxx {
 	                    	newCombination.clear();
 	                    	
 	                    }
-	                    
-	                    //Also do overlap analysis here and already make the overlaproxx?
-	                    //Turn this whole method into overlap method?
-	                    //or pass resulting groups to overlaprox and do the overlap analysis there?
-	                    //but then some sets will have differing numbers of rox.. Filter them out later according to chindexes.size()?
-	                    //or delete them once there is no overlap, which serves the main point anyway
-	                    //All you'll have to do is keep track of the alloverlaproxx and also filter out already detected overlaprox
-	                    //Nope-- Doing overlap without making sure all the rox in the set are in vicinity of each other will increase
-	                    //complexity. Go ahead with returning the proximity filtered sets to combooverlapRoxx and pick up from there.
 	                    
 	                }
 	            }
