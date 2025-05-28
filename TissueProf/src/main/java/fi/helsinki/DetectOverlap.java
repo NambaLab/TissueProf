@@ -213,7 +213,7 @@ public class DetectOverlap {
 	
 	public static ShapeRoi FindIntersection(ArrayList<ShapeRoi> ShapeRois) {
 		
-		System.out.println("ShapeRois Length " + ShapeRois.size());
+		//System.out.println("ShapeRois Length " + ShapeRois.size());
 		
 		//RoiManager.getInstance().reset();
 		//RoiManager.getInstance().addRoi(ShapeRois.get(0).shapeToRoi());
@@ -223,12 +223,12 @@ public class DetectOverlap {
 		
 		ShapeRoi CurrentIntersection  = (ShapeRoi) ShapeRois.get(0).clone();
 		
-		System.out.println("current intersection before loop " + CurrentIntersection.getBounds().getHeight());
+		//System.out.println("current intersection before loop " + CurrentIntersection.getBounds().getHeight());
 		
 		int c = 0;
 		for (ShapeRoi thisShape : ShapeRois ) {
 			if (c==0) {System.out.println("c " + c); c++; continue;}
-			System.out.println("c " + c + "CurrentIntersection height " + CurrentIntersection.getBounds().getHeight());
+			//System.out.println("c " + c + "CurrentIntersection height " + CurrentIntersection.getBounds().getHeight());
 			if (thisShape != null) {
 				CurrentIntersection = CurrentIntersection.and((ShapeRoi) (thisShape.clone()));	
 			}

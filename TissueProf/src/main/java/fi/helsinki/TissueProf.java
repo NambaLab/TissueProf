@@ -45,6 +45,8 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
+import com.google.api.client.util.Strings;
+
 import fi.helsinki.DetectOverlap.ComboInterComposite;
 import fi.helsinki.OverlapFilter.ComboRoxx;
 import fi.helsinki.OverlapRoxx.ComboOverlapRoxx;
@@ -844,13 +846,15 @@ public class TissueProf implements PlugIn, Command {
 		        		//thisOverlapRox.getOverlappingRoxes().forEach(n->System.out.print(n.getIndex() + " "));
 		        		//System.out.print("\n");
 		        		
-		        		//RoiManager.getInstance().reset();
-		        		//thisOverlapRox.getOverlappingRoxes().forEach(n->RoiManager.getInstance().addRoi(n.getRoi()));
-		        		//RoiManager.getInstance().addRoi(thisOverlapRox.getInterRox().getRoi());
+		        		RoiManager.getInstance().reset();
+		        		thisOverlapRox.getOverlappingRoxes().forEach(n->RoiManager.getInstance().addRoi(n.getRoi()));
+		        		
+		        		if (thisOverlapRox.getOverlappingRoxes().size()>1) {
+		        			RoiManager.getInstance().addRoi(thisOverlapRox.getInterRox().getRoi());
+		        		}
 		        		
 		        		//WaitForUserDialog seeOverlap = new WaitForUserDialog("See overlap rox "); 
 		        		//seeOverlap.show();
-		        		c++;
 		        		r++;
 		        	}
 		        	String concatenated = thisComboOverlapRoxx.getChIndexes().get(0).toString();
@@ -867,35 +871,54 @@ public class TissueProf implements PlugIn, Command {
 		        	
 		        }
 		        
-		 
 		        
+		        //canceled = true;
 		        
+				TissueProf.getThreadtoStop();
 		        
+		        try {
+					Thread.currentThread().sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					System.out.println("Canceled");
+				}
+
 		        
+				
 		        int allRoxCount = 0;  
+		        
+		        System.out.println("ThisAllRox length " + thisAllRox.length);
 		        
 				for (int i = 0 ; i < thisAllRox.length ; i++) {
 					if (channelSelection[i]==false) {continue;}
 					for (int j = 0 ; j < thisAllRox[i].length ; j++) {
 						thisAllRox[i][j].setIndex(allRoxCount);
+						System.out.println("Channel " + i + " roi index " + thisAllRox[i][j].getIndex());
 						RoiManager.getInstance().addRoi(thisAllRox[i][j].getRoi());
 						allRoxCount++;
 					}
 				}
 				
+				for(ComboOverlapRoxx thisCombo : OverlappedRoxx.getComboOverlapRoxxes()) {
+					for (OverlapRox thisOverlapRox : thisCombo.getOverlapRoxx()) {
+		        		if (thisOverlapRox.getOverlappingRoxes().size()>1) {
+		        			
+		        			System.out.println("InterRoi index " + thisOverlapRox.getInterIndex() + " OR? " + 
+		        			thisOverlapRox.getInterRox().getIndex());
+		        			String newName = String.valueOf(thisOverlapRox.getInterIndex());
+		        			thisOverlapRox.getInterRox().getRoi().setName(newName);
+		        			RoiManager.getInstance().addRoi(thisOverlapRox.getInterRox().getRoi());
+		        		}
+					}
+				}
 				
-				
-				
-				
-				
-				
-				
-				
+				WaitForUserDialog seeAllROIs = new WaitForUserDialog("see AllROIs");
+				seeAllROIs.show();
 				
 				runStardist.saveRois(OutputDir, imageName + "_" + zoneNames.get(c) + "_AllROIs");
 				
 				WindowManager.closeAllWindows();
-
+				
 				OverlapTables thisTable = new OverlapTables();
 		        
 		        try {
@@ -913,7 +936,7 @@ public class TissueProf implements PlugIn, Command {
 				thisProblem.setVisible(true);
 		        
 				System.out.println("Finished working on "  + zoneNames.get(c));
-				OverlappedRoxx.clear();
+				//OverlappedRoxx.clear();
 				OverlappedRoxx = new OverlapRoxx();
 		        c++;
 		       
@@ -965,7 +988,7 @@ public class TissueProf implements PlugIn, Command {
 			if (allRois != null) {
 				for (int i = 0 ; i < allRois.length ; i++) {
 					for (int j =0 ; j< allRois[i].length ; j++) {
-						if (allRois[i][i]!=null) {
+						if (allRois[i][j]!=null) {
 							allRois[i][j]=null;
 						}
 					}
@@ -1019,7 +1042,7 @@ public class TissueProf implements PlugIn, Command {
 	        	RoiRox.clear();
 			}
 			if (OverlappedRoxx!=null) {
-		        OverlappedRoxx.clear();
+		        //OverlappedRoxx.clear();
 		        OverlappedRoxx = new OverlapRoxx();
 			}
 			
