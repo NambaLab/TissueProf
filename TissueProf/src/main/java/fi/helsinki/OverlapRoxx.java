@@ -218,24 +218,11 @@ public class OverlapRoxx {
 			ChIndexes.forEach(n->System.out.print(n.toString() + " "));
 			System.out.print("TheseRoxx size " + theseRoxx.size());
 			System.out.print("\n");
-			System.out.println("BEFORE COMBOOVERLAPROXX");
-			System.out.println("Index from overlapRoxx currentIndex now = " + currentIndex);
-			
-			
-			
-			
 			
 			ComboOverlapRoxx thisComboOverlapRoxx = new ComboOverlapRoxx(theseRoxx, ChIndexes, AllOverlapRox, this.getCurrentIndex(), overlapCount, ovth); 
 			updateAllOverlapRoxx(thisComboOverlapRoxx.getAllOverlapRox());
 			updateOverlapCount(thisComboOverlapRoxx.getOverlapCount());
-			System.out.println("AFTER COMBOOVERLAPROXX");
-			System.out.println("Updating index from overlapRoxx currentIndex = " + currentIndex);
-			System.out.println("Updating index from overlapRoxx previous combocurentIndex = " + thisComboOverlapRoxx.getCurrentComboIndex());
 			updateCurrentIndex(thisComboOverlapRoxx.getCurrentComboIndex());
-			System.out.println("(After update) Updated index from overlapRoxx currentIndex = " + currentIndex);
-			System.out.println("(After update) Updated index from overlapRoxx previous combocurentIndex = " + thisComboOverlapRoxx.getCurrentComboIndex());
-			
-			
 			ComboOverlapRoxxes.add(thisComboOverlapRoxx);
 			
 			//System.out.println("AllOverlapRox Size " + thisComboOverlapRoxx.getAllOverlapRox().size());

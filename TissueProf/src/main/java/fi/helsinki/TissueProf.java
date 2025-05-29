@@ -541,6 +541,9 @@ public class TissueProf implements PlugIn, Command {
 	    	
 	    	//Close unnecessary Image Windows and release memory 
 	        
+	    	//TODO
+	    	//Close image windows method
+	    	
 	        String[] imageTitles = WindowManager.getImageTitles();
 	        
 	        for(String name : imageTitles) {
@@ -552,6 +555,9 @@ public class TissueProf implements PlugIn, Command {
 	        	thiswind.dispose();
 	        	thiswind = null;
 	        } 
+	        
+	        // ->| Until here
+	        
 	        
 	        //Temporary Roi Array 
 	        
@@ -739,13 +745,18 @@ public class TissueProf implements PlugIn, Command {
 		        IJ.selectWindow(imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
 		       
 		        //Close windows to clean up resources
+		        
+		        //TODO
+		        //Dispose of current window method
 		        Window thisim = IJ.getImage().getWindow();
 		        
 		        IJ.getImage().flush();
 		        IJ.getImage().close();
 		        
+		        
 		        thisim.dispose();
 		        thisim = null;
+		        //->|Until here
 		        
 			    IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
 		        //Filter ROIs from Channel ROIs that overlap with ROIs from other channels
@@ -761,8 +772,9 @@ public class TissueProf implements PlugIn, Command {
 		        IJ.open(OutputDir + "/" + imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
 		        
 		        //Area Measurements for the Rox that overlap with an unknown ratio with other channel ROIs in the particular combinations.
-		       
 		        
+		        //TODO
+		        //Unnecessary additions to the ROI Manager?
 		        for (ComboRoxx thisRoxx : RoisFiltered.getRoxx()) {
 		        	for (Rox rox : thisRoxx.getFilteredRoxx()) {
 		        		RoiManager.getInstance().reset();
@@ -775,6 +787,9 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        IJ.selectWindow(imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
 		        
+		        
+		        //TODO
+		        //Use the above created method to dispose
 		        Window imwin2 = IJ.getImage().getWindow();
 		        
 		        IJ.getImage().flush();
@@ -782,7 +797,7 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        imwin2.dispose();
 		        imwin2 = null;
-		   
+		        
 		        WindowManager.closeAllWindows();
 		        
 		        OpenCh = random.nextInt(ProcessImage.ImageChannelNo) + 1;
@@ -821,12 +836,14 @@ public class TissueProf implements PlugIn, Command {
 		        }
 		        ////Add all ROIs and overlap ROIs to the ROI Manager and save them as the allROIs ROI sets
 		        
-		        
+		        //TODO
+		        //Remove this code made for review/diagnostics purposes after there is no more need for it (Until...)
 		        for (ComboOverlapRoxx thisComboOverlapRoxx: OverlappedRoxx.getComboOverlapRoxxes()) {
 		        	System.out.print(thisComboOverlapRoxx.getComboSize() + "ComboOverlapRoxx indexes ");
 		        	thisComboOverlapRoxx.ChIndexes.forEach(n->System.out.print(n + " "));
 		        	System.out.print("\n");
 		        	int r = 0 ; 
+		        	
 		        	
 		        	
 		        	
@@ -871,6 +888,9 @@ public class TissueProf implements PlugIn, Command {
 		        	
 		        }
 		        
+		        //->|Until here
+		        
+		        
 		        
 		        //canceled = true;
 		        
@@ -883,7 +903,7 @@ public class TissueProf implements PlugIn, Command {
 					System.out.println("Canceled");
 				}
 
-		        
+		        RoiManager.getInstance().reset();
 				
 		        int allRoxCount = 0;  
 		        
@@ -911,9 +931,6 @@ public class TissueProf implements PlugIn, Command {
 		        		}
 					}
 				}
-				
-				WaitForUserDialog seeAllROIs = new WaitForUserDialog("see AllROIs");
-				seeAllROIs.show();
 				
 				runStardist.saveRois(OutputDir, imageName + "_" + zoneNames.get(c) + "_AllROIs");
 				
