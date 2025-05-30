@@ -884,9 +884,11 @@ public class TissueProf implements PlugIn, Command {
 					}
 					
 					System.out.println(concatenated + "ComboOverlapRoxx Count = " + thisComboOverlapRoxx.getOverlapRoxx().size() 
-							+ "(overlapCount " +  thisComboOverlapRoxx.getOverlapCount() + ")");
+							+ "(overlapCount " +  thisComboOverlapRoxx.getCurrentOverlapCount() + ")");
 		        	
+					
 		        }
+		        
 		        
 		        //->|Until here
 		        
@@ -936,8 +938,12 @@ public class TissueProf implements PlugIn, Command {
 				
 				WindowManager.closeAllWindows();
 				
-				OverlapTables thisTable = new OverlapTables();
+				OverlapTables thisTable = new OverlapTables(OutputDir, imageName, inputDir2,  OverlappedRoxx, 
+						NewProcess.backgroundRois, channelSize, channelSelection, channelNames, zoneNames.get(c), measureIntensity);
+				thisTable.save();
 		        
+
+				/*
 		        try {
 					thisTable.makeTables(OutputDir, imageName, OverlappedRoxx, inputDir2, imageName, 
 							NewProcess.backgroundRois, channelSize, channelSelection, channelNames, zoneNames.get(c), measureIntensity);
@@ -945,7 +951,7 @@ public class TissueProf implements PlugIn, Command {
 					// TODO Auto-generated catch block				
 					e.printStackTrace();
 				}
-		        
+		        */
 		        NextIndex = 0 ;
 
 		        Dialogs.ProblemAreaDialog thisProblem = new Dialogs.ProblemAreaDialog("Problematic Areas", OverlappedRoxx, OutputDir, zoneNames.get(c), 

@@ -221,7 +221,7 @@ public class OverlapRoxx {
 			
 			ComboOverlapRoxx thisComboOverlapRoxx = new ComboOverlapRoxx(theseRoxx, ChIndexes, AllOverlapRox, this.getCurrentIndex(), overlapCount, ovth); 
 			updateAllOverlapRoxx(thisComboOverlapRoxx.getAllOverlapRox());
-			updateOverlapCount(thisComboOverlapRoxx.getOverlapCount());
+			updateOverlapCount(thisComboOverlapRoxx.getCurrentOverlapCount());
 			updateCurrentIndex(thisComboOverlapRoxx.getCurrentComboIndex());
 			ComboOverlapRoxxes.add(thisComboOverlapRoxx);
 			
@@ -295,7 +295,7 @@ public class OverlapRoxx {
 		List<Integer> ChIndexes;
 		int ComboSize;
 		ArrayList<ArrayList<Rox>> AllOverlapRox;
-		int overlapCount;
+		int currentOverlapCount;
 		int currentComboIndex;
 		
 		
@@ -328,8 +328,8 @@ public class OverlapRoxx {
 		private void setComboSize(int comboSize) {
 			this.ComboSize = comboSize;
 		}
-		private void setCount(int count) {
-			this.overlapCount = count;
+		private void setCurrentOverlapCount(int count) {
+			this.currentOverlapCount = count;
 		}
 		private void setCurrentComboIndex(int index) {
 			this.currentComboIndex = index;
@@ -349,8 +349,11 @@ public class OverlapRoxx {
 		public ArrayList<ArrayList<Rox>> getAllOverlapRox(){
 			return AllOverlapRox;
 		}
+		public int getCurrentOverlapCount() {
+			return currentOverlapCount;
+		}
 		public int getOverlapCount() {
-			return overlapCount;
+			return OverlapRoxx.size();
 		}
 		public int getCurrentComboIndex() {
 			return currentComboIndex;
@@ -431,7 +434,7 @@ public class OverlapRoxx {
 			this.setChIndexes(ChIndexes);
 			this.setComboSize(ChIndexes.size());
 			this.setAllOverlapRoxx(allOverlapRox);
-			this.setCount(overlapCount);
+			this.setCurrentOverlapCount(overlapCount);
 			this.setCurrentComboIndex(currentComboIndex);
 		}
 		
