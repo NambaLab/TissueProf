@@ -53,9 +53,7 @@ public class DetectOverlap {
 				RoiManager.getInstance().addRoi(channelRox[0].getRoi());
 				RoiManager.getInstance().run("Show All");
 				channelCompositeShape[c] = new ShapeRoi(channelRox[0].getRoi());
-				System.out.println("Still doing chcomposites ");
 			    for (int i = 1 ; i < channelRox.length ; i++) {
-			    	System.out.println("now doing loop inside chcomposite");
 			    	Roi thisRoi = channelRox[i].getRoi();
 			    	ShapeRoi channelRoiShape = new ShapeRoi(thisRoi); 
 			    	//ShapeRoi channelRoiShape = new ShapeRoi(channelRox[i].getRoi()); 
@@ -63,11 +61,9 @@ public class DetectOverlap {
 			    	channelCompositeShape[c] = channelCompositeClone.xor(channelRoiShape);
 			    	
 			    	int lengthafter = channelCompositeShape[c].getRois().length;
-			    	System.out.println("just did a tour around loop inside chcomposite");
 			    }
 			    
 			    //System.out.println("saving into composite array " + "Composite " + c + " " + channelCompositeShape[c].getRois().length);
-			    System.out.println("Now finishing up one round of chcomposites");
 			    //WaitForUserDialog seeProblem = new WaitForUserDialog("See issue");
 			    //seeProblem.show();
 			    RoiManager.getInstance().run("Show All");
@@ -76,7 +72,6 @@ public class DetectOverlap {
 			    RoiManager.getInstance().addRoi(channelCompositeShape[c].shapeToRoi());
 			    
 			}
-			System.out.println("Finishing up outer loop of chcomposites");
 		c++;
 		}
 		
@@ -191,6 +186,7 @@ public class DetectOverlap {
 					System.out.println("this chcombo size " + thisChCombo.size());
 					for (ShapeRoi thisComposite : thisChCombo) {
 						if (thisComposite!=null) {
+							
 							RoiManager.getInstance().addRoi(thisComposite.shapeToRoi());
 							
 						}
