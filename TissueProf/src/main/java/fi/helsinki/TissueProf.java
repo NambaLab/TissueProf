@@ -753,7 +753,6 @@ public class TissueProf implements PlugIn, Command {
 		        IJ.getImage().flush();
 		        IJ.getImage().close();
 		        
-		        
 		        thisim.dispose();
 		        thisim = null;
 		        //->|Until here
@@ -802,7 +801,14 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        OpenCh = random.nextInt(ProcessImage.ImageChannelNo) + 1;
 		        
+		        
+		        WaitForUserDialog seemem = new WaitForUserDialog("see mem");
+		        seemem.show();
+		        
 		        IJ.open(OutputDir + "/" + imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
+		        
+		        WaitForUserDialog seememafter = new WaitForUserDialog("see mem after");
+		        seememafter.show();
 		        
 		        //Create a separate thread for detailed overlap analysis of Rox that have been filtered and are known to interact
 		        OverlapThread overlapThread = new OverlapThread(RoisFiltered, thisAllRox, RoxDataMap, NextIndex, channelSelection, 
