@@ -579,6 +579,8 @@ public class OverlapRoxx {
 				else {
 					c++;
 				}
+				rox1 = null;
+				rox2 = null;
 			}
 			
 			if (c == pairs.size()) {
@@ -610,7 +612,14 @@ public class OverlapRoxx {
 			RoiData InterData = new RoiData(IJ.getImage(), InterRoi);
 			Rox InterRox = new Rox(InterData);
 			System.out.println("setting index from findInterRox index = " + InterIndex + "  CurrentIndex? = " + currentIndex); 
-			//InterRox.setIndex(InterIndex);
+			//Release memory
+			OverlappingRoxShapes.removeAll(OverlappingRoxShapes);
+			OverlappingRoxShapes.clear();
+			InterShape = null;
+			InterRoi = null;
+			InterData.clear();
+			InterData = null;
+			
 			return InterRox;
 		}
 		
@@ -648,12 +657,24 @@ public class OverlapRoxx {
 				else {
 					pairwiseOverlapped = false;
 				}
-				
+				//Release memory 
+				InterData.clear();
+				InterData = null;
+				ShapeArea = 0;
+				ratio1 = 0;
+				ratio2 = 0;
 			}
 			
 			//System.out.print("PairwiseOverlapped? " + pairwiseOverlapped);
 			//System.out.print("\n");
 			
+			//Release ShapeRoi geometry memory (sun.awt.geom.CurveLink)
+			ShapeRoi1 = null;
+			ShapeRoi2 = null;
+			interShape = null;
+			InterRoi = null;
+			rox1Area = 0;
+			rox2Area = 0;
 			
 			return pairwiseOverlapped;
 			

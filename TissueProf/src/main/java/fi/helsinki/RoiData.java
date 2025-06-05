@@ -53,6 +53,18 @@ public class RoiData {
 		double roiMean = ImageStatistics.getStatistics(imp.getProcessor(), Measurements.MEAN, imp.getCalibration()).mean;
 		this.mean = roiMean;
 	}
+
+	public void clear() {
 		
+		this.dataroi = null;
+		this.mean = 0;
+		this.index = 0;
+		this.area = 0;
+		this.X = 0;
+		this.Y = 0;
+		
+	}
+	
+	
 }
 		

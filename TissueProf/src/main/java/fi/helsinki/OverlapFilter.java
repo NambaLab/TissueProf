@@ -83,6 +83,10 @@ public class OverlapFilter {
 								thisComposite.getComboIndexes().forEach(n->System.out.println(n + " "));
 								System.out.print("\n");
 							}
+							//Release shapeRoi memory
+							InterParticipants.removeAll(InterParticipants);
+							InterParticipants.clear();
+							interShape = null;
 							
 						}
 						
@@ -123,7 +127,7 @@ public class OverlapFilter {
 		
 		
 		for (ComboRoxx thisComboRoxx : ComboRoxxes) {
-			int d = 0;
+			int d = 0; 	
 			for (Rox thisRox : thisComboRoxx.FilteredRoxx) {
 			
 				String concatenated = thisComboRoxx.getComboIndexes().get(0).toString();

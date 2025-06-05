@@ -800,15 +800,8 @@ public class TissueProf implements PlugIn, Command {
 		        WindowManager.closeAllWindows();
 		        
 		        OpenCh = random.nextInt(ProcessImage.ImageChannelNo) + 1;
-		        
-		        
-		        WaitForUserDialog seemem = new WaitForUserDialog("see mem");
-		        seemem.show();
-		        
+		    
 		        IJ.open(OutputDir + "/" + imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
-		        
-		        WaitForUserDialog seememafter = new WaitForUserDialog("see mem after");
-		        seememafter.show();
 		        
 		        //Create a separate thread for detailed overlap analysis of Rox that have been filtered and are known to interact
 		        OverlapThread overlapThread = new OverlapThread(RoisFiltered, thisAllRox, RoxDataMap, NextIndex, channelSelection, 
@@ -849,9 +842,6 @@ public class TissueProf implements PlugIn, Command {
 		        	thisComboOverlapRoxx.ChIndexes.forEach(n->System.out.print(n + " "));
 		        	System.out.print("\n");
 		        	int r = 0 ; 
-		        	
-		        	
-		        	
 		        	
 		        	for (OverlapRox thisOverlapRox : thisComboOverlapRoxx.getOverlapRoxx()) {
 		        		
@@ -939,6 +929,9 @@ public class TissueProf implements PlugIn, Command {
 		        		}
 					}
 				}
+				
+				WaitForUserDialog seenow = new WaitForUserDialog("See now ");
+				seenow.show();
 				
 				runStardist.saveRois(OutputDir, imageName + "_" + zoneNames.get(c) + "_AllROIs");
 				
