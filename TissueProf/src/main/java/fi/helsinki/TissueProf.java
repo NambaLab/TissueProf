@@ -837,6 +837,7 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        //TODO
 		        //Remove this code made for review/diagnostics purposes after there is no more need for it (Until...)
+		        /*
 		        for (ComboOverlapRoxx thisComboOverlapRoxx: OverlappedRoxx.getComboOverlapRoxxes()) {
 		        	System.out.print(thisComboOverlapRoxx.getComboSize() + "ComboOverlapRoxx indexes ");
 		        	thisComboOverlapRoxx.ChIndexes.forEach(n->System.out.print(n + " "));
@@ -884,15 +885,12 @@ public class TissueProf implements PlugIn, Command {
 		        	
 					
 		        }
-		        
+		        */
 		        
 		        //->|Until here
 		        
-		        
-		        
-		        //canceled = true;
-		        
-				TissueProf.getThreadtoStop();
+		        //WaitForUserDialog seenow = new WaitForUserDialog("See now ");
+		        //seenow.show();
 		        
 		        try {
 					Thread.currentThread().sleep(5000);
@@ -903,6 +901,7 @@ public class TissueProf implements PlugIn, Command {
 
 		        RoiManager.getInstance().reset();
 				
+		        
 		        int allRoxCount = 0;  
 		        
 		        System.out.println("ThisAllRox length " + thisAllRox.length);
@@ -920,18 +919,13 @@ public class TissueProf implements PlugIn, Command {
 				for(ComboOverlapRoxx thisCombo : OverlappedRoxx.getComboOverlapRoxxes()) {
 					for (OverlapRox thisOverlapRox : thisCombo.getOverlapRoxx()) {
 		        		if (thisOverlapRox.getOverlappingRoxes().size()>1) {
-		        			
-		        			System.out.println("InterRoi index " + thisOverlapRox.getInterIndex() + " OR? " + 
-		        			thisOverlapRox.getInterRox().getIndex());
+		        			System.out.println("InterRoi index " + thisOverlapRox.getInterIndex());
 		        			String newName = String.valueOf(thisOverlapRox.getInterIndex());
 		        			thisOverlapRox.getInterRox().getRoi().setName(newName);
 		        			RoiManager.getInstance().addRoi(thisOverlapRox.getInterRox().getRoi());
 		        		}
 					}
 				}
-				
-				WaitForUserDialog seenow = new WaitForUserDialog("See now ");
-				seenow.show();
 				
 				runStardist.saveRois(OutputDir, imageName + "_" + zoneNames.get(c) + "_AllROIs");
 				

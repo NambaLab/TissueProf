@@ -358,6 +358,23 @@ public class OverlapRoxx {
 		public int getCurrentComboIndex() {
 			return currentComboIndex;
 		}
+		public void clear(){
+			
+			OverlapRoxx.removeAll(OverlapRoxx);
+			OverlapRoxx.clear();
+			ChIndexes.removeAll(ChIndexes);
+			ComboSize = 0;
+			synchronized(AllOverlapRox) {
+				while (AllOverlapRox.iterator().hasNext()) {
+					ArrayList<Rox> thisRoxx = AllOverlapRox.iterator().next();
+					thisRoxx.removeAll(thisRoxx);
+					thisRoxx.clear();
+				}
+			}
+			currentOverlapCount = 0;
+			currentComboIndex = 0;
+			
+		}
 		
 		public void overlapComboRoxx(ArrayList<ArrayList<Rox>> theseRoxx, List<Integer> ChIndexes, ArrayList<ArrayList<Rox>> allOverlapRox,
 																	int currentIndex, int overlapCount, double overlapThreshold){
@@ -501,7 +518,18 @@ public class OverlapRoxx {
 		public int getInterIndex () {
 			return InterIndex;
 		}
-		
+		public void clear() {
+			
+			this.OverlappingRoxes.removeAll(OverlappingRoxes);
+			this.OverlappingRoxes.clear();
+			this.InterRox = null;
+			
+			if (PairwiseInterRoxes!=null) {
+				this.PairwiseInterRoxes.removeAll(this.PairwiseInterRoxes);
+			}
+			this.InterIndex = 0;
+			
+		}
 		/*
 		public OverlapRox overlapRox(ArrayList<Rox> overlappedRoxy, List<Integer> ChIndexes) {
 			
@@ -519,9 +547,7 @@ public class OverlapRoxx {
 			
 			System.out.print("Checking if roxy is overlapped ");
 			Roxy.forEach(n->System.out.print(n.getIndex() + " "));
-			System.out.print("\n");
-			
-			List<Integer> thisChIndexes = new ArrayList<Integer>();
+			System.out.print("\n");	
 			
 			//Create pairs
 			//Pass to pairwise overlap
@@ -548,15 +574,27 @@ public class OverlapRoxx {
 					
 				}
 			}
+			//clear the temporary lists
+			synchronized (thisCombination){
+				while(thisCombination.iterator().hasNext()) {
+					Iterator<List<Integer>> combIterator = thisCombination.iterator().next().iterator();
+					while (combIterator.hasNext()) {
+						List thisList = combIterator.next();
+						thisList.removeAll(thisList);
+						thisList.clear();
+					}
+				}
+			}
 			
 			Collections.sort(Roxy, Comparator.comparingDouble(r -> r.getInterArea(ChIndexes))) ;
 			
+			/*
 			int r = 0 ; 
 			for (Rox rox : Roxy) {
-				//System.out.println("Rox " + r + " FilterInterArea : " + rox.getInterArea(ChIndexes));
+				System.out.println("Rox " + r + " FilterInterArea : " + rox.getInterArea(ChIndexes));
 				r++;
 			}
-			
+			*/
 			
 			
 			
@@ -594,8 +632,13 @@ public class OverlapRoxx {
 				
 			}
 			
-			System.out.println("is overlapped? " + overlapped);
+			//clear memory
+			pairs.removeAll(pairs);
+			pairs.clear();		
+			thisComb = null;
+			combinechs = null;
 			
+			System.out.println("is overlapped? " + overlapped);
 			return overlapped;
 		}
 		
@@ -724,7 +767,6 @@ public class OverlapRoxx {
 	                    else {	
 	                    	newCombination.removeAll(newCombination);
 	                    	newCombination.clear();
-	                    	
 	                    }
 	                    
 	                }
@@ -745,6 +787,8 @@ public class OverlapRoxx {
 		for (int i = 0 ; i < allRox.length ; i++) {
 			allOverlapIndexes.add(new ArrayList<Integer>());
 		}
+		
+		//Make a list of all the previously class-assigned indexes
 		
 		Iterator<ArrayList<Rox>> allOverIterator = allOverlapRox.iterator();
 		synchronized( allOverlapIndexes) {
@@ -772,10 +816,10 @@ public class OverlapRoxx {
 			List<Integer> thisChIndex = new ArrayList<Integer>();
 			thisChIndex.add(i);
 			
+			//Make the combooverlaproxx
+
 			thisSingleOverlapRoxx = new ComboOverlapRoxx(thisRoxx, thisChIndex, allOverlapRox, currentIndex, overlapCount, 
 					overlapThreshold);
-			
-			//Make the combooverlaproxx
 			
 			}			
 			for (int j = 0 ; j < allRox[i].length ; j++) {
@@ -790,6 +834,10 @@ public class OverlapRoxx {
 					//add tp list of overlaproxes
 					thisSingleRoxx.add(thisSingleRox);
 					
+					thisSingleRoxList.removeAll(thisSingleRoxList);
+					thisSingleRoxList.clear();
+					
+					
 				}
 				
 			}
@@ -797,6 +845,12 @@ public class OverlapRoxx {
 		thisSingleOverlapRoxx.setOverlapRoxx(thisSingleRoxx);
 		//add to combooverlaproxx
 		comboOverlapRoxxes.add(thisSingleOverlapRoxx);
+		
+		//Clear memory
+		thisSingleOverlapRoxx.getOverlapRoxx().removeAll(thisSingleOverlapRoxx.getOverlapRoxx());
+		thisSingleOverlapRoxx.clear();
+		thisSingleOverlapRoxx = null;
+		
 		
 		}
 		

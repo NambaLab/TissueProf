@@ -44,14 +44,15 @@ public class OverlapFilter {
 				for (ArrayList<ComboInterComposite> theseComposite : InterComboComposites) {					
 					for (ComboInterComposite thisComposite : theseComposite) {
 						//Add condition to make sure only relevant channels of the combo get processed
+						System.out.println("Channel : " + c);
 						System.out.print("Now doing this combo filtering : ");
 						thisComposite.getComboIndexes().forEach(n->System.out.print(n + " "));
 						System.out.print("\n");
 						
 						if (!thisComposite.getComboIndexes().contains(c)) {
-								System.out.print("Channel " + c + " not in channel indexes"
-								+ " "); thisComposite.getComboIndexes().forEach(n->System.out.print(n + " ")); 
-								System.out.println("\n");
+								//System.out.print("Channel " + c + " not in channel indexes"
+								//+ " "); thisComposite.getComboIndexes().forEach(n->System.out.print(n + " ")); 
+								//System.out.println("\n");
 								
 								continue;
 						}
@@ -69,19 +70,24 @@ public class OverlapFilter {
 								if (f ==1 ) {
 									thisFilteredRoxx = new ArrayList<Rox>();
 									thisComboRoxx = new ComboRoxx(thisFilteredRoxx, c, thisComposite.getComboSize(), thisComposite.getComboIndexes());
-									System.out.print("f " + f + " foundFilteredRox  for combo: " );
-									thisComposite.getComboIndexes().forEach(n->System.out.print(n + " "));
-									System.out.print("\n");
+									//System.out.print("f " + f + " foundFilteredRox  for combo: " );
+									//thisComposite.getComboIndexes().forEach(n->System.out.print(n + " "));
+									//System.out.print("\n");
 								}
 								Roi interRoi = interShape.shapeToRoi();
 								RoiData interRoiData = new RoiData(IJ.getImage(), interRoi);
 								double interRoiArea = interRoiData.setArea(IJ.getImage());
 								thisRox.setInterArea(thisComposite.getComboIndexes(), interRoiArea);
 								thisComboRoxx.addRox(thisRox);
-								System.out.print("f " + f + " thisComboRoxx.Filtered.size " + thisComboRoxx.getFilteredRoxx().size());
-								System.out.print("  combo: ");
-								thisComposite.getComboIndexes().forEach(n->System.out.println(n + " "));
-								System.out.print("\n");
+								
+								//release memory
+								interRoi = null;
+								interRoiData.clear();
+								interRoiData = null;
+								//System.out.print("f " + f + " thisComboRoxx.Filtered.size " + thisComboRoxx.getFilteredRoxx().size());
+								//System.out.print("  combo: ");
+								//thisComposite.getComboIndexes().forEach(n->System.out.println(n + " "));
+								//System.out.print("\n");
 							}
 							//Release shapeRoi memory
 							InterParticipants.removeAll(InterParticipants);
@@ -91,7 +97,7 @@ public class OverlapFilter {
 						}
 						
 						if (f>=1) {
-							System.out.println("f " + f + " Now adding comboroxx to comboroxxes");
+							//System.out.println("f " + f + " Now adding comboroxx to comboroxxes");
 							if (ComboRoxxes==null) {
 								ComboRoxxes = new ArrayList<ComboRoxx>();
 							}
@@ -99,7 +105,11 @@ public class OverlapFilter {
 							Collections.sort(thisComboRoxx.getFilteredRoxx(), Comparator.comparingDouble(r -> r.getRoi().getBounds().getY())) ;
 							ComboRoxxes.add(thisComboRoxx);
 							
-							System.out.println("f " + f + "Comboroxxeslength after adding " + ComboRoxxes.size());
+							//Clear local variable
+							thisComboRoxx.clear();
+							thisComboRoxx = null;
+							
+							//System.out.println("f " + f + "Comboroxxeslength after adding " + ComboRoxxes.size());
 						}
 					}
 				
@@ -121,6 +131,11 @@ public class OverlapFilter {
 				}
 				ComboRoxx SingleRoxx = new ComboRoxx(thisChannelRoxx, i, 1, thisChannel);
 				ComboRoxxes.add(SingleRoxx);
+				//release memory
+				SingleRoxx.clear();
+				SingleRoxx = null;
+				thisChannelRoxx.removeAll(thisChannelRoxx);
+				thisChannelRoxx.clear();
 			}
 		}
 		
@@ -150,7 +165,8 @@ public class OverlapFilter {
 			
 			RoiManager.getInstance().reset();
 			
-			addRoxxToRoiManager((ArrayList<Rox>)thisComboRoxx.FilteredRoxx);
+			//Visualise the Roxx
+			//addRoxxToRoiManager((ArrayList<Rox>)thisComboRoxx.FilteredRoxx);
 			
 			//WaitForUserDialog seeFiltered = new WaitForUserDialog("See FilteredRoxx in OverlapFilter");
 			//seeFiltered.show();
@@ -159,7 +175,12 @@ public class OverlapFilter {
 		//set the Roxx
 		
 		setRoxx(ComboRoxxes);
-			
+		
+		synchronized(ComboRoxxes) {
+			while (ComboRoxxes.iterator().hasNext()) {
+				ComboRoxxes.iterator().next().clear();
+			}
+		}
 		
 		/*
 		OverlapFilter thisFilter = new OverlapFilter(QuadRoxx, TripleRoxx, DoubleRoxx, SingleRoxx);
@@ -220,6 +241,14 @@ public class OverlapFilter {
 		
 		public ArrayList<Rox> getFilteredRoxx(){
 			return FilteredRoxx;
+		}
+		public void clear() {
+			this.FilteredRoxx.removeAll(FilteredRoxx);
+			this.FilteredRoxx.clear();
+			this.Channel = 0;
+			this.ChIndexes.removeAll(ChIndexes);
+			this.ChIndexes.clear();
+			
 		}
 		
 	}

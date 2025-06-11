@@ -200,6 +200,7 @@ public class DetectOverlap {
 					ShapeRoi thisComboIntersection = FindIntersection(thisChCombo);
 					ComboInterComposite thisInterComposite = new ComboInterComposite(thisComboIntersection, thisComboR.size(), thisComboR);
 					ComboComposites.get(n).add(thisInterComposite);
+					thisComboIntersection = null;					
 				}
 			}
 			n++;
@@ -213,10 +214,10 @@ public class DetectOverlap {
 		
 		int c = 0;
 		for (ShapeRoi thisShape : ShapeRois ) {
-			if (c==0) {System.out.println("c " + c); c++; continue;}
+			if (c==0) {c++; continue;}
 			//System.out.println("c " + c + "CurrentIntersection height " + CurrentIntersection.getBounds().getHeight());
 			if (thisShape != null) {
-				CurrentIntersection = CurrentIntersection.and((ShapeRoi) (thisShape.clone()));	
+				CurrentIntersection = CurrentIntersection.and((ShapeRoi) thisShape.clone());		    				
 			}
 			c++;
 		}
