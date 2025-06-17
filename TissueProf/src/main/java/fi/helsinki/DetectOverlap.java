@@ -182,15 +182,6 @@ public class DetectOverlap {
 					thisComboR.forEach(m->System.out.printf("index " + m + " "));
 					thisComboR.forEach(m->thisChCombo.add(ChannelComposites[m]));
 					
-					RoiManager.getInstance().reset();
-					System.out.println("this chcombo size " + thisChCombo.size());
-					for (ShapeRoi thisComposite : thisChCombo) {
-						if (thisComposite!=null) {
-							
-							RoiManager.getInstance().addRoi(thisComposite.shapeToRoi());
-							
-						}
-					}
 					//WaitForUserDialog seeComb = new WaitForUserDialog("See intercombo");
 					//seeComb.show();
 					
@@ -217,7 +208,7 @@ public class DetectOverlap {
 			if (c==0) {c++; continue;}
 			//System.out.println("c " + c + "CurrentIntersection height " + CurrentIntersection.getBounds().getHeight());
 			if (thisShape != null) {
-				CurrentIntersection = CurrentIntersection.and((ShapeRoi) thisShape.clone());		    				
+				CurrentIntersection = CurrentIntersection.and((ShapeRoi) thisShape);		    				
 			}
 			c++;
 		}

@@ -571,6 +571,16 @@ public class OverlapRoxx {
 			
 			Collections.sort(Roxy, Comparator.comparingDouble(r -> r.getInterArea(ChIndexes))) ;
 			
+			ArrayList<ShapeRoi> RoxShapes = new ArrayList<ShapeRoi>();
+			ArrayList<Double> RoxAreas = new ArrayList<Double>();
+			
+			Iterator<Rox> RoxIterator = Roxy.iterator();
+			while(RoxIterator.hasNext()) {
+				Rox thisRox = RoxIterator.next();
+				RoxShapes.add(new ShapeRoi(thisRox.getRoi()));
+				RoxAreas.add(thisRox.getArea());
+			}
+			
 			/*
 			int r = 0 ; 
 			for (Rox rox : Roxy) {
@@ -586,10 +596,13 @@ public class OverlapRoxx {
 				//thisPair.forEach(n->System.out.print(n.toString() + " "));
 				//System.out.print("\n");
 				
-				Rox rox1 = Roxy.get(thisPair.get(0));
-				Rox rox2 = Roxy.get(thisPair.get(1));
+				ShapeRoi shape1 = RoxShapes.get(thisPair.get(0));
+				ShapeRoi shape2 = RoxShapes.get(thisPair.get(1));
+				Double area1 = RoxAreas.get(thisPair.get(0));
+				Double area2 = RoxAreas.get(thisPair.get(1));
 				
-				boolean pairwiseOverlapped = pairwiseOverlap(rox1, rox2, overlapThreshold);
+				
+				boolean pairwiseOverlapped = pairwiseOverlap(shape1, shape2, area1, area2, overlapThreshold);
 				
 				if(pairwiseOverlapped == false) {
 					overlapped = false;
@@ -598,13 +611,12 @@ public class OverlapRoxx {
 				else {
 					c++;
 				}
-				rox1 = null;
-				rox2 = null;
+				shape1 = null;
+				shape2 = null;
 			}
 			
 			if (c == pairs.size()) {
 				overlapped = true;
-				
 				
 				setInterRox(findInterRox(Roxy));
 				setOverlappingRoxes(Roxy);
@@ -647,6 +659,59 @@ public class OverlapRoxx {
 			return InterRox;
 		}
 		
+public boolean pairwiseOverlap(ShapeRoi shape1, ShapeRoi shape2, double area1, double area2, double overlapThreshold) {
+			
+			boolean pairwiseOverlapped = false;
+			
+			ShapeRoi interShape = ((ShapeRoi) shape1.clone()).and(shape2);
+			
+			Roi InterRoi = interShape.shapeToRoi();
+			
+			if (interShape!=null && interShape.getBounds().getHeight()>0){
+				
+				RoiData InterData = new RoiData(IJ.getImage(), InterRoi);
+				double ShapeArea = InterData.setArea(IJ.getImage());
+				
+				double ratio1 = ShapeArea/area1;
+				double ratio2 = ShapeArea/area2;
+				
+				//System.out.print("ratio1 : " + ratio1 + " ");
+				//System.out.print("ratio2 : " + ratio2 + " ");
+				
+				if (ratio1> overlapThreshold || ratio2 > overlapThreshold) {
+					pairwiseOverlapped = true;
+					if(PairwiseInterRoxes == null) {
+						PairwiseInterRoxes = new ArrayList<Rox>();
+					}
+					PairwiseInterRoxes.add(new Rox(InterData));
+				}
+				else {
+					pairwiseOverlapped = false;
+				}
+				//Release memory 
+				InterData.clear();
+				InterData = null;
+				ShapeArea = 0;
+				ratio1 = 0;
+				ratio2 = 0;
+			}
+			
+			//System.out.print("PairwiseOverlapped? " + pairwiseOverlapped);
+			//System.out.print("\n");
+			
+			//Release ShapeRoi geometry memory (sun.awt.geom.CurveLink)
+			interShape = null;
+			InterRoi = null;
+			
+			return pairwiseOverlapped;
+			
+		}
+		
+		
+		
+		
+		
+		/*
 		public boolean pairwiseOverlap(Rox rox1, Rox rox2, double overlapThreshold) {
 			
 			boolean pairwiseOverlapped = false;
@@ -703,7 +768,7 @@ public class OverlapRoxx {
 			return pairwiseOverlapped;
 			
 		}
-
+	*/
 	}
 		
 	

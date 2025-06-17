@@ -57,7 +57,7 @@ public class OverlapFilter {
 						ComboRoxx thisComboRoxx = null; 
 						
 						for (Rox thisRox : theseRox) {
-							ArrayList<ShapeRoi> InterParticipants = new ArrayList<ShapeRoi>();
+							//ArrayList<ShapeRoi> InterParticipants = new ArrayList<ShapeRoi>();
 							//InterParticipants.add(thisRox.shape);
 							//InterParticipants.add(thisComposite.getInterShape());
 							//ShapeRoi interShape = DetectOverlap.FindIntersection(InterParticipants);
@@ -87,8 +87,8 @@ public class OverlapFilter {
 								//System.out.print("\n");
 							}
 							//Release shapeRoi memory
-							InterParticipants.removeAll(InterParticipants);
-							InterParticipants.clear();
+							//InterParticipants.removeAll(InterParticipants);
+							//InterParticipants.clear();
 							interShape = null;
 							
 						}
