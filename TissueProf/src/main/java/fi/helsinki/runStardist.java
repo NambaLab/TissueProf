@@ -391,6 +391,9 @@ public class runStardist {
 	            IJ.log("ROIs saved as ZIP: " + zipRoiName);
 	        } catch (IOException e) {
 	            IJ.log("Error saving ROIs as ZIP: " + e.getMessage());
+	        } catch (Exception e) {
+	        	IJ.log("Error saving ROIs: " + e.getMessage());
+	        	e.printStackTrace();
 	        }
 	    }
 	

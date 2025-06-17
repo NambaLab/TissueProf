@@ -82,6 +82,9 @@ public class OverlapRoxx {
 			int NextIndex, Boolean[] channelSelection, int channelSize, String inputDir2, String OutputDir, String imageName,
 			double ovth){
 		
+
+		IJ.log("Analyzing overlap of channel ROIs... ");
+		
 		//TODO
 		//Deal with static access warnings
 		//Create a master method for overlap of all kinds of different combinations with varying number of participants
@@ -174,8 +177,6 @@ public class OverlapRoxx {
 			
 			ArrayList<ArrayList<Rox>> theseRoxx = new ArrayList<ArrayList<Rox>>();
 			
-			RoiManager.getInstance().reset();
-			
 			for (ComboRoxx thisComboRoxx : AllTheseComboRoxx) {
 				//System.out.println("ThisComboRoxx size = " + thisComboRoxx.getFilteredRoxx().size());
 				
@@ -190,9 +191,6 @@ public class OverlapRoxx {
 				if (thisComboRoxx.getComboIndexes().equals(ChIndexes)) {
 					theseRoxx.add(thisComboRoxx.getFilteredRoxx());
 					//System.out.print("Added comboroxx to theseRoxx " + "comboroxx size " + thisComboRoxx.getFilteredRoxx().size());
-					for (Rox rox : thisComboRoxx.getFilteredRoxx()) {
-						RoiManager.getInstance().addRoi(rox.getRoi());
-					}
 					
 					//WaitForUserDialog seeComboRox = new WaitForUserDialog("See FilteredRox");
 					//seeComboRox.show();
@@ -225,18 +223,12 @@ public class OverlapRoxx {
 			updateCurrentIndex(thisComboOverlapRoxx.getCurrentComboIndex());
 			ComboOverlapRoxxes.add(thisComboOverlapRoxx);
 			
+			
 			//System.out.println("AllOverlapRox Size " + thisComboOverlapRoxx.getAllOverlapRox().size());
 			
 			int d =0;
 			for (ArrayList<Rox> roxList : thisComboOverlapRoxx.getAllOverlapRox()) {
 				System.out.println(roxList.size());
-				d++;
-			}
-			//System.out.println("AllOverlapRox as is ");
-			
-			d =0;
-			for (ArrayList<Rox> roxList : AllOverlapRox) {
-				//System.out.println(roxList.size());
 				d++;
 			}
 			
@@ -248,11 +240,6 @@ public class OverlapRoxx {
 		}
 		
 		//System.out.println("allOverlapRox size after making all comboroxxes " + AllOverlapRox.size());
-		int d =0;
-		for (ArrayList<Rox> roxList : AllOverlapRox) {
-			//System.out.println(roxList.size());
-			d++;
-		}
 		//Determine which rox from each channel are not contained in the already found overlaps and set them as OverlapRoxx, add to 
 		//combooverlaproxxes
 		
@@ -280,9 +267,8 @@ public class OverlapRoxx {
 			//
 		
 		
-		IJ.log("Analyzing overlap of channel ROIs... ");
 		
-		IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 1 + ".tif");
+		//IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 1 + ".tif");
 	
 	
 	
@@ -304,14 +290,9 @@ public class OverlapRoxx {
 			
 			this.setCurrentComboIndex(currentIndex);
 			//currentComboIndex = currentIndex;
-			
-			System.out.println(" (Before overlap) ComboOverlapRoxx currentIndex = " +  this.getCurrentComboIndex() + " or " + currentComboIndex);
 			if (theseRoxx.size()>0){
 				overlapComboRoxx(theseRoxx, ChIndexes, allOverlapRox, currentIndex, overlapCount, overlapThreshold);
 			}
-			
-			
-			System.out.println(" (After overlap) ComboOverlapRoxx currentIndex = " +  this.getCurrentComboIndex() + " or " + currentComboIndex);
 			
 			//this.setOverlapRoxx(overlapRoxx);
 			//this.setChIndexes(chIndexes);
@@ -574,17 +555,19 @@ public class OverlapRoxx {
 					
 				}
 			}
-			//clear the temporary lists
+			//Nullify temporary lists
 			synchronized (thisCombination){
-				while(thisCombination.iterator().hasNext()) {
-					Iterator<List<Integer>> combIterator = thisCombination.iterator().next().iterator();
+				Iterator<List<List<Integer>>> thisCombUpperIterator = thisCombination.iterator();
+				while(thisCombUpperIterator.hasNext()) {
+					Iterator<List<Integer>> combIterator = ((List<List<Integer>>) thisCombUpperIterator.next()).iterator();
 					while (combIterator.hasNext()) {
-						List thisList = combIterator.next();
-						thisList.removeAll(thisList);
-						thisList.clear();
+						List<Integer> thisList = combIterator.next();
+						thisList = null;
 					}
 				}
 			}
+			
+			thisCombination = null;
 			
 			Collections.sort(Roxy, Comparator.comparingDouble(r -> r.getInterArea(ChIndexes))) ;
 			
@@ -595,8 +578,6 @@ public class OverlapRoxx {
 				r++;
 			}
 			*/
-			
-			
 			
 			int c = 0 ;
 			for (List<Integer> thisPair : pairs) {
@@ -847,8 +828,6 @@ public class OverlapRoxx {
 		comboOverlapRoxxes.add(thisSingleOverlapRoxx);
 		
 		//Clear memory
-		thisSingleOverlapRoxx.getOverlapRoxx().removeAll(thisSingleOverlapRoxx.getOverlapRoxx());
-		thisSingleOverlapRoxx.clear();
 		thisSingleOverlapRoxx = null;
 		
 		

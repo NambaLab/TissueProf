@@ -746,6 +746,9 @@ public class TissueProf implements PlugIn, Command {
 		       
 		        //Close windows to clean up resources
 		        
+
+		        System.out.println("no of open images before : " + WindowManager.getImageCount());
+		        
 		        //TODO
 		        //Dispose of current window method
 		        Window thisim = IJ.getImage().getWindow();
@@ -755,23 +758,47 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        thisim.dispose();
 		        thisim = null;
+		        
+		        
+		        //WindowManager.closeAllWindows();
+		        
+		        //seeImage.show();
 		        //->|Until here
+		        System.out.println("now printing no of images");
+		        
+		        System.out.println("no of open images after : " + WindowManager.getImageCount());
+		        
 		        
 			    IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
 		        //Filter ROIs from Channel ROIs that overlap with ROIs from other channels
 		       
 		        OverlapFilter RoisFiltered = new OverlapFilter(allRox, newOverlapDetect, channelSelection, channelSize);
 		        //RoisFiltered.overlapFilter(thisAllRox, newOverlapDetect, channelSelection, channelSize);   
+		       
+		        System.out.println("Out of filter");
+		        /*
+		        thisim = IJ.getImage().getWindow();
+		        
+		        IJ.getImage().flush();
+		        IJ.getImage().close();
+		        
+		        thisim.dispose();
+		        thisim = null;
+		        
+		        WindowManager.closeAllWindows();
 		        
 		        //Open a random image for measurements done by RoiData and Rox classes
 		        Random random = new Random();
-		        
 		        int OpenCh = random.nextInt(ProcessImage.ImageChannelNo) + 1;
 		        
 		        IJ.open(OutputDir + "/" + imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
+		         */
 		        
 		        //Area Measurements for the Rox that overlap with an unknown ratio with other channel ROIs in the particular combinations.
 		        
+		        if(RoiManager.getInstance()==null) {
+		        	RoiManager.getRoiManager();
+		        }
 		        //TODO
 		        //Unnecessary additions to the ROI Manager?
 		        for (ComboRoxx thisRoxx : RoisFiltered.getRoxx()) {
@@ -784,11 +811,12 @@ public class TissueProf implements PlugIn, Command {
 		        	
 		        //Clean up resources
 		        
-		        IJ.selectWindow(imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
+		        //IJ.selectWindow(imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
 		        
 		        
 		        //TODO
 		        //Use the above created method to dispose
+		        /*
 		        Window imwin2 = IJ.getImage().getWindow();
 		        
 		        IJ.getImage().flush();
@@ -802,8 +830,9 @@ public class TissueProf implements PlugIn, Command {
 		        OpenCh = random.nextInt(ProcessImage.ImageChannelNo) + 1;
 		    
 		        IJ.open(OutputDir + "/" + imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
-		        
+		        */
 		        //Create a separate thread for detailed overlap analysis of Rox that have been filtered and are known to interact
+		        
 		        OverlapThread overlapThread = new OverlapThread(RoisFiltered, thisAllRox, RoxDataMap, NextIndex, channelSelection, 
 		        		channelSize, inputDir2, OutputDir, imageName, overlapThreshold);
 		        
@@ -901,10 +930,14 @@ public class TissueProf implements PlugIn, Command {
 
 		        RoiManager.getInstance().reset();
 				
+		        IJ.wait(1000);
 		        
 		        int allRoxCount = 0;  
 		        
 		        System.out.println("ThisAllRox length " + thisAllRox.length);
+		        
+		        
+		        //seemem.show();
 		        
 				for (int i = 0 ; i < thisAllRox.length ; i++) {
 					if (channelSelection[i]==false) {continue;}
@@ -927,7 +960,19 @@ public class TissueProf implements PlugIn, Command {
 					}
 				}
 				
+				//seemem.show();
+				
+				System.out.println("All ROIs about to be saved");
 				runStardist.saveRois(OutputDir, imageName + "_" + zoneNames.get(c) + "_AllROIs");
+				System.out.println("All ROIs saved");
+				
+		        thisim = IJ.getImage().getWindow();
+		        
+		        IJ.getImage().flush();
+		        IJ.getImage().close();
+		        
+		        thisim.dispose();
+		        thisim = null;
 				
 				WindowManager.closeAllWindows();
 				
