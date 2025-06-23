@@ -976,6 +976,15 @@ public class TissueProf implements PlugIn, Command {
 				
 				WindowManager.closeAllWindows();
 				
+				
+				IJ.wait(10000);
+				System.gc();
+				
+				
+				
+				
+				
+				
 				OverlapTables thisTable = new OverlapTables(OutputDir, imageName, inputDir2,  OverlappedRoxx, 
 						NewProcess.backgroundRois, channelSize, channelSelection, channelNames, zoneNames.get(c), measureIntensity);
 				thisTable.save();

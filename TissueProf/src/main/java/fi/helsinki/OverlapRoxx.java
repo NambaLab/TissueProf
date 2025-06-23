@@ -283,10 +283,15 @@ public class OverlapRoxx {
 		ArrayList<ArrayList<Rox>> AllOverlapRox;
 		int currentOverlapCount;
 		int currentComboIndex;
-		
+		Combinations combinations;
+		Combinations.ChannelCombinations CombineChannels;
 		
 		ComboOverlapRoxx(ArrayList<ArrayList<Rox>> theseRoxx, List<Integer> ChIndexes, ArrayList<ArrayList<Rox>> allOverlapRox, int currentIndex, 
 																							int overlapCount, double overlapThreshold){
+			
+			//CombineChannels = Combinations.new(ChannelCombinations());
+			combinations = new Combinations();
+			CombineChannels = combinations.new ChannelCombinations();
 			
 			this.setCurrentComboIndex(currentIndex);
 			//currentComboIndex = currentIndex;
@@ -414,7 +419,7 @@ public class OverlapRoxx {
 				
 				if (alreadyOverlapped(thisRoxy, allOverlapRox)) {continue;}
 			
-				if(thisOverlapRox.isOverlapped(thisRoxy, ChIndexes, overlapThreshold)){
+				if(thisOverlapRox.isOverlapped(thisRoxy, ChIndexes, overlapThreshold, CombineChannels)){
 					foundOverlapRoxx.add(thisOverlapRox);	
 					System.out.println("setting index from comboroxx index = " + String.valueOf(currentComboIndex));
 					thisOverlapRox.setInterIndex(currentComboIndex);					
@@ -524,7 +529,7 @@ public class OverlapRoxx {
 		*/
 		
 		
-		public boolean isOverlapped(ArrayList<Rox> Roxy, List<Integer> ChIndexes, double overlapThreshold) {
+		public boolean isOverlapped(ArrayList<Rox> Roxy, List<Integer> ChIndexes, double overlapThreshold, Combinations.ChannelCombinations CombineChannels) {
 			
 			System.out.print("Checking if roxy is overlapped ");
 			Roxy.forEach(n->System.out.print(n.getIndex() + " "));
@@ -538,10 +543,7 @@ public class OverlapRoxx {
 			//Return
 			boolean overlapped = false;
 			
-			Combinations thisComb = new Combinations();
-			Combinations.ChannelCombinations combinechs = thisComb.new ChannelCombinations();
-			//System.out.println("Roxy.size before generating combinations " + Roxy.size());
-			List<List<List<Integer>>> thisCombination = combinechs.generateCombinations(Roxy.size(), 2);
+			List<List<List<Integer>>> thisCombination = CombineChannels.generateCombinations(Roxy.size(), 2);
 			
 			List<List<Integer>> pairs = new ArrayList<List<Integer>>();
 			
@@ -569,7 +571,7 @@ public class OverlapRoxx {
 			
 			thisCombination = null;
 			
-			Collections.sort(Roxy, Comparator.comparingDouble(r -> r.getInterArea(ChIndexes))) ;
+			//Collections.sort(Roxy, Comparator.comparingDouble(r -> r.getInterArea(ChIndexes))) ;
 			
 			ArrayList<ShapeRoi> RoxShapes = new ArrayList<ShapeRoi>();
 			ArrayList<Double> RoxAreas = new ArrayList<Double>();
@@ -577,7 +579,7 @@ public class OverlapRoxx {
 			Iterator<Rox> RoxIterator = Roxy.iterator();
 			while(RoxIterator.hasNext()) {
 				Rox thisRox = RoxIterator.next();
-				RoxShapes.add(new ShapeRoi(thisRox.getRoi()));
+				RoxShapes.add(thisRox.shape);
 				RoxAreas.add(thisRox.getArea());
 			}
 			
@@ -618,7 +620,12 @@ public class OverlapRoxx {
 			if (c == pairs.size()) {
 				overlapped = true;
 				
-				setInterRox(findInterRox(Roxy));
+				
+				ShapeRoi InterShape = DetectOverlap.FindIntersection(RoxShapes);
+				Roi InterRoi = InterShape.shapeToRoi();
+				RoiData InterData = new RoiData(IJ.getImage(), InterRoi);
+				Rox InterRox = new Rox(InterData);
+				setInterRox(InterRox);
 				setOverlappingRoxes(Roxy);
 				//Take care of indexing 
 				//Take care of AllOverlapRox
@@ -628,8 +635,6 @@ public class OverlapRoxx {
 			//clear memory
 			pairs.removeAll(pairs);
 			pairs.clear();		
-			thisComb = null;
-			combinechs = null;
 			
 			System.out.println("is overlapped? " + overlapped);
 			return overlapped;
@@ -637,6 +642,7 @@ public class OverlapRoxx {
 		
 		
 		public Rox findInterRox(ArrayList<Rox> Roxy) {
+			//TODO trysee with shaperoi list as argument
 			ArrayList<ShapeRoi> OverlappingRoxShapes = new ArrayList<ShapeRoi>();
 			
 			for (Rox rox: Roxy) {
@@ -662,7 +668,7 @@ public class OverlapRoxx {
 public boolean pairwiseOverlap(ShapeRoi shape1, ShapeRoi shape2, double area1, double area2, double overlapThreshold) {
 			
 			boolean pairwiseOverlapped = false;
-			
+			//TODO trysee without shape variable instaniation
 			ShapeRoi interShape = ((ShapeRoi) shape1.clone()).and(shape2);
 			
 			Roi InterRoi = interShape.shapeToRoi();
@@ -677,6 +683,7 @@ public boolean pairwiseOverlap(ShapeRoi shape1, ShapeRoi shape2, double area1, d
 				
 				//System.out.print("ratio1 : " + ratio1 + " ");
 				//System.out.print("ratio2 : " + ratio2 + " ");
+				//TODO trysee without pairwiseinterroxes
 				
 				if (ratio1> overlapThreshold || ratio2 > overlapThreshold) {
 					pairwiseOverlapped = true;
@@ -707,68 +714,6 @@ public boolean pairwiseOverlap(ShapeRoi shape1, ShapeRoi shape2, double area1, d
 			
 		}
 		
-		
-		
-		
-		
-		/*
-		public boolean pairwiseOverlap(Rox rox1, Rox rox2, double overlapThreshold) {
-			
-			boolean pairwiseOverlapped = false;
-			
-			ShapeRoi ShapeRoi1 = new ShapeRoi((Roi) rox1.getRoi().clone());
-			ShapeRoi ShapeRoi2 = new ShapeRoi((Roi) rox2.getRoi().clone());
-			ShapeRoi interShape = ((ShapeRoi) ShapeRoi1.clone()).and((ShapeRoi) ShapeRoi2.clone());
-			
-			Roi InterRoi = interShape.shapeToRoi();
-			
-			double rox1Area = rox1.getArea(); //System.out.print("rox1Area = " + rox1Area);
-			double rox2Area = rox2.getArea(); //System.out.print("rox2Area = " + rox2Area); System.out.print("\n");
-			
-			if (interShape!=null && interShape.getBounds().getHeight()>0){
-				
-				RoiData InterData = new RoiData(IJ.getImage(), InterRoi);
-				double ShapeArea = InterData.setArea(IJ.getImage());
-				
-				double ratio1 = ShapeArea/rox1Area;
-				double ratio2 = ShapeArea/rox2Area;
-				
-				//System.out.print("ratio1 : " + ratio1 + " ");
-				//System.out.print("ratio2 : " + ratio2 + " ");
-				
-				if (ratio1> overlapThreshold || ratio2 > overlapThreshold) {
-					pairwiseOverlapped = true;
-					if(PairwiseInterRoxes == null) {
-						PairwiseInterRoxes = new ArrayList<Rox>();
-					}
-					PairwiseInterRoxes.add(new Rox(InterData));
-				}
-				else {
-					pairwiseOverlapped = false;
-				}
-				//Release memory 
-				InterData.clear();
-				InterData = null;
-				ShapeArea = 0;
-				ratio1 = 0;
-				ratio2 = 0;
-			}
-			
-			//System.out.print("PairwiseOverlapped? " + pairwiseOverlapped);
-			//System.out.print("\n");
-			
-			//Release ShapeRoi geometry memory (sun.awt.geom.CurveLink)
-			ShapeRoi1 = null;
-			ShapeRoi2 = null;
-			interShape = null;
-			InterRoi = null;
-			rox1Area = 0;
-			rox2Area = 0;
-			
-			return pairwiseOverlapped;
-			
-		}
-	*/
 	}
 		
 	

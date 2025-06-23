@@ -201,7 +201,7 @@ public class DetectOverlap {
 	
 	public static ShapeRoi FindIntersection(ArrayList<ShapeRoi> ShapeRois) {
 		
-		ShapeRoi CurrentIntersection  = (ShapeRoi) ShapeRois.get(0).clone();
+		ShapeRoi CurrentIntersection  = (ShapeRoi) ShapeRois.get(0);
 		
 		int c = 0;
 		for (ShapeRoi thisShape : ShapeRois ) {

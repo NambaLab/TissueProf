@@ -18,8 +18,6 @@ public class RoiData {
 	//the basic element for all overlap and intensity analysis
 	
 	RoiData(ImagePlus imp, Roi roi){
-		@SuppressWarnings("unused")
-		RoiManager newManager = RoiManager.getInstance();
 
 		this.dataroi = roi;
 		
