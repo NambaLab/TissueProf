@@ -32,6 +32,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.prefs.Preferences;
 
+import org.ojalgo.netio.ProcessOutputStream;
 import org.scijava.Context;
 import org.scijava.app.StatusService;
 import org.scijava.command.Command;
@@ -52,6 +53,7 @@ import fi.helsinki.OverlapFilter.ComboRoxx;
 import fi.helsinki.OverlapRoxx.ComboOverlapRoxx;
 import fi.helsinki.OverlapRoxx.OverlapRox;
 import ij.IJ;
+import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
@@ -665,7 +667,6 @@ public class TissueProf implements PlugIn, Command {
 	        		Rox thisRox = new Rox(thisData);
 	        		thisRox.setIndex(c);
 	        		thisRox.setShape();
-	        		System.out.println(thisRox.getShape().getBounds().toString());
 	        		thisRox.setChannelSource(i);
 	        		allRox[i][j] = thisRox;
 	        		DataRoxMap.put(thisData, thisRox);
@@ -728,22 +729,18 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        //Clean up Resources
 		        
+		        
 		        IJ.getImage().flush();
 		        IJ.getImage().close();
-
+		        
 		        WindowManager.closeAllWindows();
 		        
+
+		       
 		        //Open an image to be used for measurements by IJ
 			    IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
 		        
 			    //Detect Overlap Positions 
-			    System.out.println("Printing thiAllRoxShapeBounds");
-			    for (Rox[] roxList: thisAllRox) {
-			    	for (Rox rox : roxList) {
-			    		System.out.println(rox.getShape().getBounds().toString());
-			    	}
-			    }
-			    
 			    
 			    DetectOverlap newOverlapDetect = new DetectOverlap(thisAllRox, RoiRox, channelSelection, channelSize);
 			    
@@ -759,13 +756,39 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        //TODO
 		        //Dispose of current window method
-		        Window thisim = IJ.getImage().getWindow();
+		        /*
+		        WaitForUserDialog seeImages = new WaitForUserDialog("See image windows " );
+		        seeImages.show();
 		        
+		        Window thisim = IJ.getImage().getWindow();
+
 		        IJ.getImage().flush();
 		        IJ.getImage().close();
-		        
+		         
 		        thisim.dispose();
 		        thisim = null;
+		        
+		        WaitForUserDialog seeImagess = new WaitForUserDialog("See image windows " );
+		        seeImagess.show();
+		        
+		        
+		        String[] ImageTitles = WindowManager.getImageTitles();
+		        
+		        
+		        
+		        ImagePlus imp = IJ.getImage();  // Only get once!
+		        if (imp != null) {
+		            imp.flush(); // clear pixel data
+		            imp.changes = false; // avoid save prompt
+		            imp.close(); // close window
+		            
+		            // Explicitly remove from WindowManager
+		            WindowManager.removeWindow(imp.getWindow());
+		            
+		            // Nullify any references you hold
+		            imp = null;
+		        }
+		        */
 		        
 		        RoiManager.getInstance().reset();
 		        
@@ -773,24 +796,18 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        //seeImage.show();
 		        //->|Until here
-		        System.out.println("now printing no of images");
 		        
 		        System.out.println("no of open images after : " + WindowManager.getImageCount());
 		        
-			    IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
+			    //IJ.open(OutputDir + "/" + imageName + "_" + "OriginalDuplicate-" + "C" + 2 + ".tif");
 		        //Filter ROIs from Channel ROIs that overlap with ROIs from other channels
-		       
-			    
-			    for (Rox[] thisList : thisAllRox) {
-			    	for (Rox rox : thisList) {
-			    		System.out.println(rox.getShape().getBounds().toString());
-			    	}
-			    }
-			    
+		     
 		        OverlapFilter RoisFiltered = new OverlapFilter(thisAllRox, newOverlapDetect, channelSelection, channelSize);
 		        //RoisFiltered.overlapFilter(thisAllRox, newOverlapDetect, channelSelection, channelSize);   
 		       
 		        System.out.println("Out of filter");
+		      
+		        
 		        /*
 		        thisim = IJ.getImage().getWindow();
 		        
@@ -814,6 +831,7 @@ public class TissueProf implements PlugIn, Command {
 		        if(RoiManager.getInstance()==null) {
 		        	RoiManager.getRoiManager();
 		        }
+		        
 		        //TODO
 		        //Unnecessary additions to the ROI Manager?
 		        for (ComboRoxx thisRoxx : RoisFiltered.getRoxx()) {
@@ -823,7 +841,9 @@ public class TissueProf implements PlugIn, Command {
 		        		rox.setArea(RoxDataMap.get(rox).setArea(IJ.getImage()));
 		        	}
 		        }
-		        	
+		        
+		        System.out.println("After adding ROIs");
+		        
 		        //Clean up resources
 		        
 		        //IJ.selectWindow(imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
@@ -849,6 +869,13 @@ public class TissueProf implements PlugIn, Command {
 		        IJ.open(OutputDir + "/" + imageName + "_" + "EnhancedContrast" + "_" + "ZonesOnly" + "_C" + OpenCh + ".tif");
 		        */
 		        //Create a separate thread for detailed overlap analysis of Rox that have been filtered and are known to interact
+		        
+		        System.out.println("image count before overlap " + WindowManager.getImageCount());
+		        for (int i = 0 ; i < WindowManager.getWindowCount() ; i++) {
+		        	int a = i+1;
+		        	System.out.println("Window " + a + " " + Window.getWindows()[i].getName());
+		        }
+		        
 		        
 		        OverlapThread overlapThread = new OverlapThread(RoisFiltered, thisAllRox, RoxDataMap, NextIndex, channelSelection, 
 		        		channelSize, inputDir2, OutputDir, imageName, overlapThreshold);
@@ -983,24 +1010,44 @@ public class TissueProf implements PlugIn, Command {
 				runStardist.saveRois(OutputDir, imageName + "_" + zoneNames.get(c) + "_AllROIs");
 				System.out.println("All ROIs saved");
 				
-		        thisim = IJ.getImage().getWindow();
+		        //thisim = IJ.getImage().getWindow();
+		        
+		        System.out.println("image set ");
 		        
 		        IJ.getImage().flush();
+		        
+		        System.out.println("image flushed");
+		        
 		        IJ.getImage().close();
 		        
-		        thisim.dispose();
-		        thisim = null;
+		        System.out.println("image closed");
+		        
+		        try {
+		            java.awt.EventQueue.invokeAndWait(() -> {});
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		        
+		        //thisim.dispose();
+		        
+		        System.out.println("image disposed");
+		        
+		        //thisim = null;
 				
+		        System.out.println("image variable nullified");
+		        
+		        
 				WindowManager.closeAllWindows();
 				
+				System.out.println("All windows closed");
 				
-				IJ.wait(10000);
+				IJ.wait(1000);
+				
+				System.out.println("Wait over");
+				
 				System.gc();
 				
-				
-				WaitForUserDialog seeMemory = new WaitForUserDialog("see memory");
-				seeMemory.show();;
-				
+				System.out.println("Garbage collected");
 				
 				
 				OverlapTables thisTable = new OverlapTables(OutputDir, imageName, inputDir2,  OverlappedRoxx, 
@@ -1054,7 +1101,10 @@ public class TissueProf implements PlugIn, Command {
 			} catch (NullPointerException e) {
 				e.printStackTrace();
 				canceled = true;
-			} catch (Exception e) {
+			} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+				e.printStackTrace();
+			}
+			catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("an unknown exception was thrown...");
 			}

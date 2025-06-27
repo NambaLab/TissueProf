@@ -82,30 +82,11 @@ public class OverlapRoxx {
 			int NextIndex, Boolean[] channelSelection, int channelSize, String inputDir2, String OutputDir, String imageName,
 			double ovth){
 		
-
 		IJ.log("Analyzing overlap of channel ROIs... ");
 
 		RoiManager.getRoiManager();
 		
 		RoiManager.getInstance();
-		
-		
-		for (Rox[] thisList : allRox) {
-			for (Rox rox : thisList) {
-				System.out.println(rox.getShape().getBounds().toString());
-			}
-		}
-		
-		System.out.println("shapetoroi bounds");
-		
-		/*
-		for (Rox[] thisList : allRox) {
-			for (Rox rox : thisList) {
-				System.out.println(rox.getShape().shapeToRoi().getBounds().toString());
-			}
-		}
-		*/
-		
 		
 		//TODO
 		//Deal with static access warnings
@@ -411,44 +392,15 @@ public class OverlapRoxx {
 			
 			//Proceed with OverlapRox
 			
-			/*
-			if (RoiManager.getInstance() == null) {
-				RoiManager.getRoiManager();
-			}
-			
-			for (ArrayList<Rox> thisRoxx : RoxCombinations) {
-				RoiManager.getInstance().reset();
-				
-				for (Rox rox : thisRoxx) {
-					RoiManager.getInstance().addRoi(rox.getRoi());
-				}
-				
-				//WaitForUserDialog seeRois = new WaitForUserDialog("See Rois");
-				//seeRois.show();
-				
-			}
-			*/
-			
 			ArrayList<OverlapRox> foundOverlapRoxx = new ArrayList<OverlapRox>();
 			
 			for (ArrayList<Rox> thisRoxy : RoxCombinations) {
-				
-				//System.out.print("thisRoxy size = " + thisRoxy.size() + " ThisRoxy indexes " );
-				//thisRoxy.forEach(n-> System.out.print(n.getIndex() + " "));
-				//System.out.print("\n");
 				
 				OverlapRox thisOverlapRox = new OverlapRox();
 				
 				if (alreadyOverlapped(thisRoxy, allOverlapRox)) {continue;}
 				
-				RoiManager.getInstance().reset();
 				Iterator<Rox> roxIterator = thisRoxy.iterator();
-				
-				while(roxIterator.hasNext()) {
-				RoiManager.getInstance().addRoi(roxIterator.next().getRoi());
-				}
-				//WaitForUserDialog seeRoxy = new WaitForUserDialog("See roxy ");
-				//seeRoxy.show();
 				
 				
 				if(thisOverlapRox.isOverlapped(thisRoxy, ChIndexes, overlapThreshold, CombineChannels)){
@@ -574,17 +526,6 @@ public class OverlapRoxx {
 			//Set required info
 			//Return
 			
-			System.out.print("Checking overlap : ");
-			ChIndexes.forEach(n -> System.out.print(n + " "));
-			System.out.print("\n");
-			
-			
-			RoiManager.getInstance().reset();
-			Iterator<Rox> RoxyIterator = Roxy.iterator();
-			while(RoxyIterator.hasNext()) {
-				RoiManager.getInstance().addRoi(RoxyIterator.next().getRoi());
-			}
-			
 			//WaitForUserDialog seeRoxyInside = new WaitForUserDialog("See Roxy inside isoverlapped");
 			//seeRoxyInside.show();
 			
@@ -601,7 +542,6 @@ public class OverlapRoxx {
 					
 					//thisList.forEach(n->System.out.print(n + " "));
 					//System.out.print("\n");
-					System.out.println(thisList);
 					pairs.add(thisList);
 					
 				}
@@ -759,6 +699,8 @@ public class OverlapRoxx {
 				ratio1 = 0;
 				ratio2 = 0;
 			}
+			
+
 			
 			//Release ShapeRoi geometry memory (sun.awt.geom.CurveLink)
 			interShape = null;
@@ -931,21 +873,6 @@ public class OverlapRoxx {
 	public ArrayList<ComboOverlapRoxx> getComboOverlapRoxxes(){
 		return ComboOverlapRoxxes;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 }
