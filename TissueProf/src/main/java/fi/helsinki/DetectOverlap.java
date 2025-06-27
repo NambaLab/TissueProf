@@ -126,10 +126,11 @@ public class DetectOverlap {
 		
 		setDetectResults(ComboInterComposites);
 		
-	
+		//WaitForUserDialog seeDetectRox = new WaitForUserDialog("see rox in detect");
+		//seeDetectRox.show();
+		
 	}
 		
-	
 	public ArrayList<ArrayList<ComboInterComposite>> getDetectResults () {
 		return ComboInterComposites;
 	}

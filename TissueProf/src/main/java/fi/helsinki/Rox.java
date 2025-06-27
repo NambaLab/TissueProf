@@ -31,7 +31,6 @@ public class Rox  {
 		this.setArea(roiData.area);
 		this.setMean(roiData.mean);
 		this.setPosition(roiData.X, roiData.Y);
-		this.shape = new ShapeRoi(roiData.dataroi);
 	}
 	
 	
@@ -59,6 +58,10 @@ public class Rox  {
 
 		return position;
 
+	}
+	
+	public ShapeRoi getShape() {
+		return shape;
 	}
 	
 	public Double getInterArea(List<Integer> ChIndexes){
@@ -96,8 +99,7 @@ public class Rox  {
 	}
 
 	public void setShape() {
-		roi = this.roi;
-		this.shape = new ShapeRoi(roi);
+		this.shape = new ShapeRoi(this.roi);
 	}
 	
 	public void setInterArea(List<Integer> ChIndexes, double InterArea) {
