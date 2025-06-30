@@ -910,7 +910,7 @@ public class TissueProf implements PlugIn, Command {
 		        
 		        //TODO
 		        //Remove this code made for review/diagnostics purposes after there is no more need for it (Until...)
-		        /*
+		        
 		        for (ComboOverlapRoxx thisComboOverlapRoxx: OverlappedRoxx.getComboOverlapRoxxes()) {
 		        	System.out.print(thisComboOverlapRoxx.getComboSize() + "ComboOverlapRoxx indexes ");
 		        	thisComboOverlapRoxx.ChIndexes.forEach(n->System.out.print(n + " "));
@@ -934,11 +934,11 @@ public class TissueProf implements PlugIn, Command {
 		        		//System.out.print("\n");
 		        		
 		        		RoiManager.getInstance().reset();
-		        		thisOverlapRox.getOverlappingRoxes().forEach(n->RoiManager.getInstance().addRoi(n.getRoi()));
+		        		//thisOverlapRox.getOverlappingRoxes().forEach(n->RoiManager.getInstance().addRoi(n.getRoi()));
 		        		
-		        		if (thisOverlapRox.getOverlappingRoxes().size()>1) {
-		        			RoiManager.getInstance().addRoi(thisOverlapRox.getInterRox().getRoi());
-		        		}
+		        		//if (thisOverlapRox.getOverlappingRoxes().size()>1) {
+		        		//	RoiManager.getInstance().addRoi(thisOverlapRox.getInterRox().getRoi());
+		        		//}
 		        		
 		        		//WaitForUserDialog seeOverlap = new WaitForUserDialog("See overlap rox "); 
 		        		//seeOverlap.show();
@@ -956,9 +956,8 @@ public class TissueProf implements PlugIn, Command {
 					System.out.println(concatenated + "ComboOverlapRoxx Count = " + thisComboOverlapRoxx.getOverlapRoxx().size() 
 							+ "(overlapCount " +  thisComboOverlapRoxx.getCurrentOverlapCount() + ")");
 		        	
-					
 		        }
-		        */
+		        
 		        
 		        //->|Until here
 		        
