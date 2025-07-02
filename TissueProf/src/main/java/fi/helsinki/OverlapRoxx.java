@@ -384,7 +384,7 @@ public class OverlapRoxx {
 			
 			//RoxCombinations = CombineRox.getRoxCombinations(theseRoxx); 
 			
-			
+			System.out.println("Working on ComboOverlapRoxx " + ChIndexes.toString());
 			
 			CombineRox combineTheseRox = new CombineRox();
 			
@@ -405,6 +405,14 @@ public class OverlapRoxx {
 				
 				if(thisOverlapRox.isOverlapped(thisRoxy, ChIndexes, overlapThreshold, CombineChannels)){
 					foundOverlapRoxx.add(thisOverlapRox);	
+					
+					System.out.print("Found overlapRoxx " );
+					for (Rox thisRox : thisOverlapRox.OverlappingRoxes) {
+						System.out.print(thisRox.getIndex() + " ");
+					}
+					System.out.print("\n");
+					
+					
 					//System.out.println("setting index from comboroxx index = " + String.valueOf(currentComboIndex));
 					thisOverlapRox.setInterIndex(currentComboIndex);					
 					thisOverlapRox.getInterRox().setIndex(currentComboIndex);
@@ -574,12 +582,6 @@ public class OverlapRoxx {
 			while(RoxIterator.hasNext()) {
 				Rox thisRox = RoxIterator.next();
 				
-				//System.out.println("Now adding this getRoi and shape from rox");
-				//RoiManager.getInstance().addRoi(thisRox.getRoi());
-				//RoiManager.getInstance().addRoi(thisRox.getShape().shapeToRoi());
-				
-				//WaitForUserDialog seeRoiandShape = new WaitForUserDialog("see roi and shape");
-				//seeRoiandShape.show();
 				RoxShapes.add(thisRox.getShape());
 				
 				RoxAreas.add(thisRox.getArea());
