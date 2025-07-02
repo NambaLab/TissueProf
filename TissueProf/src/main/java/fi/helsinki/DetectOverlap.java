@@ -208,7 +208,7 @@ public class DetectOverlap {
 		for (ShapeRoi thisShape : ShapeRois ) {
 			if (c==0) {c++; continue;}
 			//System.out.println("c " + c + "CurrentIntersection height " + CurrentIntersection.getBounds().getHeight());
-			if (thisShape != null) {
+			if (thisShape != null && CurrentIntersection!=null) {
 				CurrentIntersection = CurrentIntersection.and((ShapeRoi) thisShape);		    				
 			}
 			c++;
