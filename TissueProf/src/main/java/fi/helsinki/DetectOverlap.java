@@ -21,6 +21,7 @@ public class DetectOverlap {
 
 	public Roi channelCompositeRoi[] = new Roi[4];
 	public ShapeRoi channelCompositeShape[]= new ShapeRoi[4];
+	private List<List<Integer>> NullDetections;
 	
 	private ArrayList<ArrayList<ComboInterComposite>> ComboInterComposites; 
 	
@@ -64,13 +65,8 @@ public class DetectOverlap {
 			    }
 			    
 			    //System.out.println("saving into composite array " + "Composite " + c + " " + channelCompositeShape[c].getRois().length);
-			    //WaitForUserDialog seeProblem = new WaitForUserDialog("See issue");
-			    //seeProblem.show();
 			    RoiManager.getInstance().run("Show All");
 			    channelCompositeRoi[c] = channelCompositeShape[c].shapeToRoi();
-			    RoiManager.getInstance().reset();
-			    RoiManager.getInstance().addRoi(channelCompositeShape[c].shapeToRoi());
-			    
 			}
 		c++;
 		}
@@ -121,8 +117,8 @@ public class DetectOverlap {
 		}
 		
 		
-		//WaitForUserDialog seeRois = new WaitForUserDialog("See combocomposites");
-		//seeRois.show();
+		WaitForUserDialog seeRois = new WaitForUserDialog("See combocomposites");
+		seeRois.show();
 		
 		setDetectResults(ComboInterComposites);
 		
@@ -150,6 +146,7 @@ public class DetectOverlap {
 		//Add the returned shapeROI to its position in the ComboComposites.
 		
 		int n = 0;
+		int order = 0;
 		for (List<List<Integer>> thisComboRList : ChannelComboRs) {
 			
 			for (List<Integer> thisComboR : thisComboRList) {
@@ -158,29 +155,56 @@ public class DetectOverlap {
 				boolean ChComboSelections[] = new boolean[thisComboR.size()];
 				
 				boolean AreSelected = false;
+				boolean AreEmpty = true;
+				int s = 0;
+				
 				
 				int c = 0;
-				int d = 0; 
+				int d = 0;
+				int r = 0;
 				
-				for (boolean thisSelect : ChComboSelections) {
-					if (ChannelSelection[c] == true) {
-						ChComboSelections[d] = true;
+				
+				
+				for (Integer index : thisComboR) {
+					if (ChannelSelection[index]==true ) {
 						d++;
+						if (ChannelComposites[index]!=null && ChannelComposites[index].size()>0) {
+						r++;
+						}
 					}
-					c++;
+				}	
+				
+						
+				/*
+				for (Integer Ch : thisComboR) {
+					if (ChannelSelection[Ch]==true && ChannelComposites[Ch].size()>0) {	
+						s++;
+					}
 				}
+				*/
+				/*
+				if (s==thisComboR.size()) {
+					AreSelected = true;
+					AreEmpty = false;
+				}
+				*/
 				
-				if (d == ChComboSelections.length) {AreSelected = true;}
+				if (d == thisComboR.size()) {AreSelected = true;}
+				if (r == thisComboR.size()) {AreEmpty = false;}
 				
-				if (AreSelected==true) {
-					
-					for (int i = 0 ; i < d ; i++){
+				if (AreSelected==true && AreEmpty == false) {
+
+					for (int i = 0 ; i < r ; i++){
 						ComboComposites.add(new ArrayList<ComboInterComposite>());
 					}
 					
 					//ArrayList<ShapeRoi> thisComboShapes = new ArrayList<ShapeRoi>();
-					
-					thisComboR.forEach(m->System.out.printf("index " + m + " "));
+					System.out.println("s = " + s);
+					System.out.println("r = " + r);
+					thisComboR.forEach(m->System.out.print("index " + m + " "));
+					System.out.print("\n"); 
+					System.out.println("ChannelComposite sizes");
+					thisComboR.forEach(m->System.out.println("Channel " + m +" " +ChannelComposites[m].size()));
 					thisComboR.forEach(m->thisChCombo.add(ChannelComposites[m]));
 					
 					//WaitForUserDialog seeComb = new WaitForUserDialog("See intercombo");
@@ -190,10 +214,20 @@ public class DetectOverlap {
 					//RoiManager.getInstance().addRoi(ChannelComposites[m].getRois()[0]);
 					
 					ShapeRoi thisComboIntersection = FindIntersection(thisChCombo);
+					
+					System.out.println("ThisComboIntersection bounds " + thisComboIntersection.getBounds().toString());
+					
 					ComboInterComposite thisInterComposite = new ComboInterComposite(thisComboIntersection, thisComboR.size(), thisComboR);
+					
 					ComboComposites.get(n).add(thisInterComposite);
+					
 					thisComboIntersection = null;					
 				}
+				else if (AreSelected == true && AreEmpty == true) {
+					System.out.println("NullDetection " + thisComboR + " at position " + n);
+					this.addNullDetection(thisComboR, order);
+				}
+				order++;
 			}
 			n++;
 		}
@@ -202,7 +236,7 @@ public class DetectOverlap {
 	
 	public static ShapeRoi FindIntersection(ArrayList<ShapeRoi> ShapeRois) {
 		
-		ShapeRoi CurrentIntersection  = (ShapeRoi) ShapeRois.get(0);
+		ShapeRoi CurrentIntersection  = (ShapeRoi) ShapeRois.get(0).clone();
 		
 		int c = 0;
 		for (ShapeRoi thisShape : ShapeRois ) {
@@ -214,6 +248,17 @@ public class DetectOverlap {
 			c++;
 		}
 		return CurrentIntersection;
+	}
+	
+	public List<List<Integer>> getNullDetections(){
+		return NullDetections;
+	}
+	private void addNullDetection(List<Integer> ChIndexes, Integer n){
+		if (NullDetections == null) {
+			NullDetections = new ArrayList<List<Integer>>();
+		}
+		ChIndexes.add(n);
+		NullDetections.add(ChIndexes);
 	}
 	
 	

@@ -80,7 +80,7 @@ public class OverlapRoxx {
 	//change return type to OverlapRoxx later after having built the constructor
 	public synchronized void overlapRoxx(OverlapFilter OverlapFilter, Rox[][] allRox, LinkedHashMap<Rox, RoiData> RoxDataMap,
 			int NextIndex, Boolean[] channelSelection, int channelSize, String inputDir2, String OutputDir, String imageName,
-			double ovth){
+			double ovth, List<List<Integer>> nullDetections){
 		
 		IJ.log("Analyzing overlap of channel ROIs... ");
 
@@ -193,8 +193,8 @@ public class OverlapRoxx {
 				*/
 				if (thisComboRoxx.getComboIndexes().equals(ChIndexes)) {
 					theseRoxx.add(thisComboRoxx.getFilteredRoxx());
-					//System.out.print("Added comboroxx to theseRoxx " + "comboroxx size " + thisComboRoxx.getFilteredRoxx().size());
-					
+					System.out.print("Added comboroxx to theseRoxx " + "comboroxx size " + thisComboRoxx.getFilteredRoxx().size());
+					System.out.println("ComboRoxx indexes : " + thisComboRoxx.getComboIndexes() + "FilterIndexes : " + ChIndexes);
 					//WaitForUserDialog seeComboRox = new WaitForUserDialog("See FilteredRox");
 					//seeComboRox.show();
 					
@@ -247,6 +247,8 @@ public class OverlapRoxx {
 		//combooverlaproxxes
 		
 		addSingleRoxxes(channelSelection, allRox, ComboOverlapRoxxes, AllOverlapRox, currentIndex, overlapCount, ovth);
+		addNullDetections(nullDetections, ComboOverlapRoxxes);
+		
 		
 		//	private void addSingleRoxxes(int channelSize, boolean[] channelSelection, Rox[][] allRox, ArrayList<ComboOverlapRoxx> comboOverlapRoxxes, 
 		//ArrayList<ArrayList<Rox>> allOverlapRox, int currentIndex, int overlapCount, int overlapThreshold)
@@ -288,6 +290,7 @@ public class OverlapRoxx {
 		int currentComboIndex;
 		Combinations combinations;
 		Combinations.ChannelCombinations CombineChannels;
+		int Order;
 		
 		ComboOverlapRoxx(ArrayList<ArrayList<Rox>> theseRoxx, List<Integer> ChIndexes, ArrayList<ArrayList<Rox>> allOverlapRox, int currentIndex, 
 																							int overlapCount, double overlapThreshold){
@@ -326,6 +329,9 @@ public class OverlapRoxx {
 		private void setAllOverlapRoxx(ArrayList<ArrayList<Rox>> allOverlapRox) {
 			this.AllOverlapRox = allOverlapRox;
 		}
+		private void setOrder(int order) {
+			this.Order = order;
+		}
 		public ArrayList<OverlapRox> getOverlapRoxx(){
 			return OverlapRoxx;
 		}
@@ -346,6 +352,9 @@ public class OverlapRoxx {
 		}
 		public int getCurrentComboIndex() {
 			return currentComboIndex;
+		}
+		public int getOrder() {
+			return Order;
 		}
 		public void clear(){
 			
@@ -840,9 +849,35 @@ public class OverlapRoxx {
 		
 		
 		}
-		
-		
 	}
+	
+	private void addNullDetections(List<List<Integer>> ChIndexess, ArrayList<ComboOverlapRoxx> comboOverlapRoxxes ) {
+		for (List<Integer> ChIndexes : ChIndexess) {
+	
+			ArrayList<ArrayList<Rox>> thisRoxx = new ArrayList<ArrayList<Rox>>();
+			ArrayList<ArrayList<Rox>> allOverlapRox = new ArrayList<ArrayList<Rox>>();
+			
+			ComboOverlapRoxx NullOverlapRoxx = new ComboOverlapRoxx(thisRoxx,  ChIndexes, allOverlapRox, 0, 0, 
+			0);
+			
+			ArrayList<OverlapRox> thisOverlapRox = new ArrayList<OverlapRox>();
+
+			//Accessing the order of processing of this set of indexes
+			int order = ChIndexes.get(ChIndexes.size()-1);
+			
+			//Removing the last Integer which designates the order in which this combooverlaproxx should be processed.
+			ChIndexes.remove(ChIndexes.size()-1);
+			
+			NullOverlapRoxx.setOverlapRoxx(thisOverlapRox);
+			NullOverlapRoxx.setChIndexes(ChIndexes);
+			NullOverlapRoxx.setComboSize(ChIndexes.size());
+			NullOverlapRoxx.setOrder(order);
+			
+			comboOverlapRoxxes.add(order, NullOverlapRoxx);
+		}
+	}
+	
+	
 	
 	private void updateAllOverlapRoxx(ArrayList<ArrayList<Rox>> allOverlapRoxx) {
 		this.AllOverlapRox = allOverlapRoxx;

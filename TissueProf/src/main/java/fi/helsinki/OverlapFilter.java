@@ -161,7 +161,7 @@ public class OverlapFilter {
 				}
 				
 				
-				((Roi) thisRox.getRoi().clone()).setName(thisComboRoxx.getComboSize() + "combo-" + concatenated + "_" + d);
+				thisRox.getRoi().setName(thisComboRoxx.getComboSize() + "combo-" + concatenated + "_" + d);
 				d++;
 			}
 			
@@ -172,10 +172,10 @@ public class OverlapFilter {
 			RoiManager.getInstance().reset();
 			
 			//Visualise the Roxx
-			//addRoxxToRoiManager((ArrayList<Rox>)thisComboRoxx.FilteredRoxx);
+			addRoxxToRoiManager((ArrayList<Rox>)thisComboRoxx.FilteredRoxx);
 			
-			//WaitForUserDialog seeFiltered = new WaitForUserDialog("See FilteredRoxx in OverlapFilter");
-			//seeFiltered.show();
+			WaitForUserDialog seeFiltered = new WaitForUserDialog("See FilteredRoxx in OverlapFilter");
+			seeFiltered.show();
 		}
 		*/	
 		//set the Roxx

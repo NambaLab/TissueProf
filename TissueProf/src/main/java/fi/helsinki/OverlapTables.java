@@ -163,9 +163,45 @@ public class OverlapTables {
 	
 	public class CountsInfoTable{
 		
-		public void makeCountsInfoTable() {
+		int currentColumn;
+		
+		public void makeCountsInfoTable(OverlapRoxx overlapRoxx, String[] channelNames) {
+			
+			
+			
+			
 			
 		}
+		
+		private void makeInfoModule(ComboOverlapRoxx comboOverlapRoxx, String[] channelNames, int currentColumn) {
+			
+			setModuleChNames(channelNames, currentColumn);
+			//comboOverlapRoxx.getOverlapRoxx().get(0).
+			
+			
+			
+			
+		}
+		
+		private void setModuleChNames(String[] channelNames,int currentColumn) {
+			
+			
+			
+		}
+		
+		
+		
+		private void setCurrentColumn(int currentColumn) {
+			this.currentColumn = currentColumn;
+		}
+		
+		private int getCurrentColumn() {
+			return currentColumn;
+		}
+		
+		
+		
+		
 	}
 
 	

@@ -876,9 +876,10 @@ public class TissueProf implements PlugIn, Command {
 		        	System.out.println("Window " + a + " " + Window.getWindows()[i].getName());
 		        }
 		        
+		        List<List<Integer>> NullDetections = newOverlapDetect.getNullDetections();
 		        
 		        OverlapThread overlapThread = new OverlapThread(RoisFiltered, thisAllRox, RoxDataMap, NextIndex, channelSelection, 
-		        		channelSize, inputDir2, OutputDir, imageName, overlapThreshold);
+		        		channelSize, inputDir2, OutputDir, imageName, overlapThreshold, NullDetections);
 		        
 		        // Create a FutureTask
 		        FutureTask<OverlapRoxx> futureTask = new FutureTask<OverlapRoxx>((Callable<OverlapRoxx>) overlapThread);
@@ -1047,6 +1048,8 @@ public class TissueProf implements PlugIn, Command {
 				System.gc();
 				
 				System.out.println("Garbage collected");
+				
+				
 				
 				
 				OverlapTables thisTable = new OverlapTables(OutputDir, imageName, inputDir2,  OverlappedRoxx, 
