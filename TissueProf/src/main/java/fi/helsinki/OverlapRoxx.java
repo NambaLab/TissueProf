@@ -832,8 +832,8 @@ public class OverlapRoxx {
 					//add tp list of overlaproxes
 					thisSingleRoxx.add(thisSingleRox);
 					
-					thisSingleRoxList.removeAll(thisSingleRoxList);
-					thisSingleRoxList.clear();
+					//thisSingleRoxList.removeAll(thisSingleRoxList);
+					//thisSingleRoxList.clear();
 					
 					
 				}
