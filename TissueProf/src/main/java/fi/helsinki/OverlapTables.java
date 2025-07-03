@@ -40,6 +40,7 @@ public class OverlapTables {
 		wb = new HSSFWorkbook();
 		
 		new CountsTable(overlapRoxx, channelNames);
+		new CountsInfoTable(overlapRoxx, channelNames);
 		
 		
 	}
@@ -164,18 +165,63 @@ public class OverlapTables {
 	public class CountsInfoTable{
 		
 		int currentColumn;
+		int currentRow;
+		Sheet CountsInfo = wb.createSheet();
 		
-		public void makeCountsInfoTable(OverlapRoxx overlapRoxx, String[] channelNames) {
-			
-			
-			
+		CountsInfoTable(OverlapRoxx overlapRoxx, String[] channelNames){
+			this.setCurrentColumn(0);
+			this.setCurrentRow(0);
+			this.makeCountsInfoTable(overlapRoxx,channelNames);
 			
 			
 		}
 		
-		private void makeInfoModule(ComboOverlapRoxx comboOverlapRoxx, String[] channelNames, int currentColumn) {
+		
+		
+		public void makeCountsInfoTable(OverlapRoxx overlapRoxx, String[] channelNames) {
 			
-			setModuleChNames(channelNames, currentColumn);
+			int[] ComboOverlapSizes = new int[overlapRoxx.getComboOverlapRoxxes().size()];
+			for (int i = 0 ; i < ComboOverlapSizes.length ; i++) {
+				System.out.println(overlapRoxx.getComboOverlapRoxxes().get(i).getOverlapCount());
+				ComboOverlapSizes[i] = overlapRoxx.getComboOverlapRoxxes().get(i).getOverlapCount();
+			}
+			
+	        int maxSize = Arrays.stream(ComboOverlapSizes).max().getAsInt();
+	        
+	        System.out.println("Max size " + maxSize);
+	        
+	        Row[] inRows = new Row[maxSize];
+	        
+	        for (int i = 0 ; i < maxSize ; i++) {
+	        	inRows[i] = CountsInfo.createRow(i);
+	        }
+	        
+	        int lastComboSize = 0;
+	        for (ComboOverlapRoxx thisComboOvRoxx : overlapRoxx.getComboOverlapRoxxes() ) {
+
+	        	System.out.println("current combo size : " + thisComboOvRoxx.getComboSize());
+	        	System.out.println("last combo size : " + lastComboSize);
+	        	
+	        	if (lastComboSize!=0) {
+		        	if (thisComboOvRoxx.getComboSize()-lastComboSize!=0) {
+		        		setCurrentColumn(getCurrentColumn()+2);
+		        	}
+		        	else {
+		        		setCurrentColumn(getCurrentColumn()+1);
+		        	}
+	        	}
+	        	
+	        	lastComboSize = thisComboOvRoxx.getComboSize();
+	        	makeInfoModule(thisComboOvRoxx, channelNames, getCurrentColumn(), getCurrentRow(), inRows);
+	        		
+	        }
+	        
+		}
+		
+		private void makeInfoModule(ComboOverlapRoxx comboOverlapRoxx, String[] channelNames, int currentColumn, int currentRow, Row[] inRows) {
+			setCurrentRow(0);
+			List<Integer> ChIndexes = comboOverlapRoxx.getChIndexes();
+			setModuleChNames(ChIndexes, channelNames, currentColumn, currentRow, inRows);
 			//comboOverlapRoxx.getOverlapRoxx().get(0).
 			
 			
@@ -183,13 +229,18 @@ public class OverlapTables {
 			
 		}
 		
-		private void setModuleChNames(String[] channelNames,int currentColumn) {
+		private void setModuleChNames(List<Integer> ChIndexes, String[] channelNames, int currentColumn, int currentRow, Row[] inRows) {
 			
-			
-			
+
+			for (Integer Ch : ChIndexes) {
+				inRows[currentRow].createCell(getCurrentColumn()).setCellValue(channelNames[Ch]);
+				this.setCurrentColumn(getCurrentColumn() + 1);
+			}
+			if (ChIndexes.size()!=1) {
+				inRows[currentRow].createCell(getCurrentColumn()).setCellValue("Cell Index");	
+				this.setCurrentColumn(getCurrentColumn() + 1);
+			}
 		}
-		
-		
 		
 		private void setCurrentColumn(int currentColumn) {
 			this.currentColumn = currentColumn;
@@ -198,7 +249,12 @@ public class OverlapTables {
 		private int getCurrentColumn() {
 			return currentColumn;
 		}
-		
+		private void setCurrentRow(int currentRow) {
+			this.currentRow = currentRow;
+		}
+		private int getCurrentRow() {
+			return currentRow;
+		}
 		
 		
 		
