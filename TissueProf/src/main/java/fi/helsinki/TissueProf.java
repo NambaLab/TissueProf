@@ -842,6 +842,8 @@ public class TissueProf implements PlugIn, Command {
 		        	}
 		        }
 		        
+		        RoiManager.getInstance().reset();
+		        
 		        System.out.println("After adding ROIs");
 		        
 		        //Clean up resources

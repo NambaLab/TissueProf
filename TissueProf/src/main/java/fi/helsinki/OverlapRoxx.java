@@ -82,6 +82,7 @@ public class OverlapRoxx {
 			int NextIndex, Boolean[] channelSelection, int channelSize, String inputDir2, String OutputDir, String imageName,
 			double ovth, List<List<Integer>> nullDetections){
 		
+		
 		IJ.log("Analyzing overlap of channel ROIs... ");
 
 		RoiManager.getRoiManager();
@@ -219,7 +220,7 @@ public class OverlapRoxx {
 			//ChIndexes.forEach(n->System.out.print(n.toString() + " "));
 			//System.out.print("TheseRoxx size " + theseRoxx.size());
 			//System.out.print("\n");
-			
+	
 			ComboOverlapRoxx thisComboOverlapRoxx = new ComboOverlapRoxx(theseRoxx, ChIndexes, AllOverlapRox, this.getCurrentIndex(), overlapCount, ovth); 
 			updateAllOverlapRoxx(thisComboOverlapRoxx.getAllOverlapRox());
 			updateOverlapCount(thisComboOverlapRoxx.getCurrentOverlapCount());
@@ -247,7 +248,10 @@ public class OverlapRoxx {
 		//combooverlaproxxes
 		
 		addSingleRoxxes(channelSelection, allRox, ComboOverlapRoxxes, AllOverlapRox, currentIndex, overlapCount, ovth);
-		addNullDetections(nullDetections, ComboOverlapRoxxes);
+		
+		if(nullDetections!=null && nullDetections.size()>0) {			
+			addNullDetections(nullDetections, ComboOverlapRoxxes);
+		}
 		
 		
 		//	private void addSingleRoxxes(int channelSize, boolean[] channelSelection, Rox[][] allRox, ArrayList<ComboOverlapRoxx> comboOverlapRoxxes, 
@@ -397,8 +401,10 @@ public class OverlapRoxx {
 			
 			CombineRox combineTheseRox = new CombineRox();
 			
+			
 			ArrayList<ArrayList<Rox>> RoxCombinations = combineTheseRox.getRoxCombinations(theseRoxx);
 			
+			System.out.println("Combined rox ");
 			//Proceed with OverlapRox
 			
 			ArrayList<OverlapRox> foundOverlapRoxx = new ArrayList<OverlapRox>();
@@ -434,12 +440,15 @@ public class OverlapRoxx {
 				}
 			}
 			
+			System.out.println("finished processing combooverlaproxx");
+			
 			this.setOverlapRoxx(foundOverlapRoxx);
 			this.setChIndexes(ChIndexes);
 			this.setComboSize(ChIndexes.size());
 			this.setAllOverlapRoxx(allOverlapRox);
 			this.setCurrentOverlapCount(overlapCount);
 			this.setCurrentComboIndex(currentComboIndex);
+			System.out.println("set all the values for combooverlaproxx");
 		}
 		
 		private boolean alreadyOverlapped(ArrayList<Rox> roxy, ArrayList<ArrayList<Rox>> allOverlapRox) {
@@ -612,7 +621,7 @@ public class OverlapRoxx {
 				ShapeRoi shape2 = RoxShapes.get(thisPair.get(1));
 				
 				Double area1 = RoxAreas.get(thisPair.get(0));
-				Double area2 = RoxAreas.get(thisPair.get(1));
+				Double area2 = RoxAreas.get(thisPair.get(1));      
 				
 				
 				boolean pairwiseOverlapped = pairwiseOverlap(shape1, shape2, area1, area2, overlapThreshold);
@@ -727,8 +736,10 @@ public class OverlapRoxx {
 	public class CombineRox {
 
 	    public ArrayList<ArrayList<Rox>> getRoxCombinations(ArrayList<ArrayList<Rox>> Roxxes) {
+	    	System.out.println("Making combinations ");
 	        ArrayList<ArrayList<Rox>> RoxCombinations = new ArrayList<>();
 	        if (Roxxes.isEmpty()) {
+	        	System.out.println("Roxxes empty");
 	            RoxCombinations.add(new ArrayList<>());
 	            return RoxCombinations;
 	        }
@@ -745,9 +756,8 @@ public class OverlapRoxx {
 	            ArrayList<ArrayList<Rox>> newCombinations = new ArrayList<>();
 	            
 	            for (ArrayList<Rox> combination : RoxCombinations) {
-	               
 	            	for (Rox rox : currentList) {
-        				
+
 	            		ArrayList<Rox> newCombination = new ArrayList<>(combination);
 	                    
 	                    //Add proximity filter here 

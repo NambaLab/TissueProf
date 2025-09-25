@@ -1,8 +1,10 @@
 package fi.helsinki;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Timer;
 import java.util.ArrayList;
 
 import org.apache.commons.math3.util.CombinatoricsUtils;
@@ -22,11 +24,15 @@ public class DetectOverlap {
 	public Roi channelCompositeRoi[] = new Roi[4];
 	public ShapeRoi channelCompositeShape[]= new ShapeRoi[4];
 	private List<List<Integer>> NullDetections;
+	private Calendar date = Calendar.getInstance();
 	
 	private ArrayList<ArrayList<ComboInterComposite>> ComboInterComposites; 
 	
 	DetectOverlap(Rox[][] allRox, LinkedHashMap<Roi, Rox> RoiRox, Boolean[] channelSelection, int channelSize){
 		detectOverlap(allRox, RoiRox, channelSelection, channelSize);
+		System.out.println("Detection finished : " + date.getTime().toString());
+		IJ.log("Detection finished : " + date.getTime().toString());
+	
 	}
 	
 	public /*static*/ void detectOverlap(Rox[][] allRox, LinkedHashMap<Roi, Rox> RoiRox, Boolean[] channelSelection, int channelSize){
@@ -34,6 +40,9 @@ public class DetectOverlap {
 		
 		System.out.println("detecting... ");
 		IJ.log("Detecting overlap...");
+		
+		System.out.println("Detection started : " + date.getTime().toString());
+		IJ.log("Detection started : " + date.getTime().toString());
 		
 		RoiManager.getRoiManager();
 		
@@ -106,8 +115,8 @@ public class DetectOverlap {
 								}
 								
 								thisCompositeRoi.setName("n-" + thisComposite.getComboSize() + "_"  + "c-" + c + "_" + "Combo-" + concatenated);
-								RoiManager.getRoiManager();
-								RoiManager.getInstance().addRoi(thisCompositeRoi);
+								//RoiManager.getRoiManager();
+								//RoiManager.getInstance().addRoi(thisCompositeRoi);
 								c++;
 							}
 						}
@@ -192,7 +201,7 @@ public class DetectOverlap {
 				if (d == thisComboR.size()) {AreSelected = true;}
 				if (r == thisComboR.size()) {AreEmpty = false;}
 				
-				if (AreSelected==true && AreEmpty == false) {
+				if (AreSelected == true && AreEmpty == false) {
 
 					for (int i = 0 ; i < r ; i++){
 						ComboComposites.add(new ArrayList<ComboInterComposite>());
@@ -225,7 +234,7 @@ public class DetectOverlap {
 				}
 				else if (AreSelected == true && AreEmpty == true) {
 					System.out.println("NullDetection " + thisComboR + " at position " + n);
-					this.addNullDetection(thisComboR, order);
+					addNullDetection(thisComboR, order);
 				}
 				order++;
 			}
@@ -253,6 +262,7 @@ public class DetectOverlap {
 	public List<List<Integer>> getNullDetections(){
 		return NullDetections;
 	}
+	
 	private void addNullDetection(List<Integer> ChIndexes, Integer n){
 		if (NullDetections == null) {
 			NullDetections = new ArrayList<List<Integer>>();
