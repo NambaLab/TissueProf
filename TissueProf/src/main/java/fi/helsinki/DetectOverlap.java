@@ -15,6 +15,7 @@ import ij.gui.WaitForUserDialog;
 import ij.plugin.frame.RoiManager;
 import Util.Combinations;
 import Util.Combinations.ChannelCombinations;
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 
 public class DetectOverlap {
 	
@@ -30,9 +31,6 @@ public class DetectOverlap {
 	
 	DetectOverlap(Rox[][] allRox, LinkedHashMap<Roi, Rox> RoiRox, Boolean[] channelSelection, int channelSize){
 		detectOverlap(allRox, RoiRox, channelSelection, channelSize);
-		System.out.println("Detection finished : " + date.getTime().toString());
-		IJ.log("Detection finished : " + date.getTime().toString());
-	
 	}
 	
 	public /*static*/ void detectOverlap(Rox[][] allRox, LinkedHashMap<Roi, Rox> RoiRox, Boolean[] channelSelection, int channelSize){
@@ -115,8 +113,8 @@ public class DetectOverlap {
 								}
 								
 								thisCompositeRoi.setName("n-" + thisComposite.getComboSize() + "_"  + "c-" + c + "_" + "Combo-" + concatenated);
-								//RoiManager.getRoiManager();
-								//RoiManager.getInstance().addRoi(thisCompositeRoi);
+								RoiManager.getRoiManager();
+								RoiManager.getInstance().addRoi(thisCompositeRoi);
 								c++;
 							}
 						}
@@ -126,13 +124,18 @@ public class DetectOverlap {
 		}
 		
 		
-		//WaitForUserDialog seeRois = new WaitForUserDialog("See combocomposites");
-		//seeRois.show();
+		WaitForUserDialog seeRois = new WaitForUserDialog("See combocomposites");
+		seeRois.show();
 		
 		setDetectResults(ComboInterComposites);
 		
 		//WaitForUserDialog seeDetectRox = new WaitForUserDialog("see rox in detect");
 		//seeDetectRox.show();
+		
+		date = Calendar.getInstance();
+		
+		System.out.println("Detection finished : " + date.getTime().toString());
+		IJ.log("Detection finished : " + date.getTime().toString());
 		
 	}
 		
@@ -160,15 +163,11 @@ public class DetectOverlap {
 			
 			for (List<Integer> thisComboR : thisComboRList) {
 				//List = e.g 1,2,3
-				ArrayList<ShapeRoi> thisChCombo = new ArrayList<ShapeRoi>();
-				boolean ChComboSelections[] = new boolean[thisComboR.size()];
-				
 				boolean AreSelected = false;
 				boolean AreEmpty = true;
 				int s = 0;
 				
 				
-				int c = 0;
 				int d = 0;
 				int r = 0;
 				
@@ -178,28 +177,20 @@ public class DetectOverlap {
 					if (ChannelSelection[index]==true ) {
 						d++;
 						if (ChannelComposites[index]!=null && ChannelComposites[index].size()>0) {
-						r++;
+							r++;
 						}
 					}
 				}	
-				
-						
-				/*
-				for (Integer Ch : thisComboR) {
-					if (ChannelSelection[Ch]==true && ChannelComposites[Ch].size()>0) {	
-						s++;
-					}
-				}
-				*/
-				/*
-				if (s==thisComboR.size()) {
-					AreSelected = true;
-					AreEmpty = false;
-				}
-				*/
+	
+				ArrayList<ShapeRoi> thisChCombo = new ArrayList<ShapeRoi>();
 				
 				if (d == thisComboR.size()) {AreSelected = true;}
 				if (r == thisComboR.size()) {AreEmpty = false;}
+				
+				System.out.println(thisComboR + " selected? " + AreSelected + "AreEmpty? " + AreEmpty);
+				
+				
+				if (AreSelected == false) {continue;}
 				
 				if (AreSelected == true && AreEmpty == false) {
 
@@ -224,19 +215,33 @@ public class DetectOverlap {
 					
 					ShapeRoi thisComboIntersection = FindIntersection(thisChCombo);
 					
-					System.out.println("ThisComboIntersection bounds " + thisComboIntersection.getBounds().toString());
+					if (thisComboIntersection != null && ((thisComboIntersection.getBounds().getHeight()>0 || thisComboIntersection.getBounds().getWidth()>0))){
+						
+						System.out.println("ThisComboIntersection bounds " + thisComboIntersection.getBounds().toString());
+						
+						ComboInterComposite thisInterComposite = new ComboInterComposite(thisComboIntersection, thisComboR.size(), thisComboR);
+						
+						ComboComposites.get(n).add(thisInterComposite);
 					
-					ComboInterComposite thisInterComposite = new ComboInterComposite(thisComboIntersection, thisComboR.size(), thisComboR);
-					
-					ComboComposites.get(n).add(thisInterComposite);
+					} 
+					else {
+
+						System.out.println("NullDetection " + thisComboR + " at position " + n);
+						addNullDetection(thisComboR, order);
+						
+						thisComboIntersection = null;					
+					}
 					
 					thisComboIntersection = null;					
+				
 				}
 				else if (AreSelected == true && AreEmpty == true) {
-					System.out.println("NullDetection " + thisComboR + " at position " + n);
+					System.out.println("NullDetection (channels selected, empty channel)" + thisComboR + " at position " + n);
 					addNullDetection(thisComboR, order);
 				}
 				order++;
+				d=0;
+				r=0;
 			}
 			n++;
 		}

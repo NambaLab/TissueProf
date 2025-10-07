@@ -2,6 +2,7 @@ package fi.helsinki;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -57,6 +58,9 @@ public class OverlapRoxx {
 	int overlapCount;
 	int currentIndex;
 	
+	private Calendar date = Calendar.getInstance();
+	
+	
 	OverlapRoxx(){
 		
 		/*
@@ -84,7 +88,10 @@ public class OverlapRoxx {
 		
 		
 		IJ.log("Analyzing overlap of channel ROIs... ");
-
+		System.out.println("Overlap Analysis of ROIs started : " + date.getTime().toString());
+		IJ.log("Overlap Analysis of ROIs stasrted : " + date.getTime().toString());
+		
+		
 		RoiManager.getRoiManager();
 		
 		RoiManager.getInstance();
@@ -249,9 +256,23 @@ public class OverlapRoxx {
 		
 		addSingleRoxxes(channelSelection, allRox, ComboOverlapRoxxes, AllOverlapRox, currentIndex, overlapCount, ovth);
 		
+		for (ComboOverlapRoxx thisCombo : ComboOverlapRoxxes) {
+			System.out.print("Combo: ");
+			System.out.print(thisCombo.getChIndexes() + " Count " + thisCombo.getOverlapCount());
+			System.out.println("\n");
+		}
+		
+		
 		if(nullDetections!=null && nullDetections.size()>0) {			
 			addNullDetections(nullDetections, ComboOverlapRoxxes);
+			System.out.println("Added null detections");
 		}
+		else {System.out.println("no null detections");
+		}
+		
+		date = Calendar.getInstance();
+		System.out.println("Overlap Analysis of ROIs finished : " + date.getTime().toString());
+		IJ.log("Overlap Analysis of ROIs finished : " + date.getTime().toString());
 		
 		
 		//	private void addSingleRoxxes(int channelSize, boolean[] channelSelection, Rox[][] allRox, ArrayList<ComboOverlapRoxx> comboOverlapRoxxes, 
@@ -599,11 +620,14 @@ public class OverlapRoxx {
 			Iterator<Rox> RoxIterator = Roxy.iterator();
 			while(RoxIterator.hasNext()) {
 				Rox thisRox = RoxIterator.next();
-				
+				thisRox.setShape();
 				RoxShapes.add(thisRox.getShape());
-				
+				//RoiManager.getInstance().addRoi(thisRox.getShape());
 				RoxAreas.add(thisRox.getArea());
 			}
+			
+			//WaitForUserDialog seeRoxShapes = new WaitForUserDialog("see rox shapes");
+			//seeRoxShapes.show();
 			
 			/*
 			int r = 0 ; 
@@ -619,7 +643,16 @@ public class OverlapRoxx {
 				
 				ShapeRoi shape1 = RoxShapes.get(thisPair.get(0));
 				ShapeRoi shape2 = RoxShapes.get(thisPair.get(1));
+				/*
+				System.out.println("shape 1 : " + shape1.getBounds());
+				System.out.println("shape 2 : " + shape2.getBounds());
 				
+				RoiManager.getInstance().addRoi(shape1.shapeToRoi());
+				RoiManager.getInstance().addRoi(shape2.shapeToRoi());
+				
+				WaitForUserDialog seePair = new WaitForUserDialog("see pair");
+				seePair.show();
+				*/
 				Double area1 = RoxAreas.get(thisPair.get(0));
 				Double area2 = RoxAreas.get(thisPair.get(1));      
 				
@@ -651,6 +684,8 @@ public class OverlapRoxx {
 				
 			}
 			
+			System.out.println("Overlapped? " + overlapped);
+						
 			//clear memory
 			pairs.removeAll(pairs);
 			pairs.clear();		
@@ -712,6 +747,17 @@ public class OverlapRoxx {
 				else {
 					pairwiseOverlapped = false;
 				}
+				
+				System.out.println("ratio1 " + ratio1 + " ratio2 " + ratio2 + "is pariwise overlapped? " + pairwiseOverlapped);
+				/*
+				RoiManager.getInstance().addRoi(shape1.shapeToRoi());
+				RoiManager.getInstance().addRoi(shape2.shapeToRoi());
+				RoiManager.getInstance().addRoi(InterRoi);
+				
+				
+				WaitForUserDialog thisPairwise = new WaitForUserDialog("See pairwise overlap");
+				thisPairwise.show();
+				*/
 				//Release memory 
 				InterData.clear();
 				InterData = null;
@@ -884,6 +930,8 @@ public class OverlapRoxx {
 			NullOverlapRoxx.setOrder(order);
 			
 			comboOverlapRoxxes.add(order, NullOverlapRoxx);
+			System.out.println("Added null detection at " + order + " indexes: " + NullOverlapRoxx.getChIndexes());
+			
 		}
 	}
 	

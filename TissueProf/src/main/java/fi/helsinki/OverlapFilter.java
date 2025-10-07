@@ -1,5 +1,6 @@
 package fi.helsinki;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -21,7 +22,7 @@ import ij.plugin.frame.RoiManager;
 public class OverlapFilter {
 	
 	private ArrayList<ComboRoxx> ComboRoxx;
-	
+	private Calendar date = Calendar.getInstance();
 	
 	OverlapFilter(Rox[][] allRox, DetectOverlap NewOverlap, Boolean[] channelSelection, int channelSize){
 		//TODO 
@@ -33,6 +34,9 @@ public class OverlapFilter {
 	public /*static*/ void overlapFilter(Rox[][] allRox, DetectOverlap NewOverlap, Boolean[] channelSelection, int channelSize) {
 		
 		IJ.log("Filtering overlaps...");
+		System.out.println("Filtering started : " + date.getTime().toString());
+		IJ.log("Filtering started : " + date.getTime().toString());
+		
 		
 		//Create ArrayLists to fill with filtered ROIs.
 		ArrayList<ArrayList<ComboInterComposite>> InterComboComposites = NewOverlap.getDetectResults();
@@ -62,13 +66,40 @@ public class OverlapFilter {
 							//InterParticipants.add(thisRox.shape);
 							//InterParticipants.add(thisComposite.getInterShape());
 							//ShapeRoi interShape = DetectOverlap.FindIntersection(InterParticipants);
+							interShape = null;
 							
-							//WaitForUserDialog seeFilterRoi = new WaitForUserDialog("See roi and shape from filter");
-							//seeFilterRoi.show();
+							thisRox.setShape();
 							
-							
+							/*
+							System.out.println("Processing ROI shape. \n Dimensions: " + thisRox.getShape().getBounds());
+							System.out.println("ROI Dimenstions: " + thisRox.getRoi().getBounds());
+							RoiManager.getInstance().reset();
+							//RoiManager.getInstance().addRoi(thisRox.getShape().getRois()[0]);
+							RoiManager.getInstance().addRoi(thisRox.getShape());
+							RoiManager.getInstance().addRoi(thisRox.getRoi());
+							RoiManager.getInstance().addRoi(thisCompositeShape);
+							*/
 							interShape = ((ShapeRoi) thisRox.getShape().clone()).and(thisCompositeShape);
-							if (interShape!=null && interShape.isArea()) {
+							
+							
+							//RoiManager.getInstance().addRoi(thisComposite.getInterShape().shapeToRoi());
+							//RoiManager.getInstance().addRoi(interShape);
+							
+							//WaitForUserDialog seeRoxShapes = new WaitForUserDialog("See roi, shape, composite and intershape from filter");
+							//seeRoxShapes.show();
+							
+							if (interShape!=null && (interShape.getBounds().getHeight()>0 || interShape.getBounds().getWidth()>0)) {
+								/*
+								RoiManager.getInstance().reset();
+								RoiManager.getInstance().addRoi(thisRox.getRoi());
+								RoiManager.getInstance().addRoi(thisRox.getShape());
+								RoiManager.getInstance().addRoi(thisComposite.getInterShape().shapeToRoi());
+								RoiManager.getInstance().addRoi(thisCompositeShape);
+								RoiManager.getInstance().addRoi(interShape.shapeToRoi());
+								WaitForUserDialog seeFilterRoi = new WaitForUserDialog("See roi, composite and intershape");
+								seeFilterRoi.show();
+								*/
+								
 								f++;
 								if (f ==1 ) {
 									thisFilteredRoxx = new ArrayList<Rox>();
@@ -183,6 +214,10 @@ public class OverlapFilter {
 		setRoxx(ComboRoxxes);
 		
 		ComboRoxxes = null;
+				
+		date = Calendar.getInstance();
+		System.out.println("Filtering finished : " + date.getTime().toString());
+		IJ.log("Filtering finished : " + date.getTime().toString());
 		
 	}
 	
@@ -247,7 +282,7 @@ public class OverlapFilter {
 	}
 	
 	
-	public void addRoxxToRoiManager(ArrayList<Rox> Roxx) {
+	public static void addRoxxToRoiManager(ArrayList<Rox> Roxx) {
 		
 		if (RoiManager.getInstance()==null) {
 			RoiManager.getRoiManager();

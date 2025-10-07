@@ -13,7 +13,7 @@ public class Rox  {
 	private double X;
 	private double Y;
 	private double[] position = {X,Y};
-	public ShapeRoi shape;
+	public static ShapeRoi shape;
 	//private LinkedHashMap<List<Integer>, double> thisMap = new LinkedHashMap<List<Integer>, double>();
 	private LinkedHashMap<List<Integer>, Double> ChIndexInterAreaMap = new LinkedHashMap<List<Integer>, Double>();
 	private int channelSource;

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -211,45 +212,6 @@ public class TissueProf implements PlugIn, Command {
 		//Implement multithreading to increase the speed of DetectOverlap, OverlapFilter, OverlapRoxx and intensity measurements in OverlapTables
 		
 		//Experimental space
-		
-		
-		
-		/*Check FindIntersection method
-		RoiManager.getRoiManager();
-		
-		WaitForUserDialog drawROIs = new WaitForUserDialog("Draw ROIs");
-		drawROIs.show();
-		
-		
-		Roi[] drawnROIs = RoiManager.getInstance().getRoisAsArray();
-		
-		ShapeRoi[] drawnShapes = new ShapeRoi[drawnROIs.length];
-		
-		for (int i = 0 ; i < drawnROIs.length ; i++) {
-			drawnShapes[i] = new ShapeRoi(drawnROIs[i]);
-		}
-		
-		ArrayList<ShapeRoi> drawnShapesList = new ArrayList<ShapeRoi>();
-		
-		for(int i = 0 ; i < drawnShapes.length ; i++) {
-			drawnShapesList.add(drawnShapes[i]);
-		}
-		
-		drawnShapesList.forEach(n->System.out.println(n.getBounds().getHeight()));
-		
-		ShapeRoi IntersectionShape = DetectOverlap.FindIntersection(drawnShapesList);
-		
-		RoiManager.getInstance().addRoi(IntersectionShape.getRois()[0]);
-		
-		WaitForUserDialog seeRoi = new WaitForUserDialog("See Intersection ROI");
-		seeRoi.show();
-		
-		System.exit(0);
-		
-		
-		*/
-		
-		
 		
 		//
 		IJ.run("Fresh Start");
@@ -1051,13 +1013,20 @@ public class TissueProf implements PlugIn, Command {
 				
 				System.out.println("Garbage collected");
 				
+				Calendar date = Calendar.getInstance();
 				
-				
+				System.out.println("Started making Overlap tables : " + date.getTime().toString());
+				IJ.log("Started making overlap tables : " + date.getTime().toString());
 				
 				OverlapTables thisTable = new OverlapTables(OutputDir, imageName, inputDir2,  OverlappedRoxx, 
 						NewProcess.backgroundRois, channelSize, channelSelection, channelNames, zoneNames.get(c), measureIntensity);
 				thisTable.save();
-		        
+				
+				date = Calendar.getInstance();
+				
+				System.out.println("Finished making Overlap tables : " + date.getTime().toString());
+				IJ.log("Finished making overlap tables : " + date.getTime().toString());
+				
 
 				/*
 		        try {
