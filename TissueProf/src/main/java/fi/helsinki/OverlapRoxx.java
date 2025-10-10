@@ -8,6 +8,7 @@ import ij.IJ;
 import ij.gui.EllipseRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
+import ij.gui.WaitForUserDialog;
 import ij.plugin.frame.RoiManager;
 
 public class OverlapRoxx {
@@ -149,6 +150,9 @@ public class OverlapRoxx {
 						//if (!thisEllipse.containsPoint(QuadRox3.getPosition()[0], QuadRox3.getPosition()[1])) {continue;}
 						
 						if (r0 == true && r1 == true && r2 == true) {
+							
+							
+							
 							ShapeRoi shape0 = new ShapeRoi(QuadRox0.getRoi());
 							ShapeRoi shape1 = new ShapeRoi(QuadRox1.getRoi());
 							ShapeRoi shape2 = new ShapeRoi(QuadRox2.getRoi());
@@ -160,6 +164,35 @@ public class OverlapRoxx {
 							ShapeRoi shape3clone = (ShapeRoi) shape3.clone();
 							
 							ShapeRoi QuadInter = (shape0clone).and(shape1clone).and(shape2clone).and(shape3clone); 
+							
+							RoiManager.getInstance().reset();
+							RoiManager.getInstance().addRoi(QuadRox0.getRoi());
+							RoiManager.getInstance().addRoi(QuadRox1.getRoi());
+							RoiManager.getInstance().addRoi(QuadRox2.getRoi());
+							RoiManager.getInstance().addRoi(QuadRox3.getRoi());
+							
+							WaitForUserDialog seeQuadRoxes = new WaitForUserDialog("see quad roxes");
+							seeQuadRoxes.show();
+							
+							RoiManager.getInstance().reset();
+							RoiManager.getInstance().addRoi(shape0);
+							RoiManager.getInstance().addRoi(shape1);
+							RoiManager.getInstance().addRoi(shape2);
+							RoiManager.getInstance().addRoi(shape3);
+							
+							WaitForUserDialog seeShapes = new WaitForUserDialog("See shapes");
+							seeShapes.show();
+							
+							
+							RoiManager.getInstance().reset();
+							RoiManager.getInstance().addRoi(shape0clone);
+							RoiManager.getInstance().addRoi(shape1clone);
+							RoiManager.getInstance().addRoi(shape2clone);
+							RoiManager.getInstance().addRoi(shape3clone);
+							RoiManager.getInstance().addRoi(QuadInter);
+							
+							WaitForUserDialog seeCloneShapes = new WaitForUserDialog("See clone shapes");
+							seeCloneShapes.show();
 							
 							if (QuadInter.getBounds().getHeight()>0) {
 								//System.out.println("Shape with area " + QuadInter.getBounds());
@@ -178,21 +211,37 @@ public class OverlapRoxx {
 									for (int w=0; w<4; w++) {
 										if (w>v) {
 											RoiManager.getInstance().reset();
-											//System.out.println("QuadRox " + v + " intersecting " + "QuadRox " + w);
+											System.out.println("QuadRox " + v + " intersecting " + "QuadRox " + w);
 											//ShapeRoi CoupleShape = QuadRoxes[v].shape.and(QuadRoxes[w].shape);
-											ShapeRoi CoupleShape = QuadShapes[v].and(QuadShapes[w]);
+											ShapeRoi CoupleShape = ((ShapeRoi)QuadShapes[v].clone()).and(QuadShapes[w]);
 											Roi CoupleRoi = CoupleShape.shapeToRoi();
 											
 											RoiData CoupleData = new RoiData(IJ.getImage(),CoupleRoi);
 											double CoupleRoiArea = CoupleData.setArea(IJ.getImage());
 	
 											CoupleRatios[x] = CoupleRoiArea/RoxDataMap.get(QuadRoxes[v]).setArea(IJ.getImage());
-											
+											RoiManager.getInstance().addRoi(RoxDataMap.get(QuadRoxes[v]).dataroi);
+											System.out.println("Area of 1st Roi from RoxDataMap " + RoxDataMap.get(QuadRoxes[v]).setArea(IJ.getImage()));
+											RoiData checkData1 = new RoiData(IJ.getImage(), QuadRoxes[v].getRoi());
+											double checkArea1 = checkData1.setArea(IJ.getImage());
+											System.out.println("Area of 1st Roi from the QuadRoxes object " + checkArea1);
+											System.out.println("This ratio " + x + " " + CoupleRoiArea/RoxDataMap.get(QuadRoxes[v]).setArea(IJ.getImage()));
 											x++;
 											CoupleRatios[x] = CoupleRoiArea/RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage());
-											//System.out.println("This area " + RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage()));
-											//System.out.println("This ratio " + x + " " + CoupleRoiArea/RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage()));
+											
+											RoiManager.getInstance().addRoi(RoxDataMap.get(QuadRoxes[w]).dataroi);
+											System.out.println("Area of 2nd Roi from RoxDataMap " + RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage()));
+											RoiData checkData2 = new RoiData(IJ.getImage(), QuadRoxes[w].getRoi());
+											double checkArea2 = checkData2.setArea(IJ.getImage());
+											System.out.println("Area of 2nd Roi from the QuadRoxes object " + checkArea2);
+											
+											System.out.println("This ratio " + x + " " + CoupleRoiArea/RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage()));
 											x++;
+											
+											RoiManager.getInstance().addRoi(CoupleShape);
+											
+											WaitForUserDialog seeCouple = new WaitForUserDialog("See last 2 ROIs added, they are a couple");
+											seeCouple.show();
 											
 										}	
 									}	
