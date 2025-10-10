@@ -164,7 +164,7 @@ public class OverlapRoxx {
 							ShapeRoi shape3clone = (ShapeRoi) shape3.clone();
 							
 							ShapeRoi QuadInter = (shape0clone).and(shape1clone).and(shape2clone).and(shape3clone); 
-							
+							/*
 							RoiManager.getInstance().reset();
 							RoiManager.getInstance().addRoi(QuadRox0.getRoi());
 							RoiManager.getInstance().addRoi(QuadRox1.getRoi());
@@ -193,7 +193,7 @@ public class OverlapRoxx {
 							
 							WaitForUserDialog seeCloneShapes = new WaitForUserDialog("See clone shapes");
 							seeCloneShapes.show();
-							
+							*/
 							if (QuadInter.getBounds().getHeight()>0) {
 								//System.out.println("Shape with area " + QuadInter.getBounds());
 								//System.out.println("intersect " + i + " " + j + " " + k + " " + m);
@@ -211,7 +211,7 @@ public class OverlapRoxx {
 									for (int w=0; w<4; w++) {
 										if (w>v) {
 											RoiManager.getInstance().reset();
-											System.out.println("QuadRox " + v + " intersecting " + "QuadRox " + w);
+											//System.out.println("QuadRox " + v + " intersecting " + "QuadRox " + w);
 											//ShapeRoi CoupleShape = QuadRoxes[v].shape.and(QuadRoxes[w].shape);
 											ShapeRoi CoupleShape = ((ShapeRoi)QuadShapes[v].clone()).and(QuadShapes[w]);
 											Roi CoupleRoi = CoupleShape.shapeToRoi();
@@ -238,10 +238,10 @@ public class OverlapRoxx {
 											System.out.println("This ratio " + x + " " + CoupleRoiArea/RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage()));
 											x++;
 											
-											RoiManager.getInstance().addRoi(CoupleShape);
+											//RoiManager.getInstance().addRoi(CoupleShape);
 											
-											WaitForUserDialog seeCouple = new WaitForUserDialog("See last 2 ROIs added, they are a couple");
-											seeCouple.show();
+											//WaitForUserDialog seeCouple = new WaitForUserDialog("See last 2 ROIs added, they are a couple");
+											//seeCouple.show();
 											
 										}	
 									}	
@@ -275,7 +275,6 @@ public class OverlapRoxx {
 			}	
 		}	
 		
-		System.out.println("Analysis of overlap finished");
 		
 		RoiManager.getRoiManager().reset();
 		
