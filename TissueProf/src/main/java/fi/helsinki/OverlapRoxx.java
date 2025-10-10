@@ -11,7 +11,7 @@ import ij.gui.ShapeRoi;
 import ij.plugin.frame.RoiManager;
 
 public class OverlapRoxx {
-	
+	//Fixing bug in OverlapRoxx
 	int c = 0 ;
 	
 	int totalOverlap = 0; 
