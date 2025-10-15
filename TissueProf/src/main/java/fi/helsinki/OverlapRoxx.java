@@ -224,18 +224,18 @@ public class OverlapRoxx {
 											System.out.println("Area of 1st Roi from RoxDataMap " + RoxDataMap.get(QuadRoxes[v]).setArea(IJ.getImage()));
 											RoiData checkData1 = new RoiData(IJ.getImage(), QuadRoxes[v].getRoi());
 											double checkArea1 = checkData1.setArea(IJ.getImage());
-											System.out.println("Area of 1st Roi from the QuadRoxes object " + checkArea1);
-											System.out.println("This ratio " + x + " " + CoupleRoiArea/RoxDataMap.get(QuadRoxes[v]).setArea(IJ.getImage()));
+											//System.out.println("Area of 1st Roi from the QuadRoxes object " + checkArea1);
+											//System.out.println("This ratio " + x + " " + CoupleRoiArea/RoxDataMap.get(QuadRoxes[v]).setArea(IJ.getImage()));
 											x++;
 											CoupleRatios[x] = CoupleRoiArea/RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage());
 											
 											RoiManager.getInstance().addRoi(RoxDataMap.get(QuadRoxes[w]).dataroi);
-											System.out.println("Area of 2nd Roi from RoxDataMap " + RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage()));
+											//System.out.println("Area of 2nd Roi from RoxDataMap " + RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage()));
 											RoiData checkData2 = new RoiData(IJ.getImage(), QuadRoxes[w].getRoi());
 											double checkArea2 = checkData2.setArea(IJ.getImage());
-											System.out.println("Area of 2nd Roi from the QuadRoxes object " + checkArea2);
+											//System.out.println("Area of 2nd Roi from the QuadRoxes object " + checkArea2);
 											
-											System.out.println("This ratio " + x + " " + CoupleRoiArea/RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage()));
+											//System.out.println("This ratio " + x + " " + CoupleRoiArea/RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage()));
 											x++;
 											
 											//RoiManager.getInstance().addRoi(CoupleShape);
