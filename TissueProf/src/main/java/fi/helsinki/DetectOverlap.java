@@ -23,7 +23,7 @@ public class DetectOverlap {
 	
 	public static DetectOverlap detectOverlap(Rox[][] allRox, LinkedHashMap RoiRox, Boolean[] channelSelection, int channelSize){
 		
-		System.out.println("detecting... ");
+		System.out.println("Detecting... ");
 		IJ.log("Detecting overlap...");
 		
 		RoiManager.getRoiManager();

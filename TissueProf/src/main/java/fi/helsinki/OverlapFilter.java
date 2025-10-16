@@ -30,7 +30,7 @@ public class OverlapFilter {
 	public static OverlapFilter overlapFilter(Rox[][] allRox, DetectOverlap NewOverlap, Boolean[] channelSelection, int channelSize) {
 		
 		IJ.log("Filtering overlaps...");
-		
+		System.out.println(("Filtering..."));
 		//Create ArrayLists to fill with filtered ROIs.
 		
 		QuadRoxx = new ArrayList<ArrayList<Rox>>();

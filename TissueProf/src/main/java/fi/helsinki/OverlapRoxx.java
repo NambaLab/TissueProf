@@ -408,17 +408,10 @@ public class OverlapRoxx {
 								}
 							}
 							
-							
-							int p=0;
-							for (double ratio:TripleRatios) {
-								System.out.print("ratio" + c + " " + ratio + " ");
-								p++;
-							}	
-							
 							if ((TripleRatios[0]>ovth||TripleRatios[1]>ovth) && (TripleRatios[2]>ovth||TripleRatios[3]>ovth) 
 									&&(TripleRatios[4]>ovth||TripleRatios[5]>ovth)){
 								finalcountdown++;
-								for (p = 0 ; p < 3 ; p++) {
+								for (int p = 0 ; p < 3 ; p++) {
 									TripleOverlapRoxx.get(e).get(p).add(TripleRoxes[p]);
 									allOverlapRoxx.add(TripleRoxes[p]);
 								}
@@ -455,8 +448,6 @@ public class OverlapRoxx {
 	
 	ArrayList<Integer> DoubleCombSizes = new ArrayList<Integer>();
 	DoubleCombSizes.ensureCapacity(24);
-	
-	System.out.println("Doing double overlap... ");
 	
 	//Checking overlap extent of double combinations of filtered ROIs.
 	//Filtering out already detected ROIs from OverlapFilter results so they are not iterated over twice
