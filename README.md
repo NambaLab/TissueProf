@@ -5,3 +5,6 @@ confocal image and outputs a Results file in excel format as well as various ROI
 and images that are saved during analysis for tracing the data and later review. 
 
 TissueProf has been developed by Emre Dusunceli in the Namba Lab (ORCID ID: 0000-0003-4875-666X).
+
+To find the latest version and a detailed guide on how to use the plugin, 
+go to https://github.com/NambaLab/TissueProf/releases/tag/v1.0.0
