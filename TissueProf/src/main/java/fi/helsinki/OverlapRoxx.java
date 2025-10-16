@@ -173,25 +173,13 @@ public class OverlapRoxx {
 									for (int w=0; w<4; w++) {
 										if (w>v) {
 											RoiManager.getInstance().reset();
-											//System.out.println("QuadRox " + v + " intersecting " + "QuadRox " + w);
-											//ShapeRoi CoupleShape = QuadRoxes[v].shape.and(QuadRoxes[w].shape);
 											ShapeRoi CoupleShape = ((ShapeRoi)QuadShapes[v].clone()).and(QuadShapes[w]);
 											Roi CoupleRoi = CoupleShape.shapeToRoi();
-											
 											RoiData CoupleData = new RoiData(IJ.getImage(),CoupleRoi);
 											double CoupleRoiArea = CoupleData.setArea(IJ.getImage());
-	
 											CoupleRatios[x] = CoupleRoiArea/RoxDataMap.get(QuadRoxes[v]).setArea(IJ.getImage());
-											RoiManager.getInstance().addRoi(RoxDataMap.get(QuadRoxes[v]).dataroi);
-											System.out.println("Area of 1st Roi from RoxDataMap " + RoxDataMap.get(QuadRoxes[v]).setArea(IJ.getImage()));
-											RoiData checkData1 = new RoiData(IJ.getImage(), QuadRoxes[v].getRoi());
-											double checkArea1 = checkData1.setArea(IJ.getImage());
 											x++;
 											CoupleRatios[x] = CoupleRoiArea/RoxDataMap.get(QuadRoxes[w]).setArea(IJ.getImage());
-											
-											RoiManager.getInstance().addRoi(RoxDataMap.get(QuadRoxes[w]).dataroi);
-											RoiData checkData2 = new RoiData(IJ.getImage(), QuadRoxes[w].getRoi());
-											double checkArea2 = checkData2.setArea(IJ.getImage());
 											x++;
 											
 										}	
