@@ -42,6 +42,7 @@ public class OverlapTables {
 		
 		new CountsTable(overlapRoxx, channelNames);
 		new CountsInfoTable(overlapRoxx, channelNames);
+		new IntensityTable(overlapRoxx, channelNames);
 		
 		
 	}
@@ -108,7 +109,7 @@ public class OverlapTables {
 	public class CountsTable {
 		
 		int currentColumn;
-		Sheet Counts = wb.createSheet();
+		Sheet Counts = wb.createSheet("Counts");
 		
 		CountsTable(OverlapRoxx overlapRoxx, String[] channelNames){
 			this.setCurrentColumn(0);
@@ -168,7 +169,7 @@ public class OverlapTables {
 		int currentColumn;
 		int currentRow;
 		int InfoModuleColumn;
-		Sheet CountsInfo = wb.createSheet();
+		Sheet CountsInfo = wb.createSheet("CountsInfo");
 		
 		CountsInfoTable(OverlapRoxx overlapRoxx, String[] channelNames){
 			this.setCurrentColumn(0);
@@ -309,9 +310,90 @@ public class OverlapTables {
 	
 	public class IntensityTable{
 			
-		public void makeIntensityTable() {
+		int currentColumn;
+		int currentRow;
+		int InfoModuleColumn;
+		Sheet Intensities = wb.createSheet("Intensities");
+		
+		IntensityTable(OverlapRoxx overlapRoxx, String[] channelNames){
+			makeIntensityTable(overlapRoxx, channelNames);
+		}
+		
+		
+		
+		
+		private void setCurrentColumn(int currentColumn) {
+			this.currentColumn = currentColumn;
+		}
+		
+		private int getCurrentColumn() {
+			return currentColumn;
+		}
+		private void setCurrentRow(int currentRow) {
+			this.currentRow = currentRow;
+		}
+		private int getCurrentRow() {
+			return currentRow;
+		}
+		
+		
+		public void makeIntensityTable(OverlapRoxx overlapRoxx, String[] channelNames) {
+			
+			Row RoiRow = Intensities.createRow(0);
+			Row NameRow = Intensities.createRow(1);
+			
+			
+			int totalOverlap = 0;
+			for (int i = 0 ; i < overlapRoxx.getComboOverlapRoxxes().size() ; i++) {
+				totalOverlap = totalOverlap + overlapRoxx.getComboOverlapRoxxes().get(i).getOverlapCount();
+			}
+			System.out.println("total overlap = " + totalOverlap);
+			
+			Row[] inRows = new Row[totalOverlap];		
+			
+			for (int i = 2 ; i < totalOverlap + 2 ; i++) {
+				inRows[i-2] = Intensities.createRow(i);
+			}
+			
+			setCurrentRow(2);
+			makeBinaryModule(overlapRoxx, channelNames, NameRow);
+			
+			
 			
 		}
+	
+		public void makeBinaryModule(OverlapRoxx overlapRoxx, String[] channelNames, Row nameRow) {
+			nameRow.createCell(getCurrentColumn()).setCellValue("Cell Index");
+			setCurrentColumn(getCurrentColumn()+1);
+			
+			System.out.println("currentRow : " + getCurrentRow() + " currenColumn : " + getCurrentColumn());
+			
+			for (String channelName : channelNames ) {
+				nameRow.createCell(getCurrentColumn()).setCellValue(channelName);
+				this.setCurrentColumn(getCurrentColumn() + 1);
+			}
+			
+			
+		}
+	
+			
+		
+		public class IntensityModule{
+			
+			
+		}
+		
+		public void addBackgroundTable() {
+			
+			
+			
+		}
+		
+		
+		
+		
+		
+	
 	}
 	
 	
